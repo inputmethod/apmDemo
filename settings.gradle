@@ -1,0 +1,4 @@
+include ':app'
+
+//include ':apm-lib'
+//project(':apm-lib').projectDir = new File('..', 'apm-lib')

@@ -1,0 +1,60 @@
+apply plugin: 'com.android.application'
+
+apply plugin: 'typany-apm'
+
+def enableAPM() {
+    def value = project.getProperties().get("apm")
+    return value != null ? value : "false"
+}
+
+android {
+    compileSdkVersion 25
+    defaultConfig {
+        applicationId "com.harvestasm.apm.sample"
+        minSdkVersion 16
+        targetSdkVersion 25
+
+        multiDexEnabled true
+        multiDexKeepProguard file("keep_in_main_dex.txt")
+
+        versionCode 1
+        versionName "1.0"
+        buildConfigField "boolean", "ENABLE_APM",  enableAPM()
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary= true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:25.4.0'
+    implementation 'com.android.support:design:25.4.0'
+    implementation 'com.android.support:support-vector-drawable:25.4.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+
+    testImplementation 'junit:junit:4.12'
+
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+
+    implementation files('libs/apm-lib.jar')
+
+
+    // block begin
+    // add for api testing purpose
+    implementation "com.squareup.okio:okio:1.6.0"
+    implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.ext.okhttp3Version"
+    implementation "com.squareup.retrofit2:retrofit:$rootProject.ext.retrofit2Version"
+    implementation "com.squareup.retrofit2:converter-gson:$rootProject.ext.retrofit2Version"
+    implementation "com.squareup.retrofit2:converter-protobuf:$rootProject.ext.retrofit2Version"
+    implementation "com.squareup.okhttp3:okhttp:$rootProject.ext.okhttp3Version"
+    // block end
+
+    compile 'com.android.support:multidex:1.0.1'
+}
