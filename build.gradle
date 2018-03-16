@@ -16,6 +16,8 @@ ext {
 
     lastEngineVersion = "1.0.0"
 
+    liveDataVersion = "1.1.0"
+
     preDexLibs = !project.hasProperty('disablePreDex')
     preReport = !project.hasProperty('failEarly')
 }
