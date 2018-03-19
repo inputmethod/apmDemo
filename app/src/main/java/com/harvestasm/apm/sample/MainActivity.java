@@ -1,11 +1,15 @@
 package com.harvestasm.apm.sample;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
+
+import com.harvestasm.apm.APMHelper;
 
 public class MainActivity extends AppCompatActivity {
     private TextView mTextMessage;
@@ -43,5 +47,18 @@ public class MainActivity extends AppCompatActivity {
 
         mainViewModel = new MainViewModel();
 //        mainViewModel.getNaviationLiveData().observe(this, navigationObserver);
+        if (!APMHelper.checkSelfPermission(getApplicationContext())) {
+            requestApmPermission();
+        }
+
+        APMHelper.instance(getApplicationContext());
+    }
+
+    @TargetApi(23)
+    private void requestApmPermission() {
+        if(Build.VERSION.SDK_INT >= 23) {
+            String[] permissions = new String[]{"android.permission.WRITE_EXTERNAL_STORAGE"};
+            this.requestPermissions(permissions, 42);
+        }
     }
 }
