@@ -37,7 +37,7 @@ public class ApmDataSearchResponse /*extends JSonBaseResponse<JSonListData<JSonS
         this.hits = hits;
     }
 
-    private static class DataWrapper {
+    public static class DataWrapper {
         private int total;
         private int max_score;
         private List<DataUnit> hits;
@@ -67,7 +67,7 @@ public class ApmDataSearchResponse /*extends JSonBaseResponse<JSonListData<JSonS
         }
     }
 
-    private static class DataUnit {
+    public static class DataUnit {
         private String _index;
         private String _type;
         private String _id;
@@ -115,7 +115,7 @@ public class ApmDataSearchResponse /*extends JSonBaseResponse<JSonListData<JSonS
         }
     }
 
-    private static class SourceType {
+    public static class SourceType {
         private String deviceId;
         @SerializedName("@timestamp")
         private String timestamp;

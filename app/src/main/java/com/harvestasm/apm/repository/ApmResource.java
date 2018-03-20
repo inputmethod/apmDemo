@@ -9,6 +9,7 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 
 /**
  * Created by yangfeng on 2017/12/5.
@@ -19,9 +20,21 @@ public interface ApmResource {
     Call<ApmDataSearchResponse> mobileDataSearch(
 //            @Query("id") String id,
 //            @Query("page") int page,
-//            @Query("size") int size
+            @Query("size") int size
     );
 
     @POST("/mobile/connect")
     Call<ApmConnectResponse> mobileConnect(@Body ApmConnectData data);
+
+    @Headers({ "Accept: application/json" })
+    @GET("mobile/_search")
+    Call<ApmDataSearchResponse> mobileAllSearch(
+            @Query("size") int size
+    );
+
+    @Headers({ "Accept: application/json" })
+    @GET("mobile/connect/_search")
+    Call<ApmDataSearchResponse> mobileConnectSearch(
+            @Query("size") int size
+    );
 }

@@ -15,12 +15,14 @@ import retrofit2.Response;
 // http://10.134.73.228/api/soundres?proto=1
 public class ApmRepository extends BaseRepository<ApmResource> {
     private static final String APM_COLLECTOR_BASE_URL = "http://10.135.71.155:9200/";
+    private static final int MAX_QUERY_COUNT = 10000;
+
     public ApmRepository() {
         super(APM_COLLECTOR_BASE_URL, ApmResource.class, false, new ApmRequestInterceptor());
     }
 
     public ApmDataSearchResponse mobileDataSearch() throws Exception {
-        Call<ApmDataSearchResponse> call = getSource().mobileDataSearch();
+        Call<ApmDataSearchResponse> call = getSource().mobileDataSearch(MAX_QUERY_COUNT);
         Response<ApmDataSearchResponse> response = call.execute();
         return response.body();
     }
@@ -28,6 +30,18 @@ public class ApmRepository extends BaseRepository<ApmResource> {
     public ApmConnectResponse mobileConnect(ApmConnectData data) throws Exception {
         Call<ApmConnectResponse> call = getSource().mobileConnect(data);
         Response<ApmConnectResponse> response = call.execute();
+        return response.body();
+    }
+
+    public ApmDataSearchResponse mobileAllSearch() throws Exception {
+        Call<ApmDataSearchResponse> call = getSource().mobileAllSearch(MAX_QUERY_COUNT);
+        Response<ApmDataSearchResponse> response = call.execute();
+        return response.body();
+    }
+
+    public ApmDataSearchResponse mobileConnectSearch() throws Exception {
+        Call<ApmDataSearchResponse> call = getSource().mobileConnectSearch(MAX_QUERY_COUNT);
+        Response<ApmDataSearchResponse> response = call.execute();
         return response.body();
     }
 }

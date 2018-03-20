@@ -1,7 +1,8 @@
 package com.harvestasm.apm.repository;
 
+import com.harvestasm.apm.reporter.SearchData;
+import com.harvestasm.apm.reporter.SearchDataParser;
 import com.harvestasm.apm.repository.model.ApmConnectData;
-import com.harvestasm.apm.repository.model.ApmConnectResponse;
 import com.harvestasm.apm.repository.model.ApmDataSearchResponse;
 
 import org.junit.Assert;
@@ -55,14 +56,27 @@ public class ApmRepositoryTest {
     }
 
     @Test
+    public void testMobileAllSearch() throws Exception {
+        ApmDataSearchResponse result = repository.mobileAllSearch();
+        SearchData data = SearchDataParser.parse(result);
+        Assert.assertNotNull(result);
+    }
+
+    @Test
+    public void testMobileConnectionSearch() throws Exception {
+        ApmDataSearchResponse result = repository.mobileConnectSearch();
+        Assert.assertNotNull(result);
+    }
+
+    @Test
     public void testMobileDataSearch() throws Exception {
         ApmDataSearchResponse result = repository.mobileDataSearch();
         Assert.assertNotNull(result);
     }
 
-    @Test
-    public void testMobileConnect() throws Exception {
-        ApmConnectResponse response = repository.mobileConnect(apmConnectData);
-        Assert.assertNotNull(response);
-    }
+//    @Test
+//    public void testMobileConnect() throws Exception {
+//        ApmConnectResponse response = repository.mobileConnect(apmConnectData);
+//        Assert.assertNotNull(response);
+//    }
 }
