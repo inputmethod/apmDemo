@@ -2,6 +2,7 @@ package com.harvestasm.apm.repository;
 
 import com.harvestasm.apm.repository.model.ApmConnectData;
 import com.harvestasm.apm.repository.model.ApmConnectResponse;
+import com.harvestasm.apm.repository.model.ApmConnectSearchResponse;
 import com.harvestasm.apm.repository.model.ApmDataSearchResponse;
 
 import retrofit2.Call;
@@ -34,7 +35,7 @@ public interface ApmResource {
 
     @Headers({ "Accept: application/json" })
     @GET("mobile/connect/_search")
-    Call<ApmDataSearchResponse> mobileConnectSearch(
+    Call<ApmConnectSearchResponse> mobileConnectSearch(
             @Query("size") int size
     );
 }

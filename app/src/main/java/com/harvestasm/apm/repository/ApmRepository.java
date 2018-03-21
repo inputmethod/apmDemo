@@ -3,6 +3,7 @@ package com.harvestasm.apm.repository;
 import com.harvestasm.apm.repository.base.BaseRepository;
 import com.harvestasm.apm.repository.model.ApmConnectData;
 import com.harvestasm.apm.repository.model.ApmConnectResponse;
+import com.harvestasm.apm.repository.model.ApmConnectSearchResponse;
 import com.harvestasm.apm.repository.model.ApmDataSearchResponse;
 
 import retrofit2.Call;
@@ -39,9 +40,9 @@ public class ApmRepository extends BaseRepository<ApmResource> {
         return response.body();
     }
 
-    public ApmDataSearchResponse mobileConnectSearch() throws Exception {
-        Call<ApmDataSearchResponse> call = getSource().mobileConnectSearch(MAX_QUERY_COUNT);
-        Response<ApmDataSearchResponse> response = call.execute();
+    public ApmConnectSearchResponse mobileConnectSearch() throws Exception {
+        Call<ApmConnectSearchResponse> call = getSource().mobileConnectSearch(MAX_QUERY_COUNT);
+        Response<ApmConnectSearchResponse> response = call.execute();
         return response.body();
     }
 }

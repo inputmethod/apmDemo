@@ -29,7 +29,7 @@ public class SearchDataParser {
                 if (isEquals(type, TYPE_CONNECT)) {
                     // todo: parse connect result
                 } else if (isEquals(type, TYPE_DATA)) {
-                    ApmDataSearchResponse.SourceType sourceType = unit.get_source();
+                    ApmDataSearchResponse.SourceTypeData sourceTypeData = unit.get_source();
                 } else {
                     handleUnknownType(unknownData, index, type);
                 }

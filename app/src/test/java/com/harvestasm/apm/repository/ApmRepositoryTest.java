@@ -3,6 +3,7 @@ package com.harvestasm.apm.repository;
 import com.harvestasm.apm.reporter.SearchData;
 import com.harvestasm.apm.reporter.SearchDataParser;
 import com.harvestasm.apm.repository.model.ApmConnectData;
+import com.harvestasm.apm.repository.model.ApmConnectSearchResponse;
 import com.harvestasm.apm.repository.model.ApmDataSearchResponse;
 
 import org.junit.Assert;
@@ -64,7 +65,7 @@ public class ApmRepositoryTest {
 
     @Test
     public void testMobileConnectionSearch() throws Exception {
-        ApmDataSearchResponse result = repository.mobileConnectSearch();
+        ApmConnectSearchResponse result = repository.mobileConnectSearch();
         Assert.assertNotNull(result);
     }
 
