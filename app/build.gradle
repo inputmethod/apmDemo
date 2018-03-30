@@ -19,8 +19,8 @@ android {
         multiDexEnabled true
         multiDexKeepProguard file("keep_in_main_dex.txt")
 
-        versionCode 1
-        versionName "1.0"
+        versionCode 2000
+        versionName "2.0"
         buildConfigField "boolean", "ENABLE_APM",  enableAPM()
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary= true
