@@ -1,13 +1,17 @@
 package com.harvestasm.apm.reporter;
 
+import android.util.Log;
+
 import com.harvestasm.apm.repository.model.ApmConnectSearchResponse;
 import com.harvestasm.apm.repository.model.ApmDataSearchResponse;
 import com.harvestasm.apm.repository.model.ApmTransactionItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by yangfeng on 2018/3/20.
@@ -17,9 +21,12 @@ public class SearchDataParser {
     private static final String INDEX = "mobile";
     private static final String TYPE_DATA = "data";
     private static final String TYPE_CONNECT = "connect";
+    private static final String TAG = SearchDataParser.class.getSimpleName();
 
     public static SearchResult parse(ApmDataSearchResponse apmData, ApmConnectSearchResponse apmConnect) {
         parseDeviceId(apmData, apmConnect);
+        parseAppVersion(apmConnect);
+
         Map<String, List<String>> unknownData = new HashMap<>();
         SearchResult searchResult = new SearchResult();
         for (ApmDataSearchResponse.DataUnit unit : apmData.getHits().getHits()) {
@@ -44,6 +51,35 @@ public class SearchDataParser {
             }
         }
         return searchResult;
+    }
+
+    private static void parseAppVersion(ApmConnectSearchResponse apmConnect) {
+        Set<Integer> appLengthSet = new HashSet<>();
+        Set<Integer> deviceLengthSet = new HashSet<>();
+
+        HashMap<String, List<ApmConnectSearchResponse.ConnectUnit>> appLengthMap = new HashMap<>();
+        for (ApmConnectSearchResponse.ConnectUnit unit : apmConnect.getHits().getHits()) {
+            ApmConnectSearchResponse.SourceTypeConnect ctc = unit.get_source();
+            List<String> apps = ctc.getApp();
+            List<String> devices = ctc.getDevice();
+
+            appLengthSet.add(apps.size());
+            deviceLengthSet.add(devices.size());
+
+            addToMap(appLengthMap, unit, apps);
+        }
+        Log.d(TAG, "parseAppVersion, map size " + appLengthMap.size());
+    }
+
+    private static void addToMap(HashMap<String, List<ApmConnectSearchResponse.ConnectUnit>> appLengthMap,
+                                 ApmConnectSearchResponse.ConnectUnit unit, List<String> apps) {
+        String key = apps.toString();
+        List<ApmConnectSearchResponse.ConnectUnit> list = appLengthMap.get(key);
+        if (null == list) {
+            list = new ArrayList<>();
+            appLengthMap.put(key, list);
+        }
+        list.add(unit);
     }
 
     private static void parseDeviceId(ApmDataSearchResponse apmData, ApmConnectSearchResponse apmConnect) {
