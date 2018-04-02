@@ -2,6 +2,7 @@ package com.harvestasm.apm.reporter;
 
 import com.harvestasm.apm.repository.model.ApmDeviceMicsItem;
 import com.harvestasm.apm.repository.model.ApmSourceConnect;
+import com.harvestasm.apm.repository.model.ApmSourceData;
 import com.harvestasm.apm.repository.model.search.ApmBaseSearchResponse;
 import com.harvestasm.apm.repository.model.search.ApmBaseSearchResponse.ApmBaseUnit;
 import com.harvestasm.apm.repository.model.search.ApmCommonSearchResponse;
@@ -69,6 +70,10 @@ public class SearchDataParser {
         }
 
         return searchResult;
+    }
+
+    public static void parseDataSummary(ApmBaseSearchResponse<ApmSourceData> result) {
+
     }
 
     public static void parseConnectionSummary(ApmBaseSearchResponse<ApmSourceConnect> apmConnect) {

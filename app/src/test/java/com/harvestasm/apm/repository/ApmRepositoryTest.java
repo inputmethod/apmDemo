@@ -77,6 +77,7 @@ public class ApmRepositoryTest {
     public void testMobileDataSearch() throws Exception {
         ApmBaseSearchResponse<ApmSourceData> result = repository.mobileDataSearch();
         Assert.assertNotNull(result);
+        SearchDataParser.parseDataSummary(result);
     }
 
 //    @Test
