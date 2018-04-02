@@ -1,7 +1,8 @@
 package com.harvestasm.apm.repository;
 
-import com.harvestasm.apm.reporter.SearchResult;
 import com.harvestasm.apm.reporter.SearchDataParser;
+import com.harvestasm.apm.reporter.SearchResult;
+import com.harvestasm.apm.repository.model.ApmBaseSearchResponse;
 import com.harvestasm.apm.repository.model.ApmConnectData;
 import com.harvestasm.apm.repository.model.ApmConnectSearchResponse;
 import com.harvestasm.apm.repository.model.ApmDataSearchResponse;
@@ -58,17 +59,16 @@ public class ApmRepositoryTest {
 
     @Test
     public void testMobileAllSearch() throws Exception {
-        ApmDataSearchResponse apmData = repository.mobileAllSearch();
-        ApmConnectSearchResponse apmConnect = repository.mobileConnectSearch();
+        ApmBaseSearchResponse apmData = repository.mobileAllSearch();
         Assert.assertNotNull(apmData);
-        Assert.assertNotNull(apmConnect);
-        SearchResult data = SearchDataParser.parse(apmData, apmConnect);
+        SearchResult data = SearchDataParser.parse(apmData);
     }
 
     @Test
     public void testMobileConnectionSearch() throws Exception {
         ApmConnectSearchResponse result = repository.mobileConnectSearch();
         Assert.assertNotNull(result);
+        SearchDataParser.parseConnectionSummary(result);
     }
 
     @Test

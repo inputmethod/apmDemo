@@ -4,7 +4,7 @@ package com.harvestasm.apm.repository.model;
  * Created by yangfeng on 2018/3/21.
  */
 
-class ApmBaseUnit<T> {
+public class ApmBaseUnit<T> {
     private String _index;
     private String _type;
     private String _id;

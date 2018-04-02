@@ -1,10 +1,8 @@
 package com.harvestasm.apm.reporter;
 
-import android.util.Log;
-
+import com.harvestasm.apm.repository.model.ApmBaseSearchResponse;
 import com.harvestasm.apm.repository.model.ApmConnectSearchResponse;
-import com.harvestasm.apm.repository.model.ApmDataSearchResponse;
-import com.harvestasm.apm.repository.model.ApmTransactionItem;
+import com.harvestasm.apm.repository.model.ApmDeviceMicsItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,90 +21,80 @@ public class SearchDataParser {
     private static final String TYPE_CONNECT = "connect";
     private static final String TAG = SearchDataParser.class.getSimpleName();
 
-    public static SearchResult parse(ApmDataSearchResponse apmData, ApmConnectSearchResponse apmConnect) {
-        parseDeviceId(apmData, apmConnect);
-        parseAppVersion(apmConnect);
-
+    public static SearchResult parse(ApmBaseSearchResponse apmData) {
         Map<String, List<String>> unknownData = new HashMap<>();
         SearchResult searchResult = new SearchResult();
-        for (ApmDataSearchResponse.DataUnit unit : apmData.getHits().getHits()) {
-            String index = unit.get_index();
-            String type = unit.get_type();
-            String id = unit.get_id();
-            int score = unit.get_score();
-
-            if (isEquals(index, INDEX)) {
-                if (isEquals(type, TYPE_CONNECT)) {
-                    // todo: parse connect result
-                } else if (isEquals(type, TYPE_DATA)) {
-                    ApmDataSearchResponse.SourceTypeData sourceTypeData = unit.get_source();
-                    for (ApmTransactionItem item : sourceTypeData.getTransaction()) {
-
-                    }
-                } else {
-                    handleUnknownType(unknownData, index, type);
-                }
-            } else {
-                handleUnknownType(unknownData, index, type);
-            }
-        }
+//        for (ApmBaseUnit unit : apmData.getHits().getHits()) {
+//            String index = unit.get_index();
+//            String type = unit.get_type();
+//            String id = unit.get_id();
+//            int score = unit.get_score();
+//
+//            if (isEquals(index, INDEX)) {
+//                if (isEquals(type, TYPE_CONNECT)) {
+//                    // todo: parse connect result
+//                } else if (isEquals(type, TYPE_DATA)) {
+//                    ApmDataSearchResponse.SourceTypeData sourceTypeData = unit.get_source();
+//                    for (ApmTransactionItem item : sourceTypeData.getTransaction()) {
+//
+//                    }
+//                } else {
+//                    handleUnknownType(unknownData, index, type);
+//                }
+//            } else {
+//                handleUnknownType(unknownData, index, type);
+//            }
+//        }
         return searchResult;
     }
 
-    private static void parseAppVersion(ApmConnectSearchResponse apmConnect) {
+    public static void parseConnectionSummary(ApmConnectSearchResponse apmConnect) {
         Set<Integer> appLengthSet = new HashSet<>();
         Set<Integer> deviceLengthSet = new HashSet<>();
+        Set<Integer> devicemicsLengthSet = new HashSet<>();
 
-        HashMap<String, List<ApmConnectSearchResponse.ConnectUnit>> appLengthMap = new HashMap<>();
+        HashMap<String, List<ApmConnectSearchResponse.ConnectUnit>> deviceIdIndexMap = new HashMap<>();
+        HashMap<String, List<ApmConnectSearchResponse.ConnectUnit>> timestampIndexMap = new HashMap<>();
+        HashMap<String, List<ApmConnectSearchResponse.ConnectUnit>> appIndexMap = new HashMap<>();
+        HashMap<String, List<ApmConnectSearchResponse.ConnectUnit>> deviceIndexMap = new HashMap<>();
+        HashMap<ApmDeviceMicsItem, List<ApmConnectSearchResponse.ConnectUnit>> deviceMicsItemListHashMap = new HashMap<>();
+
         for (ApmConnectSearchResponse.ConnectUnit unit : apmConnect.getHits().getHits()) {
             ApmConnectSearchResponse.SourceTypeConnect ctc = unit.get_source();
+
+            String deviceId = ctc.getDeviceId();
+            String timestamp = ctc.getTimestamp();
+
             List<String> apps = ctc.getApp();
             List<String> devices = ctc.getDevice();
+            List<ApmDeviceMicsItem> deviceMicsItems = ctc.getDevicemics();
 
             appLengthSet.add(apps.size());
             deviceLengthSet.add(devices.size());
+            devicemicsLengthSet.add(deviceMicsItems.size());
 
-            addToMap(appLengthMap, unit, apps);
+            addToMap(deviceIdIndexMap, unit, deviceId);
+            addToMap(timestampIndexMap, unit, timestamp);
+
+            addToMap(appIndexMap, unit, apps.toString());
+            addToMap(deviceIndexMap, unit, devices.toString());
+            addPartToMap(deviceMicsItemListHashMap, unit, deviceMicsItems);
         }
-        Log.d(TAG, "parseAppVersion, map size " + appLengthMap.size());
     }
 
-    private static void addToMap(HashMap<String, List<ApmConnectSearchResponse.ConnectUnit>> appLengthMap,
-                                 ApmConnectSearchResponse.ConnectUnit unit, List<String> apps) {
-        String key = apps.toString();
-        List<ApmConnectSearchResponse.ConnectUnit> list = appLengthMap.get(key);
-        if (null == list) {
-            list = new ArrayList<>();
-            appLengthMap.put(key, list);
+    private static<K, V> void addPartToMap(HashMap<K, List<V>> indexMap, V unit, List<K> keyList) {
+        for (K key : keyList) {
+            addToMap(indexMap, unit, key);
         }
-        list.add(unit);
     }
 
-    private static void parseDeviceId(ApmDataSearchResponse apmData, ApmConnectSearchResponse apmConnect) {
-        HashMap<String, List<ApmConnectSearchResponse.ConnectUnit>> connectMap = new HashMap<>();
-        for (ApmConnectSearchResponse.ConnectUnit unit : apmConnect.getHits().getHits()) {
-            String deviceId = unit.get_source().getDeviceId();
-            List<ApmConnectSearchResponse.ConnectUnit> connectUnitList = connectMap.get(deviceId);
-            if (null == connectUnitList) {
-                connectUnitList = new ArrayList<>();
-                connectMap.put(deviceId, connectUnitList);
-            }
-            connectUnitList.add(unit);
+    private static<K, V> void addToMap(HashMap<K, List<V>> indexMap, V unit, K key) {
+        List<V> valueList = indexMap.get(key);
+        if (null == valueList) {
+            valueList = new ArrayList<>();
+            indexMap.put(key, valueList);
         }
-
-        HashMap<String, List<ApmDataSearchResponse.DataUnit>> dataMap = new HashMap<>();
-        for (ApmDataSearchResponse.DataUnit unit : apmData.getHits().getHits()) {
-            String deviceId = unit.get_source().getDeviceId();
-            List<ApmDataSearchResponse.DataUnit> dataUnitList = dataMap.get(deviceId);
-            if (null == dataUnitList) {
-                dataUnitList = new ArrayList<>();
-                dataMap.put(deviceId, dataUnitList);
-            }
-            dataUnitList.add(unit);
-        }
-
-        int size = connectMap.keySet().size();
-        size = dataMap.keySet().size();
+        valueList.add(unit);
     }
 
     private static boolean isEquals(String text, String other) {

@@ -1,5 +1,7 @@
 package com.harvestasm.apm.repository.model;
 
+import java.util.Arrays;
+
 /**
  * Created by yangfeng on 2018/3/21.
  */
@@ -31,5 +33,25 @@ public class ApmDeviceMicsItem {
 
     public void setSize(String size) {
         this.size = size;
+    }
+
+    private String getString() {
+        return platform + platformVersion + size;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ApmDeviceMicsItem that = (ApmDeviceMicsItem) o;
+
+        return getString() == null && that.getString() == null ||
+                getString() != null && getString().equals(that.getString());
+    }
+
+    @Override
+    public int hashCode() {
+        String objects[] = {platformVersion, platform, size};
+        return Arrays.hashCode(objects);
     }
 }
