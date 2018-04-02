@@ -4,6 +4,7 @@ import com.harvestasm.apm.repository.model.ApmDeviceMicsItem;
 import com.harvestasm.apm.repository.model.ApmSourceConnect;
 import com.harvestasm.apm.repository.model.search.ApmBaseSearchResponse;
 import com.harvestasm.apm.repository.model.search.ApmBaseSearchResponse.ApmBaseUnit;
+import com.harvestasm.apm.repository.model.search.ApmCommonSearchResponse;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,30 +23,51 @@ public class SearchDataParser {
     private static final String TYPE_CONNECT = "connect";
     private static final String TAG = SearchDataParser.class.getSimpleName();
 
-    public static SearchResult parse(ApmBaseSearchResponse apmData) {
-        Map<String, List<String>> unknownData = new HashMap<>();
+    public static SearchResult parse(ApmCommonSearchResponse apmData) {
+        Map<String, List<String>> unknownDataMap = new HashMap<>();
+
+        Map<String, List<ApmBaseUnit>> idAllIndexMap = new HashMap<>();
+        Map<String, List<ApmBaseUnit>> idConnectIndexMap = new HashMap<>();
+        Map<String, List<ApmBaseUnit>> idDataIndexMap = new HashMap<>();
+
+        Map<String, List<ApmBaseUnit>> deviceIdAllIndexMap = new HashMap<>();
+        Map<String, List<ApmBaseUnit>> deviceIdConnectIndexMap = new HashMap<>();
+        Map<String, List<ApmBaseUnit>> deviceIdDataIndexMap = new HashMap<>();
+        Map<String, List<ApmBaseUnit>> timestampAllIndexMap = new HashMap<>();
+        Map<String, List<ApmBaseUnit>> timestampConnectIndexMap = new HashMap<>();
+        Map<String, List<ApmBaseUnit>> timestampDataIndexMap = new HashMap<>();
+
         SearchResult searchResult = new SearchResult();
-//        for (ApmBaseUnit unit : apmData.getHits().getHits()) {
-//            String index = unit.get_index();
-//            String type = unit.get_type();
-//            String id = unit.get_id();
-//            int score = unit.get_score();
-//
-//            if (isEquals(index, INDEX)) {
-//                if (isEquals(type, TYPE_CONNECT)) {
-//                    // todo: parse connect result
-//                } else if (isEquals(type, TYPE_DATA)) {
-//                    ApmDataSearchResponse.SourceTypeData sourceTypeData = unit.get_source();
-//                    for (ApmTransactionItem item : sourceTypeData.getTransaction()) {
-//
-//                    }
-//                } else {
-//                    handleUnknownType(unknownData, index, type);
-//                }
-//            } else {
-//                handleUnknownType(unknownData, index, type);
-//            }
-//        }
+        for (ApmBaseUnit unit : apmData.getHits().getHits()) {
+            String index = unit.get_index();
+            String type = unit.get_type();
+
+            String id = unit.get_id();
+            int score = unit.get_score();
+
+            ApmBaseSearchResponse.ApmBaseSourceType sourceTypeData = unit.get_source();
+            addToMap(deviceIdAllIndexMap, unit, sourceTypeData.getDeviceId());
+            addToMap(timestampAllIndexMap, unit, sourceTypeData.getTimestamp());
+
+            addToMap(idAllIndexMap, unit, id);
+
+            if (isEquals(index, INDEX)) {
+                if (isEquals(type, TYPE_CONNECT)) {
+                    addToMap(idConnectIndexMap, unit, id);
+                    addToMap(deviceIdConnectIndexMap, unit, sourceTypeData.getDeviceId());
+                    addToMap(timestampConnectIndexMap, unit, sourceTypeData.getTimestamp());
+                } else if (isEquals(type, TYPE_DATA)) {
+                    addToMap(idDataIndexMap, unit, id);
+                    addToMap(deviceIdDataIndexMap, unit, sourceTypeData.getDeviceId());
+                    addToMap(timestampDataIndexMap, unit, sourceTypeData.getTimestamp());
+                } else {
+                    handleUnknownType(unknownDataMap, index, type);
+                }
+            } else {
+                handleUnknownType(unknownDataMap, index, type);
+            }
+        }
+
         return searchResult;
     }
 
@@ -85,19 +107,19 @@ public class SearchDataParser {
         apmConnect.isTimed_out();
     }
 
-    private static<K, V> void addPartToMap(HashMap<K, List<V>> indexMap, V unit, List<K> keyList) {
+    private static<K, V> void addPartToMap(Map<K, List<V>> indexMap, V unit, List<K> keyList) {
         for (K key : keyList) {
             addToMap(indexMap, unit, key);
         }
     }
 
-    private static<K, V> void addToMap(HashMap<K, List<V>> indexMap, V unit, K key) {
+    private static<K, V> void addToMap(Map<K, List<V>> indexMap, V value, K key) {
         List<V> valueList = indexMap.get(key);
         if (null == valueList) {
             valueList = new ArrayList<>();
             indexMap.put(key, valueList);
         }
-        valueList.add(unit);
+        valueList.add(value);
     }
 
     private static boolean isEquals(String text, String other) {
@@ -105,13 +127,6 @@ public class SearchDataParser {
     }
 
     private static void handleUnknownType(Map<String, List<String>> unknownData, String index, String type) {
-        final List<String> typeList;
-        if (unknownData.containsKey(index)) {
-            typeList = unknownData.get(index);
-        } else {
-            typeList = new ArrayList<>();
-            unknownData.put(index, typeList);
-        }
-        typeList.add(type);
+        addToMap(unknownData, type, index);
     }
 }

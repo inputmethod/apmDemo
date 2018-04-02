@@ -6,6 +6,7 @@ import com.harvestasm.apm.repository.model.ApmDeviceMicsItem;
 import com.harvestasm.apm.repository.model.ApmSourceConnect;
 import com.harvestasm.apm.repository.model.ApmSourceData;
 import com.harvestasm.apm.repository.model.search.ApmBaseSearchResponse;
+import com.harvestasm.apm.repository.model.search.ApmCommonSearchResponse;
 import com.harvestasm.apm.repository.model.search.ApmConnectSearchResponse;
 
 import org.junit.Assert;
@@ -60,7 +61,7 @@ public class ApmRepositoryTest {
 
     @Test
     public void testMobileAllSearch() throws Exception {
-        ApmBaseSearchResponse apmData = repository.mobileAllSearch();
+        ApmCommonSearchResponse apmData = repository.mobileAllSearch();
         Assert.assertNotNull(apmData);
         SearchResult data = SearchDataParser.parse(apmData);
     }

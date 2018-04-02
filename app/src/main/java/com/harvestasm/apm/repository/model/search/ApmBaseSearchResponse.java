@@ -121,6 +121,7 @@ public abstract class ApmBaseSearchResponse <T extends ApmBaseSearchResponse.Apm
      * TODO:有不少数据的设备id为空,如果能保证设备id唯一且非空，data和connect可以用它关联
      */
     public static class ApmBaseSourceType {
+        @SerializedName("deviceID")
         private String deviceId;
         @SerializedName("@timestamp")
         private String timestamp;
