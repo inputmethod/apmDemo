@@ -17,10 +17,10 @@ public class BarChartItem extends ChartItem {
     
     private Typeface mTf;
     
-    public BarChartItem(ChartData<?> cd, Context c) {
+    public BarChartItem(ChartData<?> cd, Typeface typeface) {
         super(cd);
 
-        mTf = Typeface.createFromAsset(c.getAssets(), "OpenSans-Regular.ttf");
+        mTf = typeface;
     }
 
     @Override

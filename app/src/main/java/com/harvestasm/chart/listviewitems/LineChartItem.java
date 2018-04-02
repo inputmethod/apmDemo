@@ -18,10 +18,10 @@ public class LineChartItem extends ChartItem {
 
     private Typeface mTf;
 
-    public LineChartItem(ChartData<?> cd, Context c) {
+    public LineChartItem(ChartData<?> cd, Typeface typeface) {
         super(cd);
 
-        mTf = Typeface.createFromAsset(c.getAssets(), "OpenSans-Regular.ttf");
+        mTf = typeface;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class LineChartItem extends ChartItem {
 
             convertView = LayoutInflater.from(c).inflate(
                     R.layout.list_item_linechart, null);
-            holder.chart = (LineChart) convertView.findViewById(R.id.chart);
+            holder.chart = convertView.findViewById(R.id.chart);
 
             convertView.setTag(holder);
 
