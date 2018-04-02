@@ -1,15 +1,18 @@
 package com.harvestasm.apm.sample;
 
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.harvestasm.apm.APMHelper;
+import com.harvestasm.chart.ListViewMultiChartActivity;
 
 public class MainActivity extends AppCompatActivity {
     private TextView mTextMessage;
@@ -52,6 +55,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         APMHelper.instance(getApplicationContext());
+
+        mTextMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), ListViewMultiChartActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @TargetApi(23)
