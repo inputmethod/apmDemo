@@ -1,8 +1,9 @@
 package com.harvestasm.apm.reporter;
 
-import com.harvestasm.apm.repository.model.ApmBaseSearchResponse;
-import com.harvestasm.apm.repository.model.ApmConnectSearchResponse;
 import com.harvestasm.apm.repository.model.ApmDeviceMicsItem;
+import com.harvestasm.apm.repository.model.ApmSourceConnect;
+import com.harvestasm.apm.repository.model.search.ApmBaseSearchResponse;
+import com.harvestasm.apm.repository.model.search.ApmBaseSearchResponse.ApmBaseUnit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,19 +49,19 @@ public class SearchDataParser {
         return searchResult;
     }
 
-    public static void parseConnectionSummary(ApmConnectSearchResponse apmConnect) {
+    public static void parseConnectionSummary(ApmBaseSearchResponse<ApmSourceConnect> apmConnect) {
         Set<Integer> appLengthSet = new HashSet<>();
         Set<Integer> deviceLengthSet = new HashSet<>();
         Set<Integer> devicemicsLengthSet = new HashSet<>();
 
-        HashMap<String, List<ApmConnectSearchResponse.ConnectUnit>> deviceIdIndexMap = new HashMap<>();
-        HashMap<String, List<ApmConnectSearchResponse.ConnectUnit>> timestampIndexMap = new HashMap<>();
-        HashMap<String, List<ApmConnectSearchResponse.ConnectUnit>> appIndexMap = new HashMap<>();
-        HashMap<String, List<ApmConnectSearchResponse.ConnectUnit>> deviceIndexMap = new HashMap<>();
-        HashMap<ApmDeviceMicsItem, List<ApmConnectSearchResponse.ConnectUnit>> deviceMicsItemListHashMap = new HashMap<>();
+        HashMap<String, List<ApmBaseUnit<ApmSourceConnect>>> deviceIdIndexMap = new HashMap<>();
+        HashMap<String, List<ApmBaseUnit<ApmSourceConnect>>> timestampIndexMap = new HashMap<>();
+        HashMap<String, List<ApmBaseUnit<ApmSourceConnect>>> appIndexMap = new HashMap<>();
+        HashMap<String, List<ApmBaseUnit<ApmSourceConnect>>> deviceIndexMap = new HashMap<>();
+        HashMap<ApmDeviceMicsItem, List<ApmBaseUnit<ApmSourceConnect>>> deviceMicsItemListHashMap = new HashMap<>();
 
-        for (ApmConnectSearchResponse.ConnectUnit unit : apmConnect.getHits().getHits()) {
-            ApmConnectSearchResponse.SourceTypeConnect ctc = unit.get_source();
+        for (ApmBaseUnit<ApmSourceConnect> unit : apmConnect.getHits().getHits()) {
+            ApmSourceConnect ctc = unit.get_source();
 
             String deviceId = ctc.getDeviceId();
             String timestamp = ctc.getTimestamp();
@@ -80,6 +81,8 @@ public class SearchDataParser {
             addToMap(deviceIndexMap, unit, devices.toString());
             addPartToMap(deviceMicsItemListHashMap, unit, deviceMicsItems);
         }
+
+        apmConnect.isTimed_out();
     }
 
     private static<K, V> void addPartToMap(HashMap<K, List<V>> indexMap, V unit, List<K> keyList) {

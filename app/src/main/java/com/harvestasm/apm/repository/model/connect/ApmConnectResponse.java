@@ -1,4 +1,4 @@
-package com.harvestasm.apm.repository.model;
+package com.harvestasm.apm.repository.model.connect;
 
 /**
  * Created by yangfeng on 2018/3/16.

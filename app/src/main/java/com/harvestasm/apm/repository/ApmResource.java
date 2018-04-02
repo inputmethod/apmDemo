@@ -1,9 +1,9 @@
 package com.harvestasm.apm.repository;
 
-import com.harvestasm.apm.repository.model.ApmConnectData;
-import com.harvestasm.apm.repository.model.ApmConnectResponse;
-import com.harvestasm.apm.repository.model.ApmConnectSearchResponse;
-import com.harvestasm.apm.repository.model.ApmDataSearchResponse;
+import com.harvestasm.apm.repository.model.ApmSourceConnect;
+import com.harvestasm.apm.repository.model.search.ApmConnectSearchResponse;
+import com.harvestasm.apm.repository.model.search.ApmDataSearchResponse;
+import com.harvestasm.apm.repository.model.connect.ApmConnectResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -25,7 +25,7 @@ public interface ApmResource {
     );
 
     @POST("/mobile/connect")
-    Call<ApmConnectResponse> mobileConnect(@Body ApmConnectData data);
+    Call<ApmConnectResponse> mobileConnect(@Body ApmSourceConnect data);
 
     @Headers({ "Accept: application/json" })
     @GET("mobile/_search")
