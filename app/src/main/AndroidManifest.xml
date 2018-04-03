@@ -25,7 +25,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.harvestasm.chart.MultiMultiChartActivity"
+        <activity android:name="com.harvestasm.chart.MultiChartActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 

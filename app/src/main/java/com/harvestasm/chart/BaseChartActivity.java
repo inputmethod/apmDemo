@@ -4,7 +4,7 @@ package com.harvestasm.chart;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 
 import com.harvestasm.apm.sample.R;
 
@@ -13,7 +13,7 @@ import com.harvestasm.apm.sample.R;
  * 
  * @author Philipp Jahoda
  */
-public abstract class MultiChartBaseActivity extends FragmentActivity {
+public abstract class BaseChartActivity extends AppCompatActivity {
 
     protected String[] mMonths = new String[] {
             "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"
