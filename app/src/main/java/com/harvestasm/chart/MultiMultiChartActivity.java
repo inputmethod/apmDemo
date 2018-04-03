@@ -21,8 +21,8 @@ import java.util.ArrayList;
  * 
  * @author Philipp Jahoda
  */
-public class MultiChartActivity extends ChartBaseActivity {
-    private static final String TAG = MultiChartActivity.class.getSimpleName();
+public class MultiMultiChartActivity extends MultiChartBaseActivity {
+    private static final String TAG = MultiMultiChartActivity.class.getSimpleName();
 
     private MultiChartViewModel viewMultiChartModel;
 
@@ -32,9 +32,10 @@ public class MultiChartActivity extends ChartBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_listview_chart);
+        setContentView(R.layout.activity_multichart);
         
         lv = findViewById(R.id.listView1);
 
