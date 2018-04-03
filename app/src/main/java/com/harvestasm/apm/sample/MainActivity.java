@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.harvestasm.apm.APMHelper;
-import com.harvestasm.chart.ListViewMultiChartActivity;
+import com.harvestasm.chart.MultiChartActivity;
 
 public class MainActivity extends AppCompatActivity {
     private TextView mTextMessage;
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         mTextMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getBaseContext(), ListViewMultiChartActivity.class);
+                Intent intent = new Intent(getBaseContext(), MultiChartActivity.class);
                 startActivity(intent);
             }
         });

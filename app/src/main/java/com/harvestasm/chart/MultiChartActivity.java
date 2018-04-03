@@ -3,22 +3,17 @@ package com.harvestasm.chart;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.harvestasm.apm.sample.R;
 import com.harvestasm.chart.listviewitems.ChartItem;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Demonstrates the use of charts inside a ListView. IMPORTANT: provide a
@@ -26,13 +21,13 @@ import java.util.List;
  * 
  * @author Philipp Jahoda
  */
-public class ListViewMultiChartActivity extends DemoBase {
-    private static final String TAG = ListViewMultiChartActivity.class.getSimpleName();
+public class MultiChartActivity extends ChartBaseActivity {
+    private static final String TAG = MultiChartActivity.class.getSimpleName();
 
-    private ListViewMultiChartModel viewMultiChartModel;
+    private MultiChartViewModel viewMultiChartModel;
 
     private ListView lv;
-    private ChartDataAdapter cda;
+    private MultiChartAdapter cda;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +40,7 @@ public class ListViewMultiChartActivity extends DemoBase {
 
         viewMultiChartModel = getViewModel();
 
-//        cda = new ChartDataAdapter(getApplicationContext(), list);
+//        cda = new MultiChartAdapter(getApplicationContext(), list);
 //        lv.setAdapter(cda);
         viewMultiChartModel.items.observe(this, new Observer<ArrayList<ChartItem>>() {
             @Override
@@ -54,7 +49,7 @@ public class ListViewMultiChartActivity extends DemoBase {
                     Log.w(TAG, "null data comes.");
                 } else {
                     Log.d(TAG, "data size " + chartItems.size());
-                    cda = new ChartDataAdapter(getApplicationContext(), chartItems);
+                    cda = new MultiChartAdapter(getApplicationContext(), chartItems);
                     lv.setAdapter(cda);
                 }
             }
@@ -84,40 +79,9 @@ public class ListViewMultiChartActivity extends DemoBase {
         viewMultiChartModel.load(typeface);
     }
 
-    private ListViewMultiChartModel getViewModel() {
-        return ViewModelProviders.of(this/*, new ListViewMultiChartModelFactory()*/)
-                .get(ListViewMultiChartModel.class);
+    private MultiChartViewModel getViewModel() {
+        return ViewModelProviders.of(this/*, new MultiChartViewModelFactory()*/)
+                .get(MultiChartViewModel.class);
     }
 
-    /** adapter that supports 3 different item types */
-    private class ChartDataAdapter extends ArrayAdapter<ChartItem> {
-        
-        public ChartDataAdapter(Context context, List<ChartItem> objects) {
-            super(context, 0, objects);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            return getItem(position).getView(position, convertView, getContext());
-        }
-        
-        @Override
-        public int getItemViewType(int position) {           
-            // return the views type
-            return getItem(position).getItemType();
-        }
-        
-        @Override
-        public int getViewTypeCount() {
-            return 3; // we have 3 different item-types
-        }
-
-        public void setNetworkState(Integer integer) {
-
-        }
-
-        public void setLoading(Boolean aBoolean) {
-
-        }
-    }
 }

@@ -24,7 +24,7 @@ import com.harvestasm.chart.listviewitems.PieChartItem;
 import java.util.ArrayList;
 
 // todo: simplest implement without repository to store data item.
-public class ListViewMultiChartModel extends ViewModel {
+public class MultiChartViewModel extends ViewModel {
     public final MutableLiveData<ArrayList<ChartItem>> items = new MutableLiveData<>();
     public final MutableLiveData<Boolean> loadingState = new MutableLiveData<>();
     public final MutableLiveData<Integer> networkState = new MutableLiveData<>();

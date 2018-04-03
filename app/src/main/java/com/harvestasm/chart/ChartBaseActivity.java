@@ -13,7 +13,7 @@ import com.harvestasm.apm.sample.R;
  * 
  * @author Philipp Jahoda
  */
-public abstract class DemoBase extends FragmentActivity {
+public abstract class ChartBaseActivity extends FragmentActivity {
 
     protected String[] mMonths = new String[] {
             "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"
