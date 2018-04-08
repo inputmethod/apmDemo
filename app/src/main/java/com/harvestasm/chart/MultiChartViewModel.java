@@ -40,13 +40,17 @@ public class MultiChartViewModel extends ViewModel {
 
         // 30 items
         for (int i = 0; i < 30; i++) {
-
-            if(i % 3 == 0) {
-                list.add(new LineChartItem(generateDataLine(i + 1), typeface));
-            } else if(i % 3 == 1) {
-                list.add(new BarChartItem(generateDataBar(i + 1), typeface));
-            } else if(i % 3 == 2) {
-                list.add(new PieChartItem(generateDataPie(i + 1), typeface));
+            int mod = i % 5;
+            if(mod == 0) {
+                list.add(new LineChartItem(generateDataLine(), "内存占用" + i, typeface));
+            } else if(mod == 1) {
+                list.add(new BarChartItem(generateDataBar(), "键盘收起时间" + i, typeface));
+            } else if(mod == 2) {
+                list.add(new BarChartItem(generateDataBar(), "电流" + i, typeface));
+            } else if (mod == 3) {
+                list.add(new BarChartItem(generateDataBar(), "CPU占用" + i, typeface));
+            } else if(mod == 4) {
+                list.add(new PieChartItem(generateDataPie(), "设备", typeface));
             }
         }
 
@@ -61,33 +65,18 @@ public class MultiChartViewModel extends ViewModel {
      *
      * @return
      */
-    private LineData generateDataLine(int cnt) {
+    private LineData generateDataLine() {
+        int count = 12;
+        int highLightColor = Color.rgb(244, 117, 117);
 
-        ArrayList<Entry> e1 = new ArrayList<Entry>();
+        String label1 = "Typany";
+        LineDataSet d1 = generateLineDataSet(label1, count, highLightColor, 65, 40);
 
-        for (int i = 0; i < 12; i++) {
-            e1.add(new Entry(i, (int) (Math.random() * 65) + 40));
-        }
-
-        LineDataSet d1 = new LineDataSet(e1, "New DataSet " + cnt + ", (1)");
-        d1.setLineWidth(2.5f);
-        d1.setCircleRadius(4.5f);
-        d1.setHighLightColor(Color.rgb(244, 117, 117));
-        d1.setDrawValues(false);
-
-        ArrayList<Entry> e2 = new ArrayList<Entry>();
-
-        for (int i = 0; i < 12; i++) {
-            e2.add(new Entry(i, e1.get(i).getY() - 30));
-        }
-
-        LineDataSet d2 = new LineDataSet(e2, "New DataSet " + cnt + ", (2)");
-        d2.setLineWidth(2.5f);
-        d2.setCircleRadius(4.5f);
-        d2.setHighLightColor(Color.rgb(244, 117, 117));
-        d2.setColor(ColorTemplate.VORDIPLOM_COLORS[0]);
-        d2.setCircleColor(ColorTemplate.VORDIPLOM_COLORS[0]);
-        d2.setDrawValues(false);
+        String label2 = "Others";
+        int normalColor = ColorTemplate.VORDIPLOM_COLORS[0];
+        int circleColor = ColorTemplate.VORDIPLOM_COLORS[0];
+        LineDataSet d2 = generateLineDataSet(label2, count, highLightColor,
+                normalColor, circleColor, 40, 10);
 
         ArrayList<ILineDataSet> sets = new ArrayList<>();
         sets.add(d1);
@@ -97,24 +86,47 @@ public class MultiChartViewModel extends ViewModel {
         return cd;
     }
 
+    private LineDataSet generateLineDataSet(String label, int count, int highLightColor,
+                                            int normalColor, int circleColor, int seed, int offset) {
+        LineDataSet d2 = generateLineDataSet(label, count, highLightColor, seed, offset);
+        d2.setColor(normalColor);
+        d2.setCircleColor(circleColor);
+        return d2;
+    }
+
+    private LineDataSet generateLineDataSet(String label, int count, int highLightColor, int seed, int offset) {
+        ArrayList<Entry> e1 = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            e1.add(new Entry(i, (int) (Math.random() * seed) + offset));
+        }
+
+        LineDataSet d1 = new LineDataSet(e1, label);
+        d1.setLineWidth(2.5f);
+        d1.setCircleRadius(4.5f);
+        d1.setHighLightColor(highLightColor);
+        d1.setDrawValues(false);
+
+        return d1;
+    }
+
     /**
      * generates a random ChartData object with just one DataSet
      *
      * @return
      */
-    private BarData generateDataBar(int cnt) {
+    private BarData generateDataBar() {
 
         ArrayList<BarEntry> entries = new ArrayList<>();
 
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < 4; i++) {
             entries.add(new BarEntry(i, (int) (Math.random() * 70) + 30));
         }
 
-        BarDataSet d = new BarDataSet(entries, "New DataSet " + cnt);
+        BarDataSet d = new BarDataSet(entries, "Typany");
         d.setColors(ColorTemplate.VORDIPLOM_COLORS);
         d.setHighLightAlpha(255);
 
-        BarData cd = new BarData(d);
+        BarData cd = new BarData(d, d, d);
         cd.setBarWidth(0.9f);
         return cd;
     }
@@ -124,7 +136,7 @@ public class MultiChartViewModel extends ViewModel {
      *
      * @return
      */
-    private PieData generateDataPie(int cnt) {
+    private PieData generateDataPie() {
 
         ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
 

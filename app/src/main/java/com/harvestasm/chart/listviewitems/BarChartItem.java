@@ -7,7 +7,6 @@ import android.view.View;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.XAxis.XAxisPosition;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.ChartData;
@@ -17,8 +16,8 @@ public class BarChartItem extends ChartItem {
     
     private Typeface mTf;
     
-    public BarChartItem(ChartData<?> cd, Typeface typeface) {
-        super(cd);
+    public BarChartItem(ChartData<?> cd, String title, Typeface typeface) {
+        super(cd, title);
 
         mTf = typeface;
     }
@@ -30,60 +29,64 @@ public class BarChartItem extends ChartItem {
 
     @Override
     public View getView(int position, View convertView, Context c) {
-
         ViewHolder holder = null;
-
         if (convertView == null) {
-
-            holder = new ViewHolder();
-
             convertView = LayoutInflater.from(c).inflate(
                     R.layout.list_item_barchart, null);
-            holder.chart = (BarChart) convertView.findViewById(R.id.chart);
-
+            holder = new ViewHolder(convertView);
             convertView.setTag(holder);
-
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        // apply styling
-        holder.chart.getDescription().setEnabled(false);
-        holder.chart.setDrawGridBackground(false);
-        holder.chart.setDrawBarShadow(false);
-
-        XAxis xAxis = holder.chart.getXAxis();
-        xAxis.setPosition(XAxisPosition.BOTTOM);
-        xAxis.setTypeface(mTf);
-        xAxis.setDrawGridLines(false);
-        xAxis.setDrawAxisLine(true);
-        
-        YAxis leftAxis = holder.chart.getAxisLeft();
-        leftAxis.setTypeface(mTf);
-        leftAxis.setLabelCount(5, false);
-        leftAxis.setSpaceTop(20f);
-        leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
-       
-        YAxis rightAxis = holder.chart.getAxisRight();
-        rightAxis.setTypeface(mTf);
-        rightAxis.setLabelCount(5, false);
-        rightAxis.setSpaceTop(20f);
-        rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
-
-        mChartData.setValueTypeface(mTf);
-        
-        // set data
-        holder.chart.setData((BarData) mChartData);
-        holder.chart.setFitBars(true);
-        
-        // do not forget to refresh the chart
-//        holder.chart.invalidate();
-        holder.chart.animateY(700);
-
+        holder.bind(this);
         return convertView;
     }
     
-    private static class ViewHolder {
-        BarChart chart;
+    private static class ViewHolder extends BaseViewHolder{
+        private BarChart chart;
+
+        public ViewHolder(View convertView) {
+            super(convertView);
+            chart = convertView.findViewById(R.id.chart);
+        }
+
+        public void bind(BarChartItem item) {
+            super.bind(item);
+
+            // apply styling
+            chart.getDescription().setEnabled(false);
+            chart.setDrawGridBackground(false);
+            chart.setDrawBarShadow(false);
+
+            XAxis xAxis = chart.getXAxis();
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+            xAxis.setTypeface(item.mTf);
+            xAxis.setDrawGridLines(false);
+            xAxis.setDrawAxisLine(true);
+
+            YAxis leftAxis = chart.getAxisLeft();
+            leftAxis.setTypeface(item.mTf);
+            leftAxis.setLabelCount(5, false);
+            leftAxis.setSpaceTop(20f);
+            leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+
+            YAxis rightAxis = chart.getAxisRight();
+            rightAxis.setTypeface(item.mTf);
+            rightAxis.setLabelCount(5, false);
+            rightAxis.setSpaceTop(20f);
+            rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+
+            item.mChartData.setValueTypeface(item.mTf);
+
+            // set data
+            chart.setData((BarData) item.mChartData);
+            chart.setFitBars(true);
+
+            // do not forget to refresh the chart
+//        chart.invalidate();
+            chart.animateY(700);
+
+        }
     }
 }

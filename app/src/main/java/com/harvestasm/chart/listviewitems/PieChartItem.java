@@ -21,13 +21,10 @@ import com.harvestasm.apm.sample.R;
 public class PieChartItem extends ChartItem {
 
     private Typeface mTf;
-    private SpannableString mCenterText;
-
-    public PieChartItem(ChartData<?> cd, Typeface typeface) {
-        super(cd);
+    public PieChartItem(ChartData<?> cd, String title, Typeface typeface) {
+        super(cd, title);
 
         mTf = typeface;
-        mCenterText = generateCenterText();
     }
 
     @Override
@@ -41,63 +38,70 @@ public class PieChartItem extends ChartItem {
         ViewHolder holder = null;
 
         if (convertView == null) {
-
-            holder = new ViewHolder();
-
             convertView = LayoutInflater.from(c).inflate(
                     R.layout.list_item_piechart, null);
-            holder.chart = (PieChart) convertView.findViewById(R.id.chart);
-
+            holder = new ViewHolder(convertView);
             convertView.setTag(holder);
 
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        // apply styling
-        holder.chart.getDescription().setEnabled(false);
-        holder.chart.setHoleRadius(52f);
-        holder.chart.setTransparentCircleRadius(57f);
-        holder.chart.setCenterText(mCenterText);
-        holder.chart.setCenterTextTypeface(mTf);
-        holder.chart.setCenterTextSize(9f);
-        holder.chart.setUsePercentValues(true);
-        holder.chart.setExtraOffsets(5, 10, 50, 10);
-
-        mChartData.setValueFormatter(new PercentFormatter());
-        mChartData.setValueTypeface(mTf);
-        mChartData.setValueTextSize(11f);
-        mChartData.setValueTextColor(Color.WHITE);
-        // set data
-        holder.chart.setData((PieData) mChartData);
-
-        Legend l = holder.chart.getLegend();
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-        l.setOrientation(Legend.LegendOrientation.VERTICAL);
-        l.setDrawInside(false);
-        l.setYEntrySpace(0f);
-        l.setYOffset(0f);
-
-        // do not forget to refresh the chart
-        // holder.chart.invalidate();
-        holder.chart.animateY(900);
+        holder.bind(this);
 
         return convertView;
     }
 
-    private SpannableString generateCenterText() {
-        SpannableString s = new SpannableString("MPAndroidChart\ncreated by\nPhilipp Jahoda");
-        s.setSpan(new RelativeSizeSpan(1.6f), 0, 14, 0);
-        s.setSpan(new ForegroundColorSpan(ColorTemplate.VORDIPLOM_COLORS[0]), 0, 14, 0);
-        s.setSpan(new RelativeSizeSpan(.9f), 14, 25, 0);
-        s.setSpan(new ForegroundColorSpan(Color.GRAY), 14, 25, 0);
-        s.setSpan(new RelativeSizeSpan(1.4f), 25, s.length(), 0);
-        s.setSpan(new ForegroundColorSpan(ColorTemplate.getHoloBlue()), 25, s.length(), 0);
-        return s;
-    }
+    private static class ViewHolder extends BaseViewHolder {
+        private final PieChart chart;
+        private final SpannableString mCenterText;
 
-    private static class ViewHolder {
-        PieChart chart;
+        protected ViewHolder(View convertView) {
+            super(convertView);
+            chart = convertView.findViewById(R.id.chart);
+            mCenterText = generateCenterText();
+        }
+
+        public void bind(PieChartItem item) {
+            // apply styling
+            chart.getDescription().setEnabled(false);
+            chart.setHoleRadius(52f);
+            chart.setTransparentCircleRadius(57f);
+            chart.setCenterText(mCenterText);
+            chart.setCenterTextTypeface(item.mTf);
+            chart.setCenterTextSize(9f);
+            chart.setUsePercentValues(true);
+            chart.setExtraOffsets(5, 10, 50, 10);
+
+            item.mChartData.setValueFormatter(new PercentFormatter());
+            item.mChartData.setValueTypeface(item.mTf);
+            item.mChartData.setValueTextSize(11f);
+            item.mChartData.setValueTextColor(Color.WHITE);
+            // set data
+            chart.setData((PieData) item.mChartData);
+
+            Legend l = chart.getLegend();
+            l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+            l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+            l.setOrientation(Legend.LegendOrientation.VERTICAL);
+            l.setDrawInside(false);
+            l.setYEntrySpace(0f);
+            l.setYOffset(0f);
+
+            // do not forget to refresh the chart
+            // holder.chart.invalidate();
+            chart.animateY(900);
+        }
+
+        private SpannableString generateCenterText() {
+            SpannableString s = new SpannableString("MPAndroidChart\ncreated by\nPhilipp Jahoda");
+            s.setSpan(new RelativeSizeSpan(1.6f), 0, 14, 0);
+            s.setSpan(new ForegroundColorSpan(ColorTemplate.VORDIPLOM_COLORS[0]), 0, 14, 0);
+            s.setSpan(new RelativeSizeSpan(.9f), 14, 25, 0);
+            s.setSpan(new ForegroundColorSpan(Color.GRAY), 14, 25, 0);
+            s.setSpan(new RelativeSizeSpan(1.4f), 25, s.length(), 0);
+            s.setSpan(new ForegroundColorSpan(ColorTemplate.getHoloBlue()), 25, s.length(), 0);
+            return s;
+        }
     }
 }

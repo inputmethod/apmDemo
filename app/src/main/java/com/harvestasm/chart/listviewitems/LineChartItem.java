@@ -8,7 +8,6 @@ import android.view.View;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.XAxis.XAxisPosition;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.ChartData;
 import com.github.mikephil.charting.data.LineData;
@@ -18,8 +17,8 @@ public class LineChartItem extends ChartItem {
 
     private Typeface mTf;
 
-    public LineChartItem(ChartData<?> cd, Typeface typeface) {
-        super(cd);
+    public LineChartItem(ChartData<?> cd, String title, Typeface typeface) {
+        super(cd, title);
 
         mTf = typeface;
     }
@@ -31,56 +30,61 @@ public class LineChartItem extends ChartItem {
 
     @Override
     public View getView(int position, View convertView, Context c) {
-
         ViewHolder holder = null;
 
         if (convertView == null) {
-
-            holder = new ViewHolder();
-
             convertView = LayoutInflater.from(c).inflate(
                     R.layout.list_item_linechart, null);
-            holder.chart = convertView.findViewById(R.id.chart);
-
+            holder = new ViewHolder(convertView);
             convertView.setTag(holder);
-
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        // apply styling
-        // holder.chart.setValueTypeface(mTf);
-        holder.chart.getDescription().setEnabled(false);
-        holder.chart.setDrawGridBackground(false);
-
-        XAxis xAxis = holder.chart.getXAxis();
-        xAxis.setPosition(XAxisPosition.BOTTOM);
-        xAxis.setTypeface(mTf);
-        xAxis.setDrawGridLines(false);
-        xAxis.setDrawAxisLine(true);
-
-        YAxis leftAxis = holder.chart.getAxisLeft();
-        leftAxis.setTypeface(mTf);
-        leftAxis.setLabelCount(5, false);
-        leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
-        
-        YAxis rightAxis = holder.chart.getAxisRight();
-        rightAxis.setTypeface(mTf);
-        rightAxis.setLabelCount(5, false);
-        rightAxis.setDrawGridLines(false);
-        rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
-
-        // set data
-        holder.chart.setData((LineData) mChartData);
-
-        // do not forget to refresh the chart
-        // holder.chart.invalidate();
-        holder.chart.animateX(750);
+        holder.bind(this);
 
         return convertView;
     }
 
-    private static class ViewHolder {
-        LineChart chart;
+    private static class ViewHolder extends BaseViewHolder {
+        private LineChart chart;
+
+        public ViewHolder(View convertView) {
+            super(convertView);
+            chart = convertView.findViewById(R.id.chart);
+        }
+
+        public void bind(LineChartItem lineChartItem) {
+            super.bind(lineChartItem);
+
+            // apply styling
+            // holder.chart.setValueTypeface(mTf);
+            chart.getDescription().setEnabled(false);
+            chart.setDrawGridBackground(false);
+
+            XAxis xAxis = chart.getXAxis();
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+            xAxis.setTypeface(lineChartItem.mTf);
+            xAxis.setDrawGridLines(false);
+            xAxis.setDrawAxisLine(true);
+
+            YAxis leftAxis = chart.getAxisLeft();
+            leftAxis.setTypeface(lineChartItem.mTf);
+            leftAxis.setLabelCount(5, false);
+            leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+
+            YAxis rightAxis = chart.getAxisRight();
+            rightAxis.setTypeface(lineChartItem.mTf);
+            rightAxis.setLabelCount(5, false);
+            rightAxis.setDrawGridLines(false);
+            rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+
+            // set data
+            chart.setData((LineData) lineChartItem.mChartData);
+
+            // do not forget to refresh the chart
+            // holder.chart.invalidate();
+            chart.animateX(750);
+        }
     }
 }

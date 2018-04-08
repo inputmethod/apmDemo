@@ -4,9 +4,11 @@
     android:layout_height="wrap_content"
     android:orientation="vertical" >
 
+    <include layout="@layout/list_item_including_title" />
+
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/chart"
         android:layout_width="match_parent"
-        android:layout_height="200dp" />
+        android:layout_height="@dimen/list_item_height_normal" />
 
 </LinearLayout>
