@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.view.LayoutInflater;
@@ -21,8 +22,8 @@ import com.harvestasm.apm.sample.R;
 public class PieChartItem extends ChartItem {
 
     private Typeface mTf;
-    public PieChartItem(ChartData<?> cd, String title, Typeface typeface) {
-        super(cd, title);
+    public PieChartItem(ChartData<?> cd, String title, int id, Typeface typeface) {
+        super(cd, title, id);
 
         mTf = typeface;
     }
@@ -94,13 +95,27 @@ public class PieChartItem extends ChartItem {
         }
 
         private SpannableString generateCenterText() {
-            SpannableString s = new SpannableString("MPAndroidChart\ncreated by\nPhilipp Jahoda");
-            s.setSpan(new RelativeSizeSpan(1.6f), 0, 14, 0);
-            s.setSpan(new ForegroundColorSpan(ColorTemplate.VORDIPLOM_COLORS[0]), 0, 14, 0);
-            s.setSpan(new RelativeSizeSpan(.9f), 14, 25, 0);
-            s.setSpan(new ForegroundColorSpan(Color.GRAY), 14, 25, 0);
-            s.setSpan(new RelativeSizeSpan(1.4f), 25, s.length(), 0);
-            s.setSpan(new ForegroundColorSpan(ColorTemplate.getHoloBlue()), 25, s.length(), 0);
+            float[] textSize = { 1.6f, 0.9f, 1.4f };
+            int[] textColor = { ColorTemplate.VORDIPLOM_COLORS[0], Color.GRAY, ColorTemplate.getHoloBlue() };
+            String[] textArray = {"MPAndroidChart", "created by", "Philipp Jahoda"};
+            return generateCenterText(textArray, textSize, textColor);
+        }
+
+        private SpannableString generateCenterText(String[] textArray, float[] textSize, int[] textColor) {
+            String text = TextUtils.join("\n", textArray);
+            SpannableString s = new SpannableString(text);
+            for (int start = 0, end = 0, i = 0; i < textArray.length; i++) {
+                end = start + textArray[i].length();
+                s.setSpan(new RelativeSizeSpan(textSize[i]), start, end, 0);
+                s.setSpan(new ForegroundColorSpan(textColor[i]), start, end, 0);
+                start = end;
+            }
+//            s.setSpan(new RelativeSizeSpan(1.6f), 0, 14, 0);
+//            s.setSpan(new ForegroundColorSpan(ColorTemplate.VORDIPLOM_COLORS[0]), 0, 14, 0);
+//            s.setSpan(new RelativeSizeSpan(.9f), 14, 25, 0);
+//            s.setSpan(new ForegroundColorSpan(Color.GRAY), 14, 25, 0);
+//            s.setSpan(new RelativeSizeSpan(1.4f), 25, s.length(), 0);
+//            s.setSpan(new ForegroundColorSpan(ColorTemplate.getHoloBlue()), 25, s.length(), 0);
             return s;
         }
     }

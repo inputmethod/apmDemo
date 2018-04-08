@@ -16,8 +16,8 @@ public class BarChartItem extends ChartItem {
     
     private Typeface mTf;
     
-    public BarChartItem(ChartData<?> cd, String title, Typeface typeface) {
-        super(cd, title);
+    public BarChartItem(ChartData<?> cd, String title, int id, Typeface typeface) {
+        super(cd, title, id);
 
         mTf = typeface;
     }

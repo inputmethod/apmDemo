@@ -11,14 +11,23 @@ import java.util.List;
 
 /** adapter that supports 3 different item types */
 class MultiChartAdapter extends ArrayAdapter<ChartItem> {
+    private final MultiChartViewModel viewMultiChartModel;
 
-    public MultiChartAdapter(Context context, List<ChartItem> objects) {
+    public MultiChartAdapter(Context context, List<ChartItem> objects, MultiChartViewModel viewMultiChartModel) {
         super(context, 0, objects);
+        this.viewMultiChartModel = viewMultiChartModel;
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        return getItem(position).getView(position, convertView, getContext());
+    public View getView(final int position, View convertView, ViewGroup parent) {
+        View view = getItem(position).getView(position, convertView, getContext());
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewMultiChartModel.performClick(getItem(position).getId());
+            }
+        });
+        return view;
     }
 
     @Override

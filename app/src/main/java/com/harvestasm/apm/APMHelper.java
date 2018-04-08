@@ -2,7 +2,6 @@ package com.harvestasm.apm;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.pm.PackageManager;
 
 import typany.apm.agent.android.TypanyAPM;
 import typany.apm.agent.android.instrumentation.Trace;
@@ -38,7 +37,8 @@ public class APMHelper {
 
     @TargetApi(23)
     public static boolean checkSelfPermission(Context context) {
-        boolean writeExternalStorageGranted = context.checkSelfPermission("android.permission.WRITE_EXTERNAL_STORAGE") == PackageManager.PERMISSION_GRANTED;
-        return writeExternalStorageGranted;
+        return true;
+//        boolean writeExternalStorageGranted = context.checkSelfPermission("android.permission.WRITE_EXTERNAL_STORAGE") == PackageManager.PERMISSION_GRANTED;
+//        return writeExternalStorageGranted;
     }
 }

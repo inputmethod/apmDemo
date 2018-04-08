@@ -17,8 +17,8 @@ public class LineChartItem extends ChartItem {
 
     private Typeface mTf;
 
-    public LineChartItem(ChartData<?> cd, String title, Typeface typeface) {
-        super(cd, title);
+    public LineChartItem(ChartData<?> cd, String title, int id, Typeface typeface) {
+        super(cd, title, id);
 
         mTf = typeface;
     }

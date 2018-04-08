@@ -15,7 +15,7 @@ import android.widget.ListView;
 import com.harvestasm.apm.sample.R;
 import com.harvestasm.chart.listviewitems.ChartItem;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -57,16 +57,23 @@ public class MultiChartFragment extends Fragment {
     private void setViewModel() {
         viewMultiChartModel = getViewModel();
 
-        viewMultiChartModel.items.observe(this, new Observer<ArrayList<ChartItem>>() {
+        viewMultiChartModel.items.observe(this, new Observer<List<ChartItem>>() {
             @Override
-            public void onChanged(@Nullable ArrayList<ChartItem> chartItems) {
+            public void onChanged(@Nullable List<ChartItem> chartItems) {
                 if (null == chartItems) {
                     Log.w(TAG, "null data comes.");
                 } else {
                     Log.d(TAG, "data size " + chartItems.size());
-                    cda = new MultiChartAdapter(getContext(), chartItems);
+                    cda = new MultiChartAdapter(getContext(), chartItems, viewMultiChartModel);
                     lv.setAdapter(cda);
                 }
+            }
+        });
+
+        viewMultiChartModel.clickItem.observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(@Nullable Integer id) {
+                onClickById(id);
             }
         });
 
@@ -89,6 +96,34 @@ public class MultiChartFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private void onClickById(int id) {
+        Log.v(TAG, "onClickById, id = " + id);
+        if (ChartItem.ID.MEMORY == id) {
+            // todo: implement
+        } else if (ChartItem.ID.KEYBOARD_HIDE == id) {
+            // todo: implement
+        } else if (ChartItem.ID.BATTARY == id) {
+            // todo: implement
+        } else if (ChartItem.ID.CPU == id) {
+            // todo: implement
+        } else if (ChartItem.ID.SKIN_SLIP == id) {
+            // todo: implement
+        } else if (ChartItem.ID.EMOJI_SLIP == id) {
+            // todo: implement
+        } else if (ChartItem.ID.SYMBOL_KB_SWITCH == id) {
+            // todo: implement
+        } else if (ChartItem.ID.EMOJI_KB_SWITCH == id) {
+            // todo: implement
+        } else if (ChartItem.ID.KB_SETTING == id) {
+            // todo: implement
+        } else if (ChartItem.ID.KB_BALLOOM == id) {
+            // todo: implement
+        } else if (ChartItem.ID.DEMO_PI == id) {
+        } else {
+            Log.e(TAG, "Unknown item id: " + id);
+        }
     }
 
     private MultiChartViewModel getViewModel() {

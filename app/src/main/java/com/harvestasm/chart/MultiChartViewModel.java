@@ -22,12 +22,15 @@ import com.harvestasm.chart.listviewitems.LineChartItem;
 import com.harvestasm.chart.listviewitems.PieChartItem;
 
 import java.util.ArrayList;
+import java.util.List;
 
 // todo: simplest implement without repository to store data item.
 public class MultiChartViewModel extends ViewModel {
-    public final MutableLiveData<ArrayList<ChartItem>> items = new MutableLiveData<>();
+    public final MutableLiveData<List<ChartItem>> items = new MutableLiveData<>();
     public final MutableLiveData<Boolean> loadingState = new MutableLiveData<>();
     public final MutableLiveData<Integer> networkState = new MutableLiveData<>();
+
+    public final MutableLiveData<Integer> clickItem = new MutableLiveData<>();
 
     public void load(Typeface typeface) {
         loadingState.setValue(true);
@@ -36,29 +39,29 @@ public class MultiChartViewModel extends ViewModel {
 
     // todo: load within worker thread.
     private void startLoadWorker(Typeface typeface) {
-        ArrayList<ChartItem> list = new ArrayList<>();
-
-        // 30 items
-        for (int i = 0; i < 30; i++) {
-            int mod = i % 5;
-            if(mod == 0) {
-                list.add(new LineChartItem(generateDataLine(), "内存占用" + i, typeface));
-            } else if(mod == 1) {
-                list.add(new BarChartItem(generateDataBar(), "键盘收起时间" + i, typeface));
-            } else if(mod == 2) {
-                list.add(new BarChartItem(generateDataBar(), "电流" + i, typeface));
-            } else if (mod == 3) {
-                list.add(new BarChartItem(generateDataBar(), "CPU占用" + i, typeface));
-            } else if(mod == 4) {
-                list.add(new PieChartItem(generateDataPie(), "设备", typeface));
-            }
-        }
-
+        List<ChartItem> list = new ArrayList<>();
+        fillSampleCharItem(list, typeface);
         items.postValue(list);
         loadingState.postValue(false);
         networkState.postValue(0);
     }
 
+    private void fillSampleCharItem(List<ChartItem> list, Typeface typeface) {
+        list.add(new LineChartItem(generateDataLine(), "内存占用", ChartItem.ID.MEMORY, typeface));
+
+        list.add(new BarChartItem(generateDataBar(), "键盘收起时间", ChartItem.ID.KEYBOARD_HIDE, typeface));
+        list.add(new BarChartItem(generateDataBar(), "电流", ChartItem.ID.BATTARY, typeface));
+        list.add(new BarChartItem(generateDataBar(), "CPU占用", ChartItem.ID.CPU, typeface));
+
+        list.add(new BarChartItem(generateDataBar(), "Theme页滑动", ChartItem.ID.SKIN_SLIP, typeface));
+        list.add(new BarChartItem(generateDataBar(), "emoji页滑动", ChartItem.ID.EMOJI_SLIP, typeface));
+        list.add(new BarChartItem(generateDataBar(), "主键盘与符号键盘切换", ChartItem.ID.SYMBOL_KB_SWITCH, typeface));
+        list.add(new BarChartItem(generateDataBar(), "主键盘与emoji键盘切换", ChartItem.ID.EMOJI_KB_SWITCH, typeface));
+        list.add(new BarChartItem(generateDataBar(), "键盘到设置页面", ChartItem.ID.KB_SETTING, typeface));
+        list.add(new BarChartItem(generateDataBar(), "键盘打字弹泡", ChartItem.ID.KB_BALLOOM, typeface));
+
+        list.add(new PieChartItem(generateDataPie(), "演示PI", ChartItem.ID.DEMO_PI, typeface));
+    }
 
     /**
      * generates a random ChartData object with just one DataSet
@@ -115,20 +118,26 @@ public class MultiChartViewModel extends ViewModel {
      * @return
      */
     private BarData generateDataBar() {
-
-        ArrayList<BarEntry> entries = new ArrayList<>();
-
-        for (int i = 0; i < 4; i++) {
-            entries.add(new BarEntry(i, (int) (Math.random() * 70) + 30));
-        }
-
-        BarDataSet d = new BarDataSet(entries, "Typany");
-        d.setColors(ColorTemplate.VORDIPLOM_COLORS);
-        d.setHighLightAlpha(255);
-
-        BarData cd = new BarData(d, d, d);
+        BarDataSet d1 = generateBarDataSet("Typany", 3, 70, 30, ColorTemplate.VORDIPLOM_COLORS);
+//        BarDataSet d2 = generateBarDataSet("Other", 4, 50, 40, ColorTemplate.LIBERTY_COLORS);
+//        BarDataSet d3 = generateBarDataSet("竞品", 4, 40, 50, ColorTemplate.MATERIAL_COLORS);
+        BarData cd = new BarData(d1);
         cd.setBarWidth(0.9f);
         return cd;
+    }
+
+    private BarDataSet generateBarDataSet(String label, int count, int seed, int offset, int[] colors) {
+        ArrayList<BarEntry> entries = new ArrayList<>();
+
+        for (int i = 0; i < count; i++) {
+            entries.add(new BarEntry(i, (int) (Math.random() * seed) + offset));
+        }
+
+        BarDataSet d = new BarDataSet(entries, label);
+        d.setColors(colors);
+        d.setHighLightAlpha(255);
+
+        return d;
     }
 
     /**
@@ -152,5 +161,9 @@ public class MultiChartViewModel extends ViewModel {
 
         PieData cd = new PieData(d);
         return cd;
+    }
+
+    public void performClick(int id) {
+        clickItem.setValue(id);
     }
 }
