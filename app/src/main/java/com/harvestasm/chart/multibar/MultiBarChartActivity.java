@@ -6,9 +6,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
-import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -29,12 +26,12 @@ import com.harvestasm.chart.MyMarkerView;
 
 import java.util.ArrayList;
 
-public class MultiBarChartActivity extends BaseChartActivity implements OnSeekBarChangeListener,
+public class MultiBarChartActivity extends BaseChartActivity implements
         OnChartValueSelectedListener {
 
     private BarChart mChart;
-    private SeekBar mSeekBarX, mSeekBarY;
-    private TextView tvX, tvY;
+//    private SeekBar mSeekBarX, mSeekBarY;
+//    private TextView tvX, tvY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,17 +39,17 @@ public class MultiBarChartActivity extends BaseChartActivity implements OnSeekBa
 
         setContentView(R.layout.activity_barchart);
 
-        tvX = (TextView) findViewById(R.id.tvXMax);
-        tvX.setTextSize(10);
-        tvY = (TextView) findViewById(R.id.tvYMax);
+//        tvX = (TextView) findViewById(R.id.tvXMax);
+//        tvX.setTextSize(10);
+//        tvY = (TextView) findViewById(R.id.tvYMax);
+//
+//        mSeekBarX = (SeekBar) findViewById(R.id.seekBar1);
+//        mSeekBarX.setOnSeekBarChangeListener(this);
+//
+//        mSeekBarY = (SeekBar) findViewById(R.id.seekBar2);
+//        mSeekBarY.setOnSeekBarChangeListener(this);
 
-        mSeekBarX = (SeekBar) findViewById(R.id.seekBar1);
-        mSeekBarX.setOnSeekBarChangeListener(this);
-
-        mSeekBarY = (SeekBar) findViewById(R.id.seekBar2);
-        mSeekBarY.setOnSeekBarChangeListener(this);
-
-        mChart = (BarChart) findViewById(R.id.chart1);
+        mChart = findViewById(R.id.chart1);
         mChart.setOnChartValueSelectedListener(this);
         mChart.getDescription().setEnabled(false);
 
@@ -71,8 +68,10 @@ public class MultiBarChartActivity extends BaseChartActivity implements OnSeekBa
         mv.setChartView(mChart); // For bounds control
         mChart.setMarker(mv); // Set the marker to the chart
 
-        mSeekBarX.setProgress(10);
-        mSeekBarY.setProgress(100);
+//        mSeekBarX.setProgress(10);
+//        mSeekBarY.setProgress(100);
+
+        onProgressChanged(10, 100);
 
         Legend l = mChart.getLegend();
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
@@ -96,6 +95,13 @@ public class MultiBarChartActivity extends BaseChartActivity implements OnSeekBa
             }
         });
 
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                return getLabelX(value);
+            }
+        });
+
         YAxis leftAxis = mChart.getAxisLeft();
         leftAxis.setTypeface(mTfLight);
         leftAxis.setValueFormatter(new LargeValueFormatter());
@@ -104,6 +110,24 @@ public class MultiBarChartActivity extends BaseChartActivity implements OnSeekBa
         leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
 
         mChart.getAxisRight().setEnabled(false);
+    }
+
+    private String getLabelX(float value) {
+        int index = ((int) (value - 1980)) % 6;
+        if (0 == index) {
+            return "Theme页滑动";
+        } else if (1 == index) {
+            return "emoji页滑动";
+        } else if (2 == index) {
+            return "主键盘与符号键盘切换";
+        } else if (3 == index) {
+            return "主键盘与emoji键盘切换";
+        } else if (4 == index) {
+            return "键盘到设置页面";
+        } else {
+            return "键盘打字弹泡";
+        }
+
     }
 
     @Override
@@ -172,27 +196,28 @@ public class MultiBarChartActivity extends BaseChartActivity implements OnSeekBa
         return true;
     }
 
-    @Override
-    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//    @Override
+//    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
+    private void onProgressChanged(int xProgress, int yProgress) {
         float groupSpace = 0.08f;
         float barSpace = 0.03f; // x4 DataSet
         float barWidth = 0.2f; // x4 DataSet
         // (0.2 + 0.03) * 4 + 0.08 = 1.00 -> interval per "group"
 
-        int groupCount = mSeekBarX.getProgress() + 1;
+        int groupCount = xProgress + 1;
         int startYear = 1980;
         int endYear = startYear + groupCount;
 
-        tvX.setText(startYear + "-" + endYear);
-        tvY.setText("" + (mSeekBarY.getProgress()));
+//        tvX.setText(startYear + "-" + endYear);
+//        tvY.setText("" + (mSeekBarY.getProgress()));
 
         ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
         ArrayList<BarEntry> yVals2 = new ArrayList<BarEntry>();
         ArrayList<BarEntry> yVals3 = new ArrayList<BarEntry>();
         ArrayList<BarEntry> yVals4 = new ArrayList<BarEntry>();
 
-        float randomMultiplier = mSeekBarY.getProgress() * 100000f;
+        float randomMultiplier = yProgress * 100000f;
 
         for (int i = startYear; i < endYear; i++) {
             yVals1.add(new BarEntry(i, (float) (Math.random() * randomMultiplier)));
@@ -218,13 +243,13 @@ public class MultiBarChartActivity extends BaseChartActivity implements OnSeekBa
 
         } else {
             // create 4 DataSets
-            set1 = new BarDataSet(yVals1, "Company A");
+            set1 = new BarDataSet(yVals1, "Typany");
             set1.setColor(Color.rgb(104, 241, 175));
-            set2 = new BarDataSet(yVals2, "Company B");
+            set2 = new BarDataSet(yVals2, "Swiftkey");
             set2.setColor(Color.rgb(164, 228, 251));
-            set3 = new BarDataSet(yVals3, "Company C");
+            set3 = new BarDataSet(yVals3, "Touchpal");
             set3.setColor(Color.rgb(242, 247, 158));
-            set4 = new BarDataSet(yVals4, "Company D");
+            set4 = new BarDataSet(yVals4, "Typany108684");
             set4.setColor(Color.rgb(255, 102, 0));
 
             BarData data = new BarData(set1, set2, set3, set4);
@@ -246,15 +271,15 @@ public class MultiBarChartActivity extends BaseChartActivity implements OnSeekBa
         mChart.invalidate();
     }
 
-    @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {
-        // TODO Auto-generated method stub
-    }
+//    @Override
+//    public void onStartTrackingTouch(SeekBar seekBar) {
+//        // TODO Auto-generated method stub
+//    }
+//
+//    @Override
+//    public void onStopTrackingTouch(SeekBar seekBar) {
+//        // TODO Auto-generated method stub
+//    }
 
     @Override
     public void onValueSelected(Entry e, Highlight h) {
