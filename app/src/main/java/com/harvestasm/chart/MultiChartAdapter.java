@@ -24,7 +24,7 @@ class MultiChartAdapter extends ArrayAdapter<ChartItem> {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewMultiChartModel.performClick(getItem(position).getId());
+                viewMultiChartModel.performClick(getItem(position));
             }
         });
         return view;

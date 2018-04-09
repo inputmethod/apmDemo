@@ -56,6 +56,10 @@ public abstract class ChartItem {
         this(cd, "", 0);
     }
 
+    public ChartData<?> getChartData() {
+        return mChartData;
+    }
+
     public ChartItem(ChartData<?> cd, String title, int id) {
         this.mChartData = cd;
         this.title = title;

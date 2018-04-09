@@ -4,17 +4,21 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.util.Log;
 
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.ChartData;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.interfaces.datasets.IPieDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.harvestasm.chart.listviewitems.BarChartItem;
 import com.harvestasm.chart.listviewitems.ChartItem;
@@ -26,11 +30,13 @@ import java.util.List;
 
 // todo: simplest implement without repository to store data item.
 public class MultiChartViewModel extends ViewModel {
+    private final static String TAG = MultiChartViewModel.class.getSimpleName();
+
     public final MutableLiveData<List<ChartItem>> items = new MutableLiveData<>();
     public final MutableLiveData<Boolean> loadingState = new MutableLiveData<>();
     public final MutableLiveData<Integer> networkState = new MutableLiveData<>();
 
-    public final MutableLiveData<Integer> clickItem = new MutableLiveData<>();
+    public final MutableLiveData<ChartItem> clickItem = new MutableLiveData<>();
 
     public void load(Typeface typeface) {
         loadingState.setValue(true);
@@ -163,7 +169,34 @@ public class MultiChartViewModel extends ViewModel {
         return cd;
     }
 
-    public void performClick(int id) {
-        clickItem.setValue(id);
+    public void performClick(ChartItem item) {
+        clickItem.setValue(item);
+    }
+
+    public void parsePieChartItem(ChartItem item) {
+        ChartData data = item.getChartData();
+        if (data instanceof PieData) {
+            PieData lineData = (PieData) data;
+            List<IPieDataSet> list = lineData.getDataSets();
+            Log.v(TAG, "parseLineChartItem, data set size " + list.size());
+        }
+    }
+
+    public void parseBarChartItem(ChartItem item) {
+        ChartData data = item.getChartData();
+        if (data instanceof BarData) {
+            BarData lineData = (BarData) data;
+            List<IBarDataSet> list = lineData.getDataSets();
+            Log.v(TAG, "parseLineChartItem, data set size " + list.size());
+        }
+    }
+
+    public void parseLineChartItem(ChartItem item) {
+        ChartData data = item.getChartData();
+        if (data instanceof LineData) {
+            LineData lineData = (LineData) data;
+            List<ILineDataSet> list = lineData.getDataSets();
+            Log.v(TAG, "parseLineChartItem, data set size " + list.size());
+        }
     }
 }

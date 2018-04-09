@@ -70,10 +70,10 @@ public class MultiChartFragment extends Fragment {
             }
         });
 
-        viewMultiChartModel.clickItem.observe(this, new Observer<Integer>() {
+        viewMultiChartModel.clickItem.observe(this, new Observer<ChartItem>() {
             @Override
-            public void onChanged(@Nullable Integer id) {
-                onClickById(id);
+            public void onChanged(@Nullable ChartItem item) {
+                onClickById(item);
             }
         });
 
@@ -98,29 +98,36 @@ public class MultiChartFragment extends Fragment {
         });
     }
 
-    private void onClickById(int id) {
+    private void onClickById(@Nullable ChartItem item) {
+        if (null == item) {
+            Log.e(TAG, "onClickById skip with null item.");
+            return;
+        }
+
+        int id = item.getId();
         Log.v(TAG, "onClickById, id = " + id);
         if (ChartItem.ID.MEMORY == id) {
-            // todo: implement
+            viewMultiChartModel.parseLineChartItem(item);
         } else if (ChartItem.ID.KEYBOARD_HIDE == id) {
-            // todo: implement
+            viewMultiChartModel.parseBarChartItem(item);
         } else if (ChartItem.ID.BATTARY == id) {
-            // todo: implement
+            viewMultiChartModel.parseBarChartItem(item);
         } else if (ChartItem.ID.CPU == id) {
-            // todo: implement
+            viewMultiChartModel.parseBarChartItem(item);
         } else if (ChartItem.ID.SKIN_SLIP == id) {
-            // todo: implement
+            viewMultiChartModel.parseBarChartItem(item);
         } else if (ChartItem.ID.EMOJI_SLIP == id) {
-            // todo: implement
+            viewMultiChartModel.parseBarChartItem(item);
         } else if (ChartItem.ID.SYMBOL_KB_SWITCH == id) {
-            // todo: implement
+            viewMultiChartModel.parseBarChartItem(item);
         } else if (ChartItem.ID.EMOJI_KB_SWITCH == id) {
-            // todo: implement
+            viewMultiChartModel.parseBarChartItem(item);
         } else if (ChartItem.ID.KB_SETTING == id) {
-            // todo: implement
+            viewMultiChartModel.parseBarChartItem(item);
         } else if (ChartItem.ID.KB_BALLOOM == id) {
-            // todo: implement
+            viewMultiChartModel.parseBarChartItem(item);
         } else if (ChartItem.ID.DEMO_PI == id) {
+            viewMultiChartModel.parsePieChartItem(item);
         } else {
             Log.e(TAG, "Unknown item id: " + id);
         }
