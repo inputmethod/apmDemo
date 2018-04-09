@@ -1,5 +1,5 @@
 
-package com.harvestasm.chart;
+package com.harvestasm.chart.multilist;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.harvestasm.apm.sample.R;
+import com.harvestasm.chart.BaseChartActivity;
 
 /**
  * Demonstrates the use of charts inside a ListView. IMPORTANT: provide a

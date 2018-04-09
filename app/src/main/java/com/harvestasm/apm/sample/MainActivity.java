@@ -12,7 +12,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.harvestasm.apm.APMHelper;
-import com.harvestasm.chart.MultiChartActivity;
+import com.harvestasm.chart.multibar.MultiBarChartActivity;
+import com.harvestasm.chart.multilist.MultiChartActivity;
 
 public class MainActivity extends AppCompatActivity {
     private TextView mTextMessage;
@@ -59,10 +60,20 @@ public class MainActivity extends AppCompatActivity {
         mTextMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getBaseContext(), MultiChartActivity.class);
-                startActivity(intent);
+//                startMultiChartActivity();
+                startMultiBarActivity();
             }
         });
+    }
+
+    private void startMultiChartActivity() {
+        Intent intent = new Intent(getBaseContext(), MultiChartActivity.class);
+        startActivity(intent);
+    }
+
+    private void startMultiBarActivity() {
+        Intent intent = new Intent(getBaseContext(), MultiBarChartActivity.class);
+        startActivity(intent);
     }
 
     @TargetApi(23)

@@ -1,4 +1,4 @@
-package com.harvestasm.chart;
+package com.harvestasm.chart.multilist;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
