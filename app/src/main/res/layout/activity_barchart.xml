@@ -6,10 +6,8 @@
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/chart1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/title" />
-    <include layout="@layout/list_item_including_title"
-        android:id="@+id/title"/>
+        android:layout_height="match_parent" />
+    <include layout="@layout/list_item_including_title"/>
     
     <!--<SeekBar-->
         <!--android:id="@+id/seekBar2"-->
