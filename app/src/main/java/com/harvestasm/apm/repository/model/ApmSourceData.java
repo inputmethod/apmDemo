@@ -17,7 +17,9 @@ private List<ApmActivityItem> activity;
 //    private SessionType session;
     private String session;
     private String sessionId;
+    // todo: events数据里，有些是字符串，有些是Json数组。。。
 //    private List<EventItem> events;
+//    private String events;
 
     public List<String> getHttpError() {
         return httpError;
@@ -82,4 +84,12 @@ private List<ApmActivityItem> activity;
     public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
     }
+
+//    public String getEvents() {
+//        return events;
+//    }
+//
+//    public void setEvents(String events) {
+//        this.events = events;
+//    }
 }

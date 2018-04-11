@@ -15,7 +15,64 @@ public class ApmActivityItem {
     private RootTrace rootTrace;
     // it is a string with json format of array data within[], for example:
     // [{\"type\":\"VITALS\",\"MEMORY\":[[1512988020050,54.7373046875],[1512988020183,71.9794921875],[1512988020320,87.638671875]],\"CPU\":[[1512988020184,16.19047619047619],[1512988020321,13.20754716981132]]}]
+//    private List<Vitals> vitals;
     private String vitals;
+
+    public String getTraceVersion() {
+        return traceVersion;
+    }
+
+    public void setTraceVersion(String traceVersion) {
+        this.traceVersion = traceVersion;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public long getEntryTimestamp() {
+        return entryTimestamp;
+    }
+
+    public void setEntryTimestamp(long entryTimestamp) {
+        this.entryTimestamp = entryTimestamp;
+    }
+
+    public long getExitTimestamp() {
+        return exitTimestamp;
+    }
+
+    public void setExitTimestamp(long exitTimestamp) {
+        this.exitTimestamp = exitTimestamp;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public RootTrace getRootTrace() {
+        return rootTrace;
+    }
+
+    public void setRootTrace(RootTrace rootTrace) {
+        this.rootTrace = rootTrace;
+    }
+
+    public String getVitals() {
+        return vitals;
+    }
+
+    public void setVitals(String vitals) {
+        this.vitals = vitals;
+    }
 
     public static class RootTrace {
         private String type;
@@ -97,6 +154,8 @@ public class ApmActivityItem {
     }
 
     public static class Vitals {
-
+        public String type;
+        List<String> MEMORY; // todo: 内存数值对含义
+        List<String> CPU;    // todo: CPU数值内存对含义
     }
 }
