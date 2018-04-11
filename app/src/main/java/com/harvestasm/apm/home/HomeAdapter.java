@@ -1,51 +1,31 @@
 package com.harvestasm.apm.home;
 
 import android.content.Context;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 
-import com.harvestasm.chart.listviewitems.ChartItem;
+import com.harvestasm.base.viewholder.BaseRecyclerViewAdapter;
+import com.harvestasm.base.viewholder.BaseRecyclerViewHolder;
 
 import java.util.List;
 
-/** adapter that supports 3 different item types */
-class HomeAdapter extends ArrayAdapter<ChartItem> {
-    private final HomeModel viewMultiChartModel;
+public class HomeAdapter extends BaseRecyclerViewAdapter {
 
-    public HomeAdapter(Context context, List<ChartItem> objects, HomeModel viewMultiChartModel) {
-        super(context, 0, objects);
-        this.viewMultiChartModel = viewMultiChartModel;
+    public HomeAdapter(Context context, List<HomeItem> chartItems, HomeModel homeModel) {
+        super();
     }
 
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
-        View view = getItem(position).getView(position, convertView, getContext());
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewMultiChartModel.performClick(getItem(position));
-            }
-        });
-        return view;
+    public BaseRecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return null;
     }
 
     @Override
-    public int getItemViewType(int position) {
-        // return the views type
-        return getItem(position).getItemType();
+    public void onBindViewHolder(BaseRecyclerViewHolder holder, int position) {
+
     }
 
     @Override
-    public int getViewTypeCount() {
-        return 3; // we have 3 different item-types
-    }
-
-    public void setNetworkState(Integer integer) {
-
-    }
-
-    public void setLoading(Boolean aBoolean) {
-
+    public int getItemCount() {
+        return 0;
     }
 }
