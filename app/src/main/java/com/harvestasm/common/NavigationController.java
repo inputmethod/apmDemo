@@ -21,6 +21,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
+import com.harvestasm.apm.home.HomeFragment;
 import com.harvestasm.apm.sample.R;
 import com.harvestasm.chart.multilist.MultiChartFragment;
 
@@ -45,7 +46,7 @@ public class NavigationController {
     public void navigateToHome() {
         Fragment fragment = getFragmentWithTag(TAG_HOME);
         if (null == fragment) {
-            fragment = new MultiChartFragment();
+            fragment = new HomeFragment();
         }
         replaceFragment(fragment, null);
     }
