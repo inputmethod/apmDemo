@@ -14,10 +14,13 @@ import android.widget.TextView;
 import com.harvestasm.apm.APMHelper;
 import com.harvestasm.chart.multibar.MultiBarChartActivity;
 import com.harvestasm.chart.multilist.MultiChartActivity;
+import com.harvestasm.common.NavigationController;
 
 public class MainActivity extends AppCompatActivity {
     private TextView mTextMessage;
     private MainViewModel mainViewModel;
+
+    private NavigationController navigationController;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -26,24 +29,42 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    mTextMessage.setText(R.string.title_home);
+                    navigateHomeFragment();
                     return true;
                 case R.id.navigation_dashboard:
-                    mTextMessage.setText(R.string.title_dashboard);
+                    navigateDashboardFragment();
                     return true;
                 case R.id.navigation_notifications:
-                    mTextMessage.setText(R.string.title_notifications);
+                    navigateNotificationFragment();
                     return true;
             }
             return false;
         }
     };
 
+    private void navigateNotificationFragment() {
+        mTextMessage.setText(R.string.title_notifications);
+        navigationController.navigateToNotification();
+    }
+
+    private void navigateDashboardFragment() {
+        mTextMessage.setText(R.string.title_dashboard);
+        navigationController.navigateToDashboard();
+    }
+
+    private void navigateHomeFragment() {
+        mTextMessage.setText(R.string.title_home);
+        navigationController.navigateToHome();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        APMHelper.instance(this);
         setContentView(R.layout.activity_main);
+
+        // initialising, todo: inject with dagger2
+        navigationController = new NavigationController(this);
 
         mTextMessage = findViewById(R.id.message);
         BottomNavigationView navigation = findViewById(R.id.navigation);
@@ -64,6 +85,8 @@ public class MainActivity extends AppCompatActivity {
                 startMultiBarActivity();
             }
         });
+
+        navigateHomeFragment();
     }
 
     private void startMultiChartActivity() {
