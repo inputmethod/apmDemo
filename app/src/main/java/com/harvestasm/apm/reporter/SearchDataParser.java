@@ -87,28 +87,28 @@ public class SearchDataParser extends ApmBaseSourceIndex {
         addToMap(unknownData, type, index);
     }
 
-    public static List<ApmSourceIndexGroup> parseIndexGroup(ApmDataSourceIndex dataSourceIndex,
-                                                            ApmConnectSourceIndex connectSourceIndex) {
+    public static List<ApmSourceGroup> parseIndexGroup(ApmDataSourceIndex dataSourceIndex,
+                                                       ApmConnectSourceIndex connectSourceIndex) {
         HashMap<String, List<ApmBaseUnit<ApmSourceData>>> dataUnits = dataSourceIndex.getDeviceIdIndexMap();
         HashMap<String, List<ApmBaseUnit<ApmSourceConnect>>> connectUnits = connectSourceIndex.getDeviceIdIndexMap();
         Set<String> devicesOfData = dataUnits.keySet();
         Set<String> devicesOfConnect = connectUnits.keySet();
 
-        List<ApmSourceIndexGroup> groups = new ArrayList<>();
+        List<ApmSourceGroup> groups = new ArrayList<>();
         for (String device : devicesOfData) {
-            ApmSourceIndexGroup g = new ApmSourceIndexGroup();
+            ApmSourceGroup g = new ApmSourceGroup();
             g.setGroupId(device);
-            g.setDataSourceIndex(dataUnits.get(device));
-            g.setConnectSourceIndex(connectUnits.get(device));
+            g.setDataSource(dataUnits.get(device));
+            g.setConnectSource(connectUnits.get(device));
             devicesOfConnect.remove(device);
             groups.add(g);
         }
 
         for (String device : devicesOfConnect) {
-            ApmSourceIndexGroup g = new ApmSourceIndexGroup();
+            ApmSourceGroup g = new ApmSourceGroup();
             g.setGroupId(device);
-            g.setDataSourceIndex(null);
-            g.setConnectSourceIndex(connectUnits.get(device));
+            g.setDataSource(null);
+            g.setConnectSource(connectUnits.get(device));
             groups.add(g);
         }
 

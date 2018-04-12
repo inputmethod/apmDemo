@@ -2,7 +2,7 @@ package com.harvestasm.apm.repository;
 
 import com.harvestasm.apm.reporter.ApmConnectSourceIndex;
 import com.harvestasm.apm.reporter.ApmDataSourceIndex;
-import com.harvestasm.apm.reporter.ApmSourceIndexGroup;
+import com.harvestasm.apm.reporter.ApmSourceGroup;
 import com.harvestasm.apm.reporter.SearchDataParser;
 import com.harvestasm.apm.reporter.SearchResult;
 import com.harvestasm.apm.repository.model.ApmDeviceMicsItem;
@@ -91,7 +91,7 @@ public class ApmRepositoryTest {
         ApmConnectSourceIndex connectSourceIndex = new ApmConnectSourceIndex(connect);
         Assert.assertNotNull(dataSourceIndex);
         Assert.assertNotNull(connectSourceIndex);
-        List<ApmSourceIndexGroup> groupList = SearchDataParser.parseIndexGroup(dataSourceIndex, connectSourceIndex);
+        List<ApmSourceGroup> groupList = SearchDataParser.parseIndexGroup(dataSourceIndex, connectSourceIndex);
         Assert.assertNotNull(groupList);
     }
 
