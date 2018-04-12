@@ -1,10 +1,10 @@
 package com.harvestasm.apm.repository.model;
 
-import com.harvestasm.apm.repository.model.search.ApmBaseSearchResponse;
+import com.harvestasm.apm.repository.model.search.ApmBaseSourceType;
 
 import java.util.List;
 
-public class ApmSourceData extends ApmBaseSearchResponse.ApmBaseSourceType {
+public class ApmSourceData extends ApmBaseSourceType {
     private int tmDelta;
     private List<ApmTransactionItem> transaction;
     private List<ApmMeasurementItem> measurement;

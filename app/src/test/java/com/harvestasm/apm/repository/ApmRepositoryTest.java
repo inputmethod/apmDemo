@@ -1,5 +1,8 @@
 package com.harvestasm.apm.repository;
 
+import com.harvestasm.apm.reporter.ApmConnectSourceIndex;
+import com.harvestasm.apm.reporter.ApmDataSourceIndex;
+import com.harvestasm.apm.reporter.ApmSourceIndexGroup;
 import com.harvestasm.apm.reporter.SearchDataParser;
 import com.harvestasm.apm.reporter.SearchResult;
 import com.harvestasm.apm.repository.model.ApmDeviceMicsItem;
@@ -78,6 +81,18 @@ public class ApmRepositoryTest {
         ApmBaseSearchResponse<ApmSourceData> result = repository.mobileDataSearch();
         Assert.assertNotNull(result);
         SearchDataParser.parseDataSummary(result);
+    }
+
+    @Test
+    public void testMobileIndexGroupSearch() throws Exception {
+        ApmBaseSearchResponse<ApmSourceData> data = repository.mobileDataSearch();
+        ApmConnectSearchResponse connect = repository.mobileConnectSearch();
+        ApmDataSourceIndex dataSourceIndex = new ApmDataSourceIndex(data);
+        ApmConnectSourceIndex connectSourceIndex = new ApmConnectSourceIndex(connect);
+        Assert.assertNotNull(dataSourceIndex);
+        Assert.assertNotNull(connectSourceIndex);
+        List<ApmSourceIndexGroup> groupList = SearchDataParser.parseIndexGroup(dataSourceIndex, connectSourceIndex);
+        Assert.assertNotNull(groupList);
     }
 
 //    @Test

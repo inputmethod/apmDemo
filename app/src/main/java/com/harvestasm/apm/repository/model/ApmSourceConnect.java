@@ -1,11 +1,11 @@
 package com.harvestasm.apm.repository.model;
 
 
-import com.harvestasm.apm.repository.model.search.ApmBaseSearchResponse;
+import com.harvestasm.apm.repository.model.search.ApmBaseSourceType;
 
 import java.util.List;
 
-public class ApmSourceConnect extends ApmBaseSearchResponse.ApmBaseSourceType {
+public class ApmSourceConnect extends ApmBaseSourceType {
     private List<String> app;
     private List<String> device;
     private List<ApmDeviceMicsItem> devicemics;
