@@ -6,12 +6,12 @@ import com.harvestasm.apm.repository.model.search.ApmCommonSearchResponse;
 import com.harvestasm.apm.repository.model.search.ApmConnectSearchResponse;
 import com.harvestasm.apm.repository.model.search.ApmDataSearchResponse;
 
-import retrofit2.Call;
-import retrofit2.http.Body;
-import retrofit2.http.GET;
-import retrofit2.http.Headers;
-import retrofit2.http.POST;
-import retrofit2.http.Query;
+import typany.apm.retrofit2.Call;
+import typany.apm.retrofit2.http.Body;
+import typany.apm.retrofit2.http.GET;
+import typany.apm.retrofit2.http.Headers;
+import typany.apm.retrofit2.http.POST;
+import typany.apm.retrofit2.http.Query;
 
 /**
  * Created by yangfeng on 2017/12/5.

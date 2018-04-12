@@ -45,17 +45,14 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 
-    implementation files('libs/apm-lib.jar')
-
-
     // block begin
     // add for api testing purpose
-    implementation "com.squareup.okio:okio:1.6.0"
-    implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.ext.okhttp3Version"
-    implementation "com.squareup.retrofit2:retrofit:$rootProject.ext.retrofit2Version"
-    implementation "com.squareup.retrofit2:converter-gson:$rootProject.ext.retrofit2Version"
-    implementation "com.squareup.retrofit2:converter-protobuf:$rootProject.ext.retrofit2Version"
-    implementation "com.squareup.okhttp3:okhttp:$rootProject.ext.okhttp3Version"
+//    implementation "com.squareup.okio:okio:1.6.0"
+//    implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.ext.okhttp3Version"
+//    implementation "com.squareup.retrofit2:retrofit:$rootProject.ext.retrofit2Version"
+//    implementation "com.squareup.retrofit2:converter-gson:$rootProject.ext.retrofit2Version"
+//    implementation "com.squareup.retrofit2:converter-protobuf:$rootProject.ext.retrofit2Version"
+//    implementation "com.squareup.okhttp3:okhttp:$rootProject.ext.okhttp3Version"
     // block end
 
     compile 'com.android.support:multidex:1.0.1'
@@ -89,4 +86,6 @@ dependencies {
 //    // Test helpers for Room
 //    testImplementation "android.arch.persistence.room:testing:1.0.0"
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
+
+    implementation files('libs/apm-lib.jar')
 }

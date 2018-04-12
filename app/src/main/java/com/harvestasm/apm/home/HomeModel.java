@@ -4,9 +4,6 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.graphics.Typeface;
 
-import com.harvestasm.apm.repository.ApmRepository;
-import com.harvestasm.apm.repository.model.search.ApmConnectSearchResponse;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +11,7 @@ import java.util.List;
 public class HomeModel extends ViewModel {
     private final static String TAG = HomeModel.class.getSimpleName();
 
-    private final ApmRepository repository = new ApmRepository();
+//    private final ApmRepository repository = new ApmRepository();
 
     public final MutableLiveData<List<HomeItem>> items = new MutableLiveData<>();
     public final MutableLiveData<Boolean> loadingState = new MutableLiveData<>();
@@ -38,7 +35,28 @@ public class HomeModel extends ViewModel {
 
     private void fillSampleCharItem(List<HomeItem> list, Typeface typeface) {
         try {
-            ApmConnectSearchResponse result = repository.mobileConnectSearch();
+//            ApmConnectSearchResponse connectResponse = repository.mobileConnectSearch();
+//            ApmConnectSourceIndex connectSourceIndex = new ApmConnectSourceIndex(connectResponse);
+//            HashMap<String, List<ApmBaseUnit<ApmSourceConnect>>> connectByDevice = connectSourceIndex.getDeviceIdIndexMap();
+//            Set<String> connectDeviceSet = connectByDevice.keySet();
+//
+//            ApmDataSearchResponse dataResponse = repository.mobileDataSearch();
+//            ApmDataSourceIndex dataSourceIndex = new ApmDataSourceIndex(dataResponse);
+//            HashMap<String, List<ApmBaseUnit<ApmSourceData>>> dataByDevice = dataSourceIndex.getDeviceIdIndexMap();
+//            Set<String> dataDeviceSet = dataByDevice.keySet();
+//
+//            // verify device id within connect and data source.
+//            ArrayList<String> noMatchConnectDevice = new ArrayList<>(connectDeviceSet);
+//            noMatchConnectDevice.removeAll(dataDeviceSet);
+//
+//            ArrayList<String> noMatchDataDevice = new ArrayList<>(dataDeviceSet);
+//            noMatchDataDevice.removeAll(connectDeviceSet);
+//
+//            // parse devices
+//            List<ApmSourceGroup> groupList = SearchDataParser.parseSourceGroup(dataSourceIndex, connectSourceIndex);
+
+            // parse apps
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }

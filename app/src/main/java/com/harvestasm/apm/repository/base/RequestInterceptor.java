@@ -2,10 +2,10 @@ package com.harvestasm.apm.repository.base;
 
 import java.io.IOException;
 
-import okhttp3.HttpUrl.Builder;
-import okhttp3.Interceptor;
-import okhttp3.Request;
-import okhttp3.Response;
+import typany.apm.okhttp3.HttpUrl.Builder;
+import typany.apm.okhttp3.Interceptor;
+import typany.apm.okhttp3.Request;
+import typany.apm.okhttp3.Response;
 
 /**
  * Created by yangfeng on 2018/1/14.
@@ -13,11 +13,6 @@ import okhttp3.Response;
 // todo: add parameter
 // proto=0&page=0&pcount=2&id=10000001&eid=3d1a633e36f70a27_868029020935367&pla=android&pro=ime&build=1&typ=1&rhe=1080&rwi=1920&clan=zh&bra=Xiaomi&ver=196370&mod=RedmiNote3&sys=21&lan=zh&cou=CN&ofr=gime&fr=gime
 public class RequestInterceptor implements Interceptor {
-    private final String protoValue;
-    public RequestInterceptor(boolean proto) {
-        protoValue = proto ? "1" : "0";
-    }
-
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request oldRequest = chain.request();
@@ -39,7 +34,6 @@ public class RequestInterceptor implements Interceptor {
 
     // todo: 固定参数的值根据运行系统获取
     protected void addQueryParameter(Builder builder) {
-        builder.addQueryParameter("proto", protoValue);
 //        builder.addQueryParameter("page", "0");
 //        builder.addQueryParameter("pcount", "2");
 //        builder.addQueryParameter("id", "10000001");

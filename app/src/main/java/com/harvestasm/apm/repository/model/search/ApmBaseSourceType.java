@@ -1,6 +1,6 @@
 package com.harvestasm.apm.repository.model.search;
 
-import com.google.gson.annotations.SerializedName;
+import typany.apm.com.google.gson.annotations.SerializedName;
 
 /**
  * Data和Connect上报的数据基类，都有时间戳和设备id字段

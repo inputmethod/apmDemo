@@ -7,8 +7,8 @@ import com.harvestasm.apm.repository.model.search.ApmCommonSearchResponse;
 import com.harvestasm.apm.repository.model.search.ApmConnectSearchResponse;
 import com.harvestasm.apm.repository.model.search.ApmDataSearchResponse;
 
-import retrofit2.Call;
-import retrofit2.Response;
+import typany.apm.retrofit2.Call;
+import typany.apm.retrofit2.Response;
 
 /**
  * Created by yangfeng on 2017/12/5.
@@ -20,7 +20,7 @@ public class ApmRepository extends BaseRepository<ApmResource> {
     private static final int MAX_QUERY_COUNT = 10000;
 
     public ApmRepository() {
-        super(APM_COLLECTOR_BASE_URL, ApmResource.class, false, new ApmRequestInterceptor());
+        super(APM_COLLECTOR_BASE_URL, ApmResource.class, new ApmRequestInterceptor());
     }
 
     public ApmDataSearchResponse mobileDataSearch() throws Exception {

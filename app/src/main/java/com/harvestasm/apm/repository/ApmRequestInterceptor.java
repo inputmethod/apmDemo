@@ -2,7 +2,7 @@ package com.harvestasm.apm.repository;
 
 import com.harvestasm.apm.repository.base.RequestInterceptor;
 
-import okhttp3.HttpUrl;
+import typany.apm.okhttp3.HttpUrl;
 
 /**
  * Created by yangfeng on 2018/3/16.
@@ -10,7 +10,7 @@ import okhttp3.HttpUrl;
 
 public class ApmRequestInterceptor extends RequestInterceptor {
     public ApmRequestInterceptor() {
-        super(false);
+        super();
     }
 
     @Override

@@ -41,6 +41,9 @@ public abstract class ChartItem {
         public static final int KB_SETTING = 8;
         public static final int KB_BALLOOM = 9;
         public static final int DEMO_PI = 10;
+
+        public static final int STASTIC_BY_DEVICE = 100;
+        public static final int STASTIC_BY_APP = 101;
     }
     
     protected static final int TYPE_BARCHART = 0;
