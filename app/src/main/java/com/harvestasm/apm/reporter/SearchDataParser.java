@@ -1,8 +1,11 @@
 package com.harvestasm.apm.reporter;
 
+import com.harvestasm.apm.repository.model.ApmActivityItem;
 import com.harvestasm.apm.repository.model.ApmDeviceMicsItem;
+import com.harvestasm.apm.repository.model.ApmMeasurementItem;
 import com.harvestasm.apm.repository.model.ApmSourceConnect;
 import com.harvestasm.apm.repository.model.ApmSourceData;
+import com.harvestasm.apm.repository.model.ApmTransactionItem;
 import com.harvestasm.apm.repository.model.search.ApmBaseSearchResponse;
 import com.harvestasm.apm.repository.model.search.ApmBaseSearchResponse.ApmBaseUnit;
 import com.harvestasm.apm.repository.model.search.ApmCommonSearchResponse;
@@ -71,6 +74,139 @@ public class SearchDataParser {
 
         return searchResult;
     }
+
+    public static void parseDataSummary(ApmBaseSearchResponse<ApmSourceData> apmData) {
+        // 数组字段的个数
+        Set<Integer> transactionLengthSet = new HashSet<>();
+        Set<Integer> measurementLengthSet = new HashSet<>();
+        Set<Integer> httpErrorLengthSet = new HashSet<>();
+        Set<Integer> activityLengthSet = new HashSet<>();
+        Set<Integer> healthLengthSet = new HashSet<>();
+        Set<Integer> eventsLengthSet = new HashSet<>();
+
+        // 字段与数据映射
+        HashMap<String, List<ApmBaseUnit<ApmSourceData>>> deviceIdIndexMap = new HashMap<>();
+        HashMap<String, List<ApmBaseUnit<ApmSourceData>>> timestampIndexMap = new HashMap<>();
+
+        HashMap<String, List<ApmBaseUnit<ApmSourceData>>> transactionUrlIndexMap = new HashMap<>();
+        HashMap<String, List<ApmBaseUnit<ApmSourceData>>> measureNameIndexMap = new HashMap<>();
+        HashMap<String, List<ApmBaseUnit<ApmSourceData>>> measureScopeIndexMap = new HashMap<>();
+        HashMap<String, List<ApmBaseUnit<ApmSourceData>>> activityTypeIndexMap = new HashMap<>();
+        HashMap<String, List<ApmBaseUnit<ApmSourceData>>> activityDisplayNameIndexMap = new HashMap<>();
+        HashMap<String, List<ApmBaseUnit<ApmSourceData>>> activityVitalsIndexMap = new HashMap<>();
+        HashMap<String, List<ApmBaseUnit<ApmSourceData>>> sessionIndexMap = new HashMap<>();
+
+        for (ApmBaseUnit<ApmSourceData> unit : apmData.getHits().getHits()) {
+            ApmSourceData ctc = unit.get_source();
+
+            String deviceId = ctc.getDeviceId();
+            String timestamp = ctc.getTimestamp();
+
+            addListSizeSet(transactionLengthSet, ctc.getTransaction());
+            addListSizeSet(measurementLengthSet, ctc.getMeasurement());
+            addListSizeSet(httpErrorLengthSet, ctc.getHttpError());
+            addListSizeSet(activityLengthSet, ctc.getActivity());
+            addListSizeSet(healthLengthSet, ctc.getHealth());
+            // todo: event need to be check and parse
+//            eventsLengthSet.add(ctc.getEvents().size());
+
+            addToMap(deviceIdIndexMap, unit, deviceId);
+            addToMap(timestampIndexMap, unit, timestamp);
+
+            // todo: build map.
+            if (null != ctc.getTransaction()) {
+                for (ApmTransactionItem item : ctc.getTransaction()) {
+                    addToMap(transactionUrlIndexMap, unit, item.getUrl());
+                }
+            }
+            if (null != ctc.getMeasurement()) {
+                for (ApmMeasurementItem item : ctc.getMeasurement()) {
+                    addToMap(measureNameIndexMap, unit, item.getName());
+                    addToMap(measureScopeIndexMap, unit, item.getScope());
+                }
+            }
+
+            if (null != ctc.getActivity()) {
+                for (ApmActivityItem item : ctc.getActivity()) {
+                    addToMap(activityTypeIndexMap, unit, item.getType());
+                    addToMap(activityDisplayNameIndexMap, unit, item.getDisplayName());
+                    addToMap(activityVitalsIndexMap, unit, item.getVitals());
+                }
+            }
+
+            addToMap(sessionIndexMap, unit, ctc.getSession());
+        }
+
+        deviceIdIndexMap.size();
+    }
+
+    private static void addListSizeSet(Set<Integer> lengthSet, List list) {
+        lengthSet.add(null == list ? 0 : list.size());
+    }
+
+    public static void parseConnectionSummary(ApmBaseSearchResponse<ApmSourceConnect> apmConnect) {
+        Set<Integer> appLengthSet = new HashSet<>();
+        Set<Integer> deviceLengthSet = new HashSet<>();
+        Set<Integer> devicemicsLengthSet = new HashSet<>();
+
+        HashMap<String, List<ApmBaseUnit<ApmSourceConnect>>> deviceIdIndexMap = new HashMap<>();
+        HashMap<String, List<ApmBaseUnit<ApmSourceConnect>>> timestampIndexMap = new HashMap<>();
+        HashMap<String, List<ApmBaseUnit<ApmSourceConnect>>> appIndexMap = new HashMap<>();
+        HashMap<String, List<ApmBaseUnit<ApmSourceConnect>>> deviceIndexMap = new HashMap<>();
+        HashMap<ApmDeviceMicsItem, List<ApmBaseUnit<ApmSourceConnect>>> deviceMicsItemListHashMap = new HashMap<>();
+
+        for (ApmBaseUnit<ApmSourceConnect> unit : apmConnect.getHits().getHits()) {
+            ApmSourceConnect ctc = unit.get_source();
+
+            String deviceId = ctc.getDeviceId();
+            String timestamp = ctc.getTimestamp();
+
+            List<String> apps = ctc.getApp();
+            List<String> devices = ctc.getDevice();
+            List<ApmDeviceMicsItem> deviceMicsItems = ctc.getDevicemics();
+
+            addListSizeSet(appLengthSet, apps);
+            addListSizeSet(deviceLengthSet, devices);
+            addListSizeSet(devicemicsLengthSet, deviceMicsItems);
+//            appLengthSet.add(apps.size());
+//            deviceLengthSet.add(devices.size());
+//            devicemicsLengthSet.add(deviceMicsItems.size());
+
+            addToMap(deviceIdIndexMap, unit, deviceId);
+            addToMap(timestampIndexMap, unit, timestamp);
+
+            addToMap(appIndexMap, unit, apps.toString());
+            addToMap(deviceIndexMap, unit, devices.toString());
+            addPartToMap(deviceMicsItemListHashMap, unit, deviceMicsItems);
+        }
+
+        apmConnect.isTimed_out();
+    }
+
+    private static<K, V> void addPartToMap(Map<K, List<V>> indexMap, V unit, List<K> keyList) {
+        for (K key : keyList) {
+            addToMap(indexMap, unit, key);
+        }
+    }
+
+    private static<K, V> void addToMap(Map<K, List<V>> indexMap, V value, K key) {
+        List<V> valueList = indexMap.get(key);
+        if (null == valueList) {
+            valueList = new ArrayList<>();
+            indexMap.put(key, valueList);
+        }
+        valueList.add(value);
+    }
+
+    private static boolean isEquals(String text, String other) {
+        return null == text && null == other || null != text && text.equals(other);
+    }
+
+    private static void handleUnknownType(Map<String, List<String>> unknownData, String index, String type) {
+        addToMap(unknownData, type, index);
+    }
+}
+
 
     /*
               "deviceID": "e7a11a14-7409-4141-9f58-79230a0beb74",
@@ -2012,111 +2148,3 @@ public class SearchDataParser {
           "session": "{}",
           "events": []
      */
-    public static void parseDataSummary(ApmBaseSearchResponse<ApmSourceData> apmData) {
-        // 数组字段的个数
-        Set<Integer> transactionLengthSet = new HashSet<>();
-        Set<Integer> measurementLengthSet = new HashSet<>();
-        Set<Integer> httpErrorLengthSet = new HashSet<>();
-        Set<Integer> activityLengthSet = new HashSet<>();
-        Set<Integer> healthLengthSet = new HashSet<>();
-        Set<Integer> eventsLengthSet = new HashSet<>();
-
-        // 字段与数据映射
-        HashMap<String, List<ApmBaseUnit<ApmSourceData>>> deviceIdIndexMap = new HashMap<>();
-        HashMap<String, List<ApmBaseUnit<ApmSourceData>>> timestampIndexMap = new HashMap<>();
-
-        HashMap<String, List<ApmBaseUnit<ApmSourceData>>> transactionUrlIndexMap = new HashMap<>();
-        HashMap<String, List<ApmBaseUnit<ApmSourceData>>> measureNameIndexMap = new HashMap<>();
-        HashMap<String, List<ApmBaseUnit<ApmSourceData>>> measureScopeIndexMap = new HashMap<>();
-        HashMap<String, List<ApmBaseUnit<ApmSourceData>>> activityDisplayNameIndexMap = new HashMap<>();
-        HashMap<String, List<ApmBaseUnit<ApmSourceData>>> activityVitalsIndexMap = new HashMap<>();
-        HashMap<String, List<ApmBaseUnit<ApmSourceData>>> sessionIndexMap = new HashMap<>();
-
-        for (ApmBaseUnit<ApmSourceData> unit : apmData.getHits().getHits()) {
-            ApmSourceData ctc = unit.get_source();
-
-            String deviceId = ctc.getDeviceId();
-            String timestamp = ctc.getTimestamp();
-
-            addListSizeSet(transactionLengthSet, ctc.getTransaction());
-            addListSizeSet(measurementLengthSet, ctc.getMeasurement());
-            addListSizeSet(httpErrorLengthSet, ctc.getHttpError());
-            addListSizeSet(activityLengthSet, ctc.getActivity());
-            addListSizeSet(healthLengthSet, ctc.getHealth());
-//            eventsLengthSet.add(ctc.getEvents().size());
-
-            addToMap(deviceIdIndexMap, unit, deviceId);
-            addToMap(timestampIndexMap, unit, timestamp);
-
-            // todo: build map.
-//            addToMap(appIndexMap, unit, apps.toString());
-//            addToMap(deviceIndexMap, unit, devices.toString());
-//            addPartToMap(deviceMicsItemListHashMap, unit, deviceMicsItems);
-        }
-
-        deviceIdIndexMap.size();
-    }
-
-    private static void addListSizeSet(Set<Integer> lengthSet, List list) {
-        lengthSet.add(null == list ? 0 : list.size());
-    }
-
-    public static void parseConnectionSummary(ApmBaseSearchResponse<ApmSourceConnect> apmConnect) {
-        Set<Integer> appLengthSet = new HashSet<>();
-        Set<Integer> deviceLengthSet = new HashSet<>();
-        Set<Integer> devicemicsLengthSet = new HashSet<>();
-
-        HashMap<String, List<ApmBaseUnit<ApmSourceConnect>>> deviceIdIndexMap = new HashMap<>();
-        HashMap<String, List<ApmBaseUnit<ApmSourceConnect>>> timestampIndexMap = new HashMap<>();
-        HashMap<String, List<ApmBaseUnit<ApmSourceConnect>>> appIndexMap = new HashMap<>();
-        HashMap<String, List<ApmBaseUnit<ApmSourceConnect>>> deviceIndexMap = new HashMap<>();
-        HashMap<ApmDeviceMicsItem, List<ApmBaseUnit<ApmSourceConnect>>> deviceMicsItemListHashMap = new HashMap<>();
-
-        for (ApmBaseUnit<ApmSourceConnect> unit : apmConnect.getHits().getHits()) {
-            ApmSourceConnect ctc = unit.get_source();
-
-            String deviceId = ctc.getDeviceId();
-            String timestamp = ctc.getTimestamp();
-
-            List<String> apps = ctc.getApp();
-            List<String> devices = ctc.getDevice();
-            List<ApmDeviceMicsItem> deviceMicsItems = ctc.getDevicemics();
-
-            appLengthSet.add(apps.size());
-            deviceLengthSet.add(devices.size());
-            devicemicsLengthSet.add(deviceMicsItems.size());
-
-            addToMap(deviceIdIndexMap, unit, deviceId);
-            addToMap(timestampIndexMap, unit, timestamp);
-
-            addToMap(appIndexMap, unit, apps.toString());
-            addToMap(deviceIndexMap, unit, devices.toString());
-            addPartToMap(deviceMicsItemListHashMap, unit, deviceMicsItems);
-        }
-
-        apmConnect.isTimed_out();
-    }
-
-    private static<K, V> void addPartToMap(Map<K, List<V>> indexMap, V unit, List<K> keyList) {
-        for (K key : keyList) {
-            addToMap(indexMap, unit, key);
-        }
-    }
-
-    private static<K, V> void addToMap(Map<K, List<V>> indexMap, V value, K key) {
-        List<V> valueList = indexMap.get(key);
-        if (null == valueList) {
-            valueList = new ArrayList<>();
-            indexMap.put(key, valueList);
-        }
-        valueList.add(value);
-    }
-
-    private static boolean isEquals(String text, String other) {
-        return null == text && null == other || null != text && text.equals(other);
-    }
-
-    private static void handleUnknownType(Map<String, List<String>> unknownData, String index, String type) {
-        addToMap(unknownData, type, index);
-    }
-}
