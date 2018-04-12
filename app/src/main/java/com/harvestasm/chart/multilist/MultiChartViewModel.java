@@ -108,6 +108,10 @@ public class MultiChartViewModel extends ViewModel {
         for (int i = 0; i < count; i++) {
             e1.add(new Entry(i, (int) (Math.random() * seed) + offset));
         }
+        return generateLineDataSet(label, e1, highLightColor);
+    }
+
+    private LineDataSet generateLineDataSet(String label, ArrayList<Entry> e1, int highLightColor) {
 
         LineDataSet d1 = new LineDataSet(e1, label);
         d1.setLineWidth(2.5f);

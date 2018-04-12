@@ -34,6 +34,7 @@ import com.harvestasm.apm.repository.model.search.ApmDataSearchResponse;
 import com.harvestasm.chart.listviewitems.BarChartItem;
 import com.harvestasm.chart.listviewitems.ChartItem;
 import com.harvestasm.chart.listviewitems.LineChartItem;
+import com.harvestasm.chart.listviewitems.PieChartItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -133,6 +134,9 @@ public class DashboardViewModel extends ViewModel {
         // parse apps
         HashMap<String, List<ApmBaseUnit<ApmSourceConnect>>> connectUnits = connectSourceIndex.getAppIndexMap();
         list.add(new BarChartItem(generateDataBar(connectUnits), "App分布", ChartItem.ID.STASTIC_BY_APP, typeface));
+        list.add(new PieChartItem(generateDataPie(connectUnits), "App分布",  ChartItem.ID.STASTIC_BY_APP, typeface));
+
+        // final result list.
         onDataLoaded(list);
     }
 
@@ -272,16 +276,20 @@ public class DashboardViewModel extends ViewModel {
      * generates a random ChartData object with just one DataSet
      *
      * @return
+     * @param connectUnits
      */
-    private PieData generateDataPie() {
+    private PieData generateDataPie(HashMap<String, List<ApmBaseUnit<ApmSourceConnect>>> connectUnits) {
 
         ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
 
-        for (int i = 0; i < 4; i++) {
-            entries.add(new PieEntry((float) ((Math.random() * 70) + 30), "Quarter " + (i+1)));
+        List<String> keySet = new ArrayList<>(connectUnits.keySet());
+        for (int i = 0; i < keySet.size(); i++) {
+            String key = keySet.get(i);
+//            String label = null == key ? "" : key.substring(1, Math.min(16, key.length()));
+            entries.add(new PieEntry((float) (connectUnits.get(key).size()), key/*label*/));
         }
 
-        PieDataSet d = new PieDataSet(entries, "");
+        PieDataSet d = new PieDataSet(entries, "App,版本,包名");
 
         // space between slices
         d.setSliceSpace(2f);
