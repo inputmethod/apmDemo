@@ -51,7 +51,7 @@ public class DashboardViewModel extends ViewModel {
     private final ApmRepository repository = new ApmRepository();
 
     public final MutableLiveData<List<ChartItem>> items = new MutableLiveData<>();
-    public final MutableLiveData<Boolean> loadingState = new MutableLiveData<>();
+    public final MutableLiveData<Boolean> refreshState = new MutableLiveData<>();
     public final MutableLiveData<Integer> networkState = new MutableLiveData<>();
 
     public final MutableLiveData<ChartItem> clickItem = new MutableLiveData<>();
@@ -60,7 +60,7 @@ public class DashboardViewModel extends ViewModel {
     private ApmBaseSearchResponse<ApmSourceData> dataResponse = null;
 
     private void resetForLoading() {
-        loadingState.setValue(true);
+        refreshState.setValue(true);
         networkState.postValue(0);
 
         connectResponse = null;
@@ -70,7 +70,7 @@ public class DashboardViewModel extends ViewModel {
     private void onDataLoaded(List<ChartItem> list) {
         items.setValue(list);
 
-        loadingState.setValue(false);
+        refreshState.setValue(false);
         networkState.postValue(0);
 
     }

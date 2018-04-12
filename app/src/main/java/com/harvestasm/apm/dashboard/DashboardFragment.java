@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,8 +25,11 @@ public class DashboardFragment extends Fragment {
 
     private static final String TAG = DashboardFragment.class.getSimpleName();
 
+    private Typeface typeface;
+
     private DashboardViewModel viewMultiChartModel;
 
+    private SwipeRefreshLayout refreshLayout;
     private ListView lv;
     private DashboardAdapter cda;
 
@@ -37,6 +41,7 @@ public class DashboardFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_multichart, container, false);
         lv = view.findViewById(R.id.listView1);
+        refreshLayout = view.findViewById(R.id.swipe_refresh);
         return view;
     }
 
@@ -44,13 +49,29 @@ public class DashboardFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        typeface = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-Regular.ttf");
+
         setViewModel();
         startLoading();
     }
 
 
     private void startLoading() {
-        Typeface typeface = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-Regular.ttf");
+        viewMultiChartModel.refreshState.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean aBoolean) {
+                Log.d(TAG, "loading value " + aBoolean);
+                refreshLayout.setRefreshing(aBoolean);
+            }
+        });
+
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                viewMultiChartModel.load(typeface);
+            }
+        });
+
         viewMultiChartModel.load(typeface);
     }
 
@@ -74,16 +95,6 @@ public class DashboardFragment extends Fragment {
             @Override
             public void onChanged(@Nullable ChartItem item) {
                 onClickById(item);
-            }
-        });
-
-        viewMultiChartModel.loadingState.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(@Nullable Boolean aBoolean) {
-                Log.d(TAG, "loading value " + aBoolean);
-                if (null != cda) {
-                    cda.setLoading(aBoolean);
-                }
             }
         });
 
