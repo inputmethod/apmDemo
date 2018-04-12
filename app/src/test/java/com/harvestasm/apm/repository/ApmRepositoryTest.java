@@ -11,6 +11,7 @@ import com.harvestasm.apm.repository.model.ApmSourceData;
 import com.harvestasm.apm.repository.model.search.ApmBaseSearchResponse;
 import com.harvestasm.apm.repository.model.search.ApmCommonSearchResponse;
 import com.harvestasm.apm.repository.model.search.ApmConnectSearchResponse;
+import com.harvestasm.apm.repository.model.search.ApmDataSearchResponse;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -18,6 +19,9 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import typany.apm.retrofit2.Call;
+import typany.apm.retrofit2.Response;
 
 
 /**
@@ -64,29 +68,41 @@ public class ApmRepositoryTest {
 
     @Test
     public void testMobileAllSearch() throws Exception {
-        ApmCommonSearchResponse apmData = repository.mobileAllSearch();
+        ApmCommonSearchResponse apmData = mobileAllSearch();
         Assert.assertNotNull(apmData);
         SearchResult data = SearchDataParser.parse(apmData);
     }
 
+    private ApmCommonSearchResponse mobileAllSearch() throws Exception{
+        Call<ApmCommonSearchResponse> call = repository.mobileAllSearch();
+        Response<ApmCommonSearchResponse> response = call.execute();
+        return response.body();
+    }
+
     @Test
     public void testMobileConnectionSearch() throws Exception {
-        ApmConnectSearchResponse result = repository.mobileConnectSearch();
+        ApmConnectSearchResponse result = mobileConnectSearch();
         Assert.assertNotNull(result);
         SearchDataParser.parseConnectionSummary(result);
     }
 
+    private ApmConnectSearchResponse mobileConnectSearch() throws Exception {
+        Call<ApmConnectSearchResponse> call = repository.mobileConnectSearch();
+        Response<ApmConnectSearchResponse> response = call.execute();
+        return response.body();
+    }
+
     @Test
     public void testMobileDataSearch() throws Exception {
-        ApmBaseSearchResponse<ApmSourceData> result = repository.mobileDataSearch();
+        ApmBaseSearchResponse<ApmSourceData> result = mobileDataSearch();
         Assert.assertNotNull(result);
         SearchDataParser.parseDataSummary(result);
     }
 
     @Test
     public void testMobileIndexGroupSearch() throws Exception {
-        ApmBaseSearchResponse<ApmSourceData> data = repository.mobileDataSearch();
-        ApmConnectSearchResponse connect = repository.mobileConnectSearch();
+        ApmBaseSearchResponse<ApmSourceData> data = mobileDataSearch();
+        ApmConnectSearchResponse connect = mobileConnectSearch();
         ApmDataSourceIndex dataSourceIndex = new ApmDataSourceIndex(data);
         ApmConnectSourceIndex connectSourceIndex = new ApmConnectSourceIndex(connect);
         Assert.assertNotNull(dataSourceIndex);
@@ -96,6 +112,12 @@ public class ApmRepositoryTest {
 
 //        groupList = SearchDataParser.parseSourceGroup(data, connect);
 //        Assert.assertNotNull(groupList);
+    }
+
+    private ApmBaseSearchResponse<ApmSourceData> mobileDataSearch() throws Exception {
+        Call<ApmDataSearchResponse> call = repository.mobileDataSearch();
+        Response<ApmDataSearchResponse> response = call.execute();
+        return response.body();
     }
 
 //    @Test

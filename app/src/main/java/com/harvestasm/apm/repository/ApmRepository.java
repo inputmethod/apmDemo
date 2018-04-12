@@ -23,10 +23,8 @@ public class ApmRepository extends BaseRepository<ApmResource> {
         super(APM_COLLECTOR_BASE_URL, ApmResource.class, new ApmRequestInterceptor());
     }
 
-    public ApmDataSearchResponse mobileDataSearch() throws Exception {
-        Call<ApmDataSearchResponse> call = getSource().mobileDataSearch(MAX_QUERY_COUNT);
-        Response<ApmDataSearchResponse> response = call.execute();
-        return response.body();
+    public Call<ApmDataSearchResponse> mobileDataSearch() {
+        return getSource().mobileDataSearch(MAX_QUERY_COUNT);
     }
 
     public ApmConnectResponse mobileConnect(ApmSourceConnect data) throws Exception {
@@ -35,15 +33,11 @@ public class ApmRepository extends BaseRepository<ApmResource> {
         return response.body();
     }
 
-    public ApmCommonSearchResponse mobileAllSearch() throws Exception {
-        Call<ApmCommonSearchResponse> call = getSource().mobileAllSearch(MAX_QUERY_COUNT);
-        Response<ApmCommonSearchResponse> response = call.execute();
-        return response.body();
+    public Call<ApmCommonSearchResponse> mobileAllSearch() {
+        return getSource().mobileAllSearch(MAX_QUERY_COUNT);
     }
 
-    public ApmConnectSearchResponse mobileConnectSearch() throws Exception {
-        Call<ApmConnectSearchResponse> call = getSource().mobileConnectSearch(MAX_QUERY_COUNT);
-        Response<ApmConnectSearchResponse> response = call.execute();
-        return response.body();
+    public Call<ApmConnectSearchResponse> mobileConnectSearch() {
+        return getSource().mobileConnectSearch(MAX_QUERY_COUNT);
     }
 }
