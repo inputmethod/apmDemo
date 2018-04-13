@@ -6,13 +6,10 @@ import com.harvestasm.apm.repository.model.search.ApmBaseSearchResponse;
 import com.harvestasm.apm.repository.model.search.ApmBaseSourceType;
 import com.harvestasm.apm.repository.model.search.ApmBaseUnit;
 import com.harvestasm.apm.repository.model.search.ApmCommonSearchResponse;
-import com.harvestasm.apm.repository.model.search.ApmConnectSearchResponse;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by yangfeng on 2018/3/20.
@@ -88,36 +85,4 @@ public class SearchDataParser extends ApmBaseSourceIndex {
         addToMap(unknownData, type, index);
     }
 
-    public static List<ApmSourceGroup> parseSourceGroup(ApmDataSourceIndex dataSourceIndex,
-                                                        ApmConnectSourceIndex connectSourceIndex) {
-        HashMap<String, List<ApmBaseUnit<ApmSourceData>>> dataUnits = dataSourceIndex.getDeviceIdIndexMap();
-        HashMap<String, List<ApmBaseUnit<ApmSourceConnect>>> connectUnits = connectSourceIndex.getDeviceIdIndexMap();
-        Set<String> devicesOfData = dataUnits.keySet();
-        Set<String> devicesOfConnect = connectUnits.keySet();
-
-        List<ApmSourceGroup> groups = new ArrayList<>();
-        for (String device : devicesOfData) {
-            ApmSourceGroup g = new ApmSourceGroup();
-            g.setGroupId(device);
-            g.setDataSource(dataUnits.get(device));
-            g.setConnectSource(connectUnits.get(device));
-            devicesOfConnect.remove(device);
-            groups.add(g);
-        }
-
-        for (String device : devicesOfConnect) {
-            ApmSourceGroup g = new ApmSourceGroup();
-            g.setGroupId(device);
-            g.setDataSource(null);
-            g.setConnectSource(connectUnits.get(device));
-            groups.add(g);
-        }
-
-        return groups;
-    }
-
-    public static List<ApmSourceGroup> parseSourceGroup(ApmBaseSearchResponse<ApmSourceData> data,
-                                                        ApmConnectSearchResponse connect) {
-        return null;
-    }
 }

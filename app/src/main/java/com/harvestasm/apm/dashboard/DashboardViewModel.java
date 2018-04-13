@@ -23,7 +23,6 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.harvestasm.apm.reporter.ApmConnectSourceIndex;
 import com.harvestasm.apm.reporter.ApmDataSourceIndex;
 import com.harvestasm.apm.reporter.ApmSourceGroup;
-import com.harvestasm.apm.reporter.SearchDataParser;
 import com.harvestasm.apm.repository.ApmRepository;
 import com.harvestasm.apm.repository.model.ApmSourceConnect;
 import com.harvestasm.apm.repository.model.ApmSourceData;
@@ -31,6 +30,7 @@ import com.harvestasm.apm.repository.model.search.ApmBaseSearchResponse;
 import com.harvestasm.apm.repository.model.search.ApmBaseUnit;
 import com.harvestasm.apm.repository.model.search.ApmConnectSearchResponse;
 import com.harvestasm.apm.repository.model.search.ApmDataSearchResponse;
+import com.harvestasm.apm.utils.ApmRepositoryHelper;
 import com.harvestasm.chart.listviewitems.BarChartItem;
 import com.harvestasm.chart.listviewitems.ChartItem;
 import com.harvestasm.chart.listviewitems.LineChartItem;
@@ -39,11 +39,6 @@ import com.harvestasm.chart.listviewitems.PieChartItem;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-
-import typany.apm.retrofit2.Call;
-import typany.apm.retrofit2.Callback;
-import typany.apm.retrofit2.Response;
 
 // todo: simplest implement without repository to store data item.
 public class DashboardViewModel extends ViewModel {
@@ -78,31 +73,22 @@ public class DashboardViewModel extends ViewModel {
 
     public void load(final Typeface typeface) {
         resetForLoading();
-        repository.mobileConnectSearch().enqueue(new Callback<ApmConnectSearchResponse>() {
+
+        final ApmRepositoryHelper.CallBack callBack = new ApmRepositoryHelper.CallBack() {
             @Override
-            public void onResponse(Call<ApmConnectSearchResponse> call, Response<ApmConnectSearchResponse> response) {
-                connectResponse = response.body();
+            public void onConnectResponse(ApmConnectSearchResponse responseBody) {
+                connectResponse = responseBody;
                 checkResult(typeface);
             }
 
             @Override
-            public void onFailure(Call<ApmConnectSearchResponse> call, Throwable throwable) {
-                Log.e(TAG, "repository.mobileConnectSearch() failed " + throwable.getMessage());
-            }
-        });
-
-        repository.mobileDataSearch().enqueue(new Callback<ApmDataSearchResponse>() {
-            @Override
-            public void onResponse(Call<ApmDataSearchResponse> call, Response<ApmDataSearchResponse> response) {
-                dataResponse = response.body();
+            public void onDataResponse(ApmDataSearchResponse responseBody) {
+                dataResponse = responseBody;
                 checkResult(typeface);
             }
+        };
 
-            @Override
-            public void onFailure(Call<ApmDataSearchResponse> call, Throwable throwable) {
-                Log.e(TAG, "repository.mobileDataSearch() failed " + throwable.getMessage());
-            }
-        });
+        ApmRepositoryHelper.doLoadTask(repository, callBack);
     }
 
     private void checkResult(Typeface typeface) {
@@ -112,23 +98,12 @@ public class DashboardViewModel extends ViewModel {
         }
 
         ApmConnectSourceIndex connectSourceIndex = new ApmConnectSourceIndex(connectResponse);
-        HashMap<String, List<ApmBaseUnit<ApmSourceConnect>>> connectByDevice = connectSourceIndex.getDeviceIdIndexMap();
-        Set<String> connectDeviceSet = connectByDevice.keySet();
-
         ApmDataSourceIndex dataSourceIndex = new ApmDataSourceIndex(dataResponse);
-        HashMap<String, List<ApmBaseUnit<ApmSourceData>>> dataByDevice = dataSourceIndex.getDeviceIdIndexMap();
-        Set<String> dataDeviceSet = dataByDevice.keySet();
-
-        // verify device id within connect and data source.
-        ArrayList<String> noMatchConnectDevice = new ArrayList<>(connectDeviceSet);
-        noMatchConnectDevice.removeAll(dataDeviceSet);
-
-        ArrayList<String> noMatchDataDevice = new ArrayList<>(dataDeviceSet);
-        noMatchDataDevice.removeAll(connectDeviceSet);
+        List<ApmSourceGroup> deviceGroupList = ApmSourceGroup.parseSourceGroup(dataSourceIndex, connectSourceIndex);
 
         List<ChartItem> list = new ArrayList<>();
+
         // parse devices
-        List<ApmSourceGroup> deviceGroupList = SearchDataParser.parseSourceGroup(dataSourceIndex, connectSourceIndex);
         list.add(new LineChartItem(generateDataLine(deviceGroupList), "设备分布图", ChartItem.ID.STASTIC_BY_DEVICE, typeface));
 
         // parse apps

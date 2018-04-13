@@ -107,7 +107,7 @@ public class ApmRepositoryTest {
         ApmConnectSourceIndex connectSourceIndex = new ApmConnectSourceIndex(connect);
         Assert.assertNotNull(dataSourceIndex);
         Assert.assertNotNull(connectSourceIndex);
-        List<ApmSourceGroup> groupList = SearchDataParser.parseSourceGroup(dataSourceIndex, connectSourceIndex);
+        List<ApmSourceGroup> groupList = ApmSourceGroup.parseSourceGroup(dataSourceIndex, connectSourceIndex);
         Assert.assertNotNull(groupList);
 
 //        groupList = SearchDataParser.parseSourceGroup(data, connect);
