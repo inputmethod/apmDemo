@@ -1,13 +1,10 @@
 package com.harvestasm.apm.dashboard;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.harvestasm.apm.sample.R;
@@ -19,52 +16,38 @@ import java.util.List;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class DashboardFragment extends BaseSwipeRefreshFragment {
+public class DashboardFragment extends BaseSwipeRefreshFragment<ChartItem, ListView> {
     private static final String TAG = DashboardFragment.class.getSimpleName();
 
     private DashboardViewModel viewMultiChartModel;
 
-    private ListView lv;
     private DashboardAdapter cda;
 
     public DashboardFragment() {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_multichart, container, false);
-        lv = view.findViewById(R.id.listView1);
-        return view;
+    protected int getCollectionViewId() {
+        return R.id.listView1;
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    protected int getLayoutResourceId() {
+        return R.layout.fragment_multichart;
+    }
 
-        setViewModel();
-        startLoading(viewMultiChartModel.refreshState);
+    protected void refreshChangedData(ListView lv, List<ChartItem> chartItems) {
+        cda = new DashboardAdapter(getContext(), chartItems, viewMultiChartModel);
+        lv.setAdapter(cda);
     }
 
     protected void doLoadingTask() {
         viewMultiChartModel.load(getTypeface());
     }
 
-    private void setViewModel() {
+    @Override
+    protected LiveData<List<ChartItem>> setViewModel() {
         viewMultiChartModel = getViewModel();
-
-        viewMultiChartModel.items.observe(this, new Observer<List<ChartItem>>() {
-            @Override
-            public void onChanged(@Nullable List<ChartItem> chartItems) {
-                if (null == chartItems) {
-                    Log.w(TAG, "null data comes.");
-                } else {
-                    Log.d(TAG, "data size " + chartItems.size());
-                    cda = new DashboardAdapter(getContext(), chartItems, viewMultiChartModel);
-                    lv.setAdapter(cda);
-                }
-            }
-        });
 
         viewMultiChartModel.clickItem.observe(this, new Observer<ChartItem>() {
             @Override
@@ -82,6 +65,10 @@ public class DashboardFragment extends BaseSwipeRefreshFragment {
                 }
             }
         });
+
+        startLoading(viewMultiChartModel.refreshState);
+
+        return viewMultiChartModel.items;
     }
 
     private void onClickById(@Nullable ChartItem item) {
