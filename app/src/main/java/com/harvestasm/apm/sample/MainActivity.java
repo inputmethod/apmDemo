@@ -8,8 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
 
 import com.harvestasm.apm.APMHelper;
 import com.harvestasm.chart.multibar.MultiBarChartActivity;
@@ -17,7 +15,6 @@ import com.harvestasm.chart.multilist.MultiChartActivity;
 import com.harvestasm.common.NavigationController;
 
 public class MainActivity extends AppCompatActivity {
-    private TextView mTextMessage;
     private MainViewModel mainViewModel;
 
     private NavigationController navigationController;
@@ -43,17 +40,14 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private void navigateNotificationFragment() {
-        mTextMessage.setText(R.string.title_notifications);
         navigationController.navigateToNotification();
     }
 
     private void navigateDashboardFragment() {
-        mTextMessage.setText(R.string.title_dashboard);
         navigationController.navigateToDashboard();
     }
 
     private void navigateHomeFragment() {
-        mTextMessage.setText(R.string.title_home);
         navigationController.navigateToHome();
     }
 
@@ -66,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
         // initialising, todo: inject with dagger2
         navigationController = new NavigationController(this);
 
-        mTextMessage = findViewById(R.id.message);
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
@@ -77,14 +70,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         APMHelper.instance(getApplicationContext());
-
-        mTextMessage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                startMultiChartActivity();
-                startMultiBarActivity();
-            }
-        });
 
         navigateHomeFragment();
     }

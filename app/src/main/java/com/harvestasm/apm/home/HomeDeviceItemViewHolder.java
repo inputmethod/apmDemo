@@ -1,6 +1,5 @@
 package com.harvestasm.apm.home;
 
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
@@ -30,12 +29,10 @@ public class HomeDeviceItemViewHolder extends BaseRecyclerViewHolder<HomeDeviceI
         osView = itemView.findViewById(R.id.os_tv);
 //        osCountView = itemView.findViewById(R.id.os_count_tv);
         osRecyclerView = itemView.findViewById(R.id.os_recyclerView);
-        osRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
 
         appView = itemView.findViewById(R.id.app_tv);
 //        appCountView = itemView.findViewById(R.id.app_count_tv);
         appRecyclerView = itemView.findViewById(R.id.app_recyclerView);
-        appRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
     }
 
     @Override

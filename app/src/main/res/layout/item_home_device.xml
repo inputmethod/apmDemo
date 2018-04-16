@@ -76,7 +76,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.4"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/os_tv" />
+        app:layout_constraintTop_toBottomOf="@+id/os_tv"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
 
     <TextView
         android:id="@+id/app_tv"
@@ -111,5 +112,6 @@
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/app_tv" />
+        app:layout_constraintTop_toBottomOf="@+id/app_tv"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
 </android.support.constraint.ConstraintLayout>

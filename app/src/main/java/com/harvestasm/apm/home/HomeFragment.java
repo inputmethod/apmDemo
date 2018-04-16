@@ -2,10 +2,8 @@ package com.harvestasm.apm.home;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,13 +11,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.harvestasm.apm.sample.R;
+import com.harvestasm.base.viewholder.BaseSwipeRefreshFragment;
 
 import java.util.List;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class HomeFragment extends Fragment {
+public class HomeFragment extends BaseSwipeRefreshFragment {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
 
@@ -42,15 +41,14 @@ public class HomeFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         setViewModel();
-        startLoading();
+        startLoading(homeModel.refreshState);
     }
 
 
-    private void startLoading() {
-        Typeface typeface = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-Regular.ttf");
-        homeModel.load(typeface);
+    @Override
+    protected void doLoadingTask() {
+        homeModel.load(getTypeface());
     }
 
     private void setViewModel() {
