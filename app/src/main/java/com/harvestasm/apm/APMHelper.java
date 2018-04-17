@@ -30,7 +30,7 @@ public class APMHelper {
 
         if (null == _instance) {
             String remoteHost = "10.135.71.155:9200";
-            String remoteIndex = "apidemo";
+            String remoteIndex = "apmdemo";
             _instance = new APMHelper(activityContext, remoteHost, remoteIndex);
         }
     }
