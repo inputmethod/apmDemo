@@ -12,4 +12,10 @@
     <string name="electric_current">电流</string>
     <string name="frame">帧率</string>
     <string name="cpu">CPU占用</string>
+
+    <string name="com_typany">Typany</string>
+    <string name="com_swiftkey">Swiftkey</string>
+    <string name="com_touchpal">TouchPal</string>
+    <string name="com_gboard">Gboard</string>
+    <string name="com_facemoji">Facemoji</string>
 </resources>
