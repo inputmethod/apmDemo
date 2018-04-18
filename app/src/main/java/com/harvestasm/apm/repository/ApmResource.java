@@ -6,6 +6,7 @@ import com.harvestasm.apm.repository.model.search.ApmCommonSearchResponse;
 import com.harvestasm.apm.repository.model.search.ApmConnectSearchResponse;
 import com.harvestasm.apm.repository.model.search.ApmDataSearchResponse;
 
+import typany.apm.com.google.gson.JsonElement;
 import typany.apm.retrofit2.Call;
 import typany.apm.retrofit2.http.Body;
 import typany.apm.retrofit2.http.GET;
@@ -27,6 +28,9 @@ public interface ApmResource {
 
     @POST("/mobile/connect")
     Call<ApmConnectResponse> mobileConnect(@Body ApmSourceConnect data);
+
+    @POST("/apmtest/connect")
+    Call<ApmConnectResponse> apmTestConnect(@Body JsonElement data);
 
     @Headers({ "Accept: application/json" })
     @GET("mobile/_search")

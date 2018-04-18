@@ -9,13 +9,18 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.harvestasm.apm.repository.ApmRepository;
+import com.harvestasm.apm.repository.model.connect.ApmConnectResponse;
 import com.harvestasm.apm.sample.R;
 import com.harvestasm.apm.utils.IMEHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import typany.apm.agent.android.Agent;
 import typany.apm.agent.android.harvest.ApplicationInformation;
+import typany.apm.agent.android.harvest.ConnectInformation;
+import typany.apm.agent.android.harvest.DeviceInformation;
 import typany.apm.agent.android.util.IMEApplicationHelper;
 
 public class ScrollingActivity extends AppCompatActivity implements ItemListDialogFragment.Listener {
@@ -67,13 +72,22 @@ public class ScrollingActivity extends AppCompatActivity implements ItemListDial
         showImeMethods();
     }
 
+    private final ApmRepository repository = new ApmRepository();
     private void showImeMethods() {
+
         Log.d("mft","当前已经安装的输入法有");
-        List<ApplicationInformation> informationList = new ArrayList<>();
+        List<ConnectInformation> informationList = new ArrayList<>();
+
+        DeviceInformation deviceInformation = Agent.getDeviceInformation();
         for (String name : IMEHelper.getInstallImePackageList(this)) {
             Log.d("mft", "PackageName:" + name);
             try {
-                informationList.add(IMEApplicationHelper.parseInstallImePackage(this, name));
+                ApplicationInformation applicationInformation = IMEApplicationHelper.parseInstallImePackage(this, name);
+                ConnectInformation connectInformation = new ConnectInformation(applicationInformation, deviceInformation);
+                informationList.add(connectInformation);
+                if ("com.touchtype.swiftkey".equals(name)) {
+                    testConnect(connectInformation);
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -93,6 +107,20 @@ public class ScrollingActivity extends AppCompatActivity implements ItemListDial
 //                Settings.Secure.DEFAULT_INPUT_METHOD);
 //        Log.d("mft", currentInputmethod);
         Log.d("mft", IMEHelper.getCurrentIme(this));
+    }
+
+    private void testConnect(final ConnectInformation connectInformation) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ApmConnectResponse response = repository.apmTestConnect(connectInformation.asELKJson());
+                    Log.d("mft", "That is it " + response.get_id());
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     @Override
