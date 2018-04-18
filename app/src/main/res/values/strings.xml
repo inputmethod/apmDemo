@@ -3,4 +3,13 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="action_add_data">添加数据</string>
+    <string name="title_activity_scrolling">ScrollingActivity</string>
+
+    <string name="memory">内存占用</string>
+    <string name="pressing_key_time">按键响应时间</string>
+    <string name="keyboard_hide">键盘收起</string>
+    <string name="electric_current">电流</string>
+    <string name="frame">帧率</string>
+    <string name="cpu">CPU占用</string>
 </resources>
