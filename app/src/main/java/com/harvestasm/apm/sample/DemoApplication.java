@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.multidex.MultiDex;
 
 import com.harvestasm.apm.APMHelper;
+import com.harvestasm.apm.add.AddDataStorage;
 
 /**
  * Created by yangfeng on 2018/3/8.
@@ -13,6 +14,8 @@ import com.harvestasm.apm.APMHelper;
 public class DemoApplication extends Application {
     public void onCreate() {
         super.onCreate();
+
+        AddDataStorage.init(this);
         APMHelper.instance(getApplicationContext());
     }
 
