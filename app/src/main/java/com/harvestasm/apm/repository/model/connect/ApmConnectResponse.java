@@ -3,7 +3,6 @@ package com.harvestasm.apm.repository.model.connect;
 /**
  * Created by yangfeng on 2018/3/16.
  */
-
 public class ApmConnectResponse {
     /*"_index": "mobile",
             "_type": "connect",

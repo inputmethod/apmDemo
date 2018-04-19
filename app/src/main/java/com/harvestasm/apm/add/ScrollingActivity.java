@@ -21,6 +21,10 @@ import typany.apm.agent.android.Agent;
 import typany.apm.agent.android.harvest.ApplicationInformation;
 import typany.apm.agent.android.harvest.ConnectInformation;
 import typany.apm.agent.android.harvest.DeviceInformation;
+import typany.apm.agent.android.harvest.HarvestData;
+import typany.apm.agent.android.measurement.CustomMetricMeasurement;
+import typany.apm.agent.android.measurement.producer.CustomMetricProducer;
+import typany.apm.agent.android.metric.MetricUnit;
 import typany.apm.agent.android.util.IMEApplicationHelper;
 
 public class ScrollingActivity extends AppCompatActivity implements ItemListDialogFragment.Listener {
@@ -87,6 +91,7 @@ public class ScrollingActivity extends AppCompatActivity implements ItemListDial
                 informationList.add(connectInformation);
                 if ("com.touchtype.swiftkey".equals(name)) {
                     testConnect(connectInformation);
+                    testData(new HarvestData(applicationInformation, deviceInformation));
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -109,8 +114,25 @@ public class ScrollingActivity extends AppCompatActivity implements ItemListDial
         Log.d("mft", IMEHelper.getCurrentIme(this));
     }
 
+    private void testData(final HarvestData harvestData) {
+        runInThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // todo: build harvest data
+                    CustomMetricMeasurement metric = CustomMetricProducer.makeMeasurement("Typany", "keypop", 1, 170.83, 0, MetricUnit.OPERATIONS, MetricUnit.MS);
+                    harvestData.getMetrics().addMetric(metric.getCustomMetric());
+                    ApmConnectResponse response = repository.apmTestData(harvestData.toJsonOutput());
+                    Log.d("mft", "That is it " + response.get_id());
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }, "testData");
+    }
+
     private void testConnect(final ConnectInformation connectInformation) {
-        new Thread(new Runnable() {
+        runInThread(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -120,7 +142,11 @@ public class ScrollingActivity extends AppCompatActivity implements ItemListDial
                     ex.printStackTrace();
                 }
             }
-        }).start();
+        }, "testConnect");
+    }
+
+    private void runInThread(Runnable runnable, String threadName) {
+        new Thread(runnable, threadName).start();
     }
 
     @Override

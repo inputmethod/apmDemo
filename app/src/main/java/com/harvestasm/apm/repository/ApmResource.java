@@ -40,6 +40,11 @@ public interface ApmResource {
             @Path("index") String index,
             @Body JsonElement data);
 
+    @POST("{index}/data")
+    Call<ApmConnectResponse> data(
+            @Path("index") String index,
+            @Body String data);
+
     @Headers({ "Accept: application/json" })
     @GET("{index}/_search")
     Call<ApmCommonSearchResponse> allSearch(
