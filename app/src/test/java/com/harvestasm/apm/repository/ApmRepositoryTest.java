@@ -122,7 +122,7 @@ public class ApmRepositoryTest {
 
 //    @Test
 //    public void testMobileConnect() throws Exception {
-//        ApmConnectResponse response = repository.mobileConnect(apmSourceConnect);
+//        ApmConnectResponse response = repository.connect(apmSourceConnect);
 //        Assert.assertNotNull(response);
 //    }
 }

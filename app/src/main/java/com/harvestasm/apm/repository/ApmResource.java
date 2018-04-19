@@ -12,35 +12,45 @@ import typany.apm.retrofit2.http.Body;
 import typany.apm.retrofit2.http.GET;
 import typany.apm.retrofit2.http.Headers;
 import typany.apm.retrofit2.http.POST;
+import typany.apm.retrofit2.http.Path;
 import typany.apm.retrofit2.http.Query;
 
 /**
  * Created by yangfeng on 2017/12/5.
  */
 public interface ApmResource {
+//    @Headers({"Accept: application/json"})
+//    @GET("{index}/{type}/_search")
+//    Call search(@Path("index") String index, @Path("type") String type, @Query("size") int size);
+
     @Headers({ "Accept: application/json" })
-    @GET("mobile/data/_search")
-    Call<ApmDataSearchResponse> mobileDataSearch(
-//            @Query("id") String id,
-//            @Query("page") int page,
+    @GET("{index}/data/_search")
+    Call<ApmDataSearchResponse> dataSearch(
+            @Path("index") String index,
             @Query("size") int size
     );
 
-    @POST("/mobile/connect")
-    Call<ApmConnectResponse> mobileConnect(@Body ApmSourceConnect data);
+    @POST("{index}/connect")
+    Call<ApmConnectResponse> connect(
+            @Path("index") String index,
+            @Body ApmSourceConnect data);
 
-    @POST("/apmtest/connect")
-    Call<ApmConnectResponse> apmTestConnect(@Body JsonElement data);
+    @POST("{index}/connect")
+    Call<ApmConnectResponse> connect(
+            @Path("index") String index,
+            @Body JsonElement data);
 
     @Headers({ "Accept: application/json" })
-    @GET("mobile/_search")
-    Call<ApmCommonSearchResponse> mobileAllSearch(
+    @GET("{index}/_search")
+    Call<ApmCommonSearchResponse> allSearch(
+            @Path("index") String index,
             @Query("size") int size
     );
 
     @Headers({ "Accept: application/json" })
-    @GET("mobile/connect/_search")
-    Call<ApmConnectSearchResponse> mobileConnectSearch(
+    @GET("{index}/connect/_search")
+    Call<ApmConnectSearchResponse> connectSearch(
+            @Path("index") String index,
             @Query("size") int size
     );
 }

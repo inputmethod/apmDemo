@@ -22,7 +22,7 @@ public class ApmRepositoryHelper {
 
             @Override
             public void onFailure(Call<ApmConnectSearchResponse> call, Throwable throwable) {
-                Log.e(TAG, "repository.mobileConnectSearch() failed " + throwable.getMessage());
+                Log.e(TAG, "repository.connectSearch() failed " + throwable.getMessage());
             }
         });
 
@@ -34,7 +34,7 @@ public class ApmRepositoryHelper {
 
             @Override
             public void onFailure(Call<ApmDataSearchResponse> call, Throwable throwable) {
-                Log.e(TAG, "repository.mobileDataSearch() failed " + throwable.getMessage());
+                Log.e(TAG, "repository.dataSearch() failed " + throwable.getMessage());
             }
         });
     }

@@ -20,31 +20,35 @@ public class ApmRepository extends BaseRepository<ApmResource> {
     private static final String APM_COLLECTOR_BASE_URL = "http://10.135.71.155:9200/";
     private static final int MAX_QUERY_COUNT = 10000;
 
+    private static final String INDEX_MOBILE = "mobile";
+    private static final String INDEX_DEMO = "apmdemo";
+    private static final String INDEX_TEST = "apmtest";
+
     public ApmRepository() {
         super(APM_COLLECTOR_BASE_URL, ApmResource.class, new ApmRequestInterceptor());
     }
 
     public Call<ApmDataSearchResponse> mobileDataSearch() {
-        return getSource().mobileDataSearch(MAX_QUERY_COUNT);
+        return getSource().dataSearch(INDEX_MOBILE, MAX_QUERY_COUNT);
     }
 
     public ApmConnectResponse mobileConnect(ApmSourceConnect data) throws Exception {
-        Call<ApmConnectResponse> call = getSource().mobileConnect(data);
+        Call<ApmConnectResponse> call = getSource().connect(INDEX_MOBILE, data);
         Response<ApmConnectResponse> response = call.execute();
         return response.body();
     }
 
     public Call<ApmCommonSearchResponse> mobileAllSearch() {
-        return getSource().mobileAllSearch(MAX_QUERY_COUNT);
+        return getSource().allSearch(INDEX_MOBILE, MAX_QUERY_COUNT);
     }
 
     public Call<ApmConnectSearchResponse> mobileConnectSearch() {
-        return getSource().mobileConnectSearch(MAX_QUERY_COUNT);
+        return getSource().connectSearch(INDEX_MOBILE, MAX_QUERY_COUNT);
     }
 
 
     public ApmConnectResponse apmTestConnect(JsonElement data) throws Exception {
-        Call<ApmConnectResponse> call = getSource().apmTestConnect(data);
+        Call<ApmConnectResponse> call = getSource().connect(INDEX_TEST, data);
         Response<ApmConnectResponse> response = call.execute();
         return response.body();
     }

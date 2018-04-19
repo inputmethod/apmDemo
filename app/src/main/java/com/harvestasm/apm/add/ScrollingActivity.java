@@ -80,7 +80,7 @@ public class ScrollingActivity extends AppCompatActivity implements ItemListDial
 
         DeviceInformation deviceInformation = Agent.getDeviceInformation();
         for (String name : IMEHelper.getInstallImePackageList(this)) {
-            Log.d("mft", "PackageName:" + name);
+            Log.d("mft", name);
             try {
                 ApplicationInformation applicationInformation = IMEApplicationHelper.parseInstallImePackage(this, name);
                 ConnectInformation connectInformation = new ConnectInformation(applicationInformation, deviceInformation);
