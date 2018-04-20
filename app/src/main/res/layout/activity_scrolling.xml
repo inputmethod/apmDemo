@@ -8,10 +8,7 @@
     tools:context="com.harvestasm.apm.add.ScrollingActivity">
 
     <include layout="@layout/appbar_main" />
-
-    <include
-        layout="@layout/content_scrolling"
-        android:layout_height="517dp" />
+    <include layout="@layout/content_scrolling" />
     <!--<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
         <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
         <!--xmlns:tools="http://schemas.android.com/tools"-->
