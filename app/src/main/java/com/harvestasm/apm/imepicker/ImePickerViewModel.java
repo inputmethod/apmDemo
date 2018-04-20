@@ -1,10 +1,13 @@
 package com.harvestasm.apm.imepicker;
 
 import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModel;
 import android.graphics.Typeface;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.harvestasm.apm.add.AddDataStorage;
 import com.harvestasm.apm.home.HomeDeviceItem;
 import com.harvestasm.apm.reporter.ApmConnectSourceIndex;
 import com.harvestasm.apm.repository.ApmRepository;
@@ -35,12 +38,15 @@ public class ImePickerViewModel extends ViewModel {
     private ApmConnectSearchResponse connectResponse = null;
     private ApmBaseSearchResponse<ApmSourceData> dataResponse = null;
 
+    private final List<HomeDeviceItem.AppItem> list = new ArrayList<>();
+
     private void resetForLoading() {
         refreshState.setValue(true);
         networkState.postValue(0);
 
         connectResponse = null;
         dataResponse = null;
+        list.clear();
     }
 
     private void onDataLoaded(List<HomeDeviceItem.AppItem> list) {
@@ -54,6 +60,21 @@ public class ImePickerViewModel extends ViewModel {
     public void load(final Typeface typeface) {
         resetForLoading();
 
+        AddDataStorage.get().appListLiveData.observeForever(new Observer<List<HomeDeviceItem.AppItem>>() {
+            @Override
+            public void onChanged(@Nullable List<HomeDeviceItem.AppItem> appItems) {
+                AddDataStorage.get().appListLiveData.removeObserver(this);
+                if (null != appItems) {
+                    Log.i(TAG, "load, with local size: " + appItems.size());
+                    list.addAll(appItems);
+                }
+                loadRemoteList(typeface);
+            }
+        });
+        AddDataStorage.get().getImeListFeature(2);
+    }
+
+    private void loadRemoteList(final Typeface typeface) {
         final ApmRepositoryHelper.CallBack callBack = new ApmRepositoryHelper.CallBack() {
             @Override
             public void onConnectResponse(ApmConnectSearchResponse responseBody) {
@@ -78,8 +99,6 @@ public class ImePickerViewModel extends ViewModel {
         }
 
         ApmConnectSourceIndex connectSourceIndex = new ApmConnectSourceIndex(connectResponse);
-
-        List<HomeDeviceItem.AppItem> list = new ArrayList<>();
 
         // parse apps
         HashMap<String, List<ApmBaseUnit<ApmSourceConnect>>> connectUnits = connectSourceIndex.getAppIndexMap();

@@ -28,8 +28,12 @@ public class ImePickerFragment extends BaseSwipeRefreshFragment<HomeDeviceItem.A
     }
 
     protected void refreshChangedData(RecyclerView lv, List<HomeDeviceItem.AppItem> chartItems) {
-        cda = new ImePickerAdapter(getContext(), chartItems, viewMultiChartModel);
-        lv.setAdapter(cda);
+        if (null == cda) {
+            cda = new ImePickerAdapter(getContext(), chartItems, viewMultiChartModel);
+            lv.setAdapter(cda);
+        } else {
+            cda.notifyAdapter(chartItems, false);
+        }
     }
 
     protected void doLoadingTask() {

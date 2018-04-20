@@ -27,31 +27,27 @@ class ImePickerAdapter extends RecyclerView.Adapter<ImePickerAdapter.ViewHolder>
     private int secret = 0;
     private String title = "";
     private Context context;
-    private List<HomeDeviceItem.AppItem> mMyLiveList;
+    private final List<HomeDeviceItem.AppItem> mMyLiveList = new ArrayList<>();
     private OnItemClickListener mOnItemClickListener;
 
     private final ImePickerViewModel viewMultiChartModel;
 
     public ImePickerAdapter(Context context, List<HomeDeviceItem.AppItem> chartItems, ImePickerViewModel viewMultiChartModel) {
         this.context = context;
-        mMyLiveList = chartItems;
+        mMyLiveList.addAll(chartItems);
         this.viewMultiChartModel = viewMultiChartModel;
     }
 
 
     public void notifyAdapter(List<HomeDeviceItem.AppItem> myLiveList, boolean isAdd) {
         if (!isAdd) {
-            this.mMyLiveList = myLiveList;
-        } else {
-            this.mMyLiveList.addAll(myLiveList);
+            this.mMyLiveList.clear();
         }
+            this.mMyLiveList.addAll(myLiveList);
         notifyDataSetChanged();
     }
 
     public List<HomeDeviceItem.AppItem> getMyLiveList() {
-        if (mMyLiveList == null) {
-            mMyLiveList = new ArrayList<>();
-        }
         return mMyLiveList;
     }
 

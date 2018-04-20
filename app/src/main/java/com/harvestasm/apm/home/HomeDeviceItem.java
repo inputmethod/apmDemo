@@ -58,7 +58,6 @@ public class HomeDeviceItem extends HomeItem {
     }
 
     public static void parseAppItemList(List<HomeDeviceItem.AppItem> appItemList, Set<String> appSet) {
-        appItemList.clear();
         for (String app : appSet) {
             HomeDeviceItem.AppItem appItem = new HomeDeviceItem.AppItem();
             appItem.parseFrom(app.split(","));

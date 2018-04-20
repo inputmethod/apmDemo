@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.support.annotation.WorkerThread;
 import android.util.Log;
 
 import com.harvestasm.apm.home.HomeDeviceItem;
@@ -15,7 +16,13 @@ import org.apache.http.util.Asserts;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
+import io.reactivex.Flowable;
+import io.reactivex.functions.Consumer;
 import typany.apm.agent.android.AgentInitializationException;
 
 public class AddDataStorage {
@@ -44,7 +51,7 @@ public class AddDataStorage {
 
     public final MutableLiveData<List<HomeDeviceItem.AppItem>> appListLiveData = new MutableLiveData<>();
 
-
+    @WorkerThread
     public List<HomeDeviceItem.AppItem> createImeAppList() {
         Log.e(TAG, "createImeAppList thread " + Thread.currentThread().getName());
 
@@ -88,4 +95,25 @@ public class AddDataStorage {
         return item;
     }
 
+    public void getImeListFeature(int nThreads) {
+        ExecutorService executor = Executors.newFixedThreadPool(nThreads);
+        Callable<List<HomeDeviceItem.AppItem>> callable = new Callable<List<HomeDeviceItem.AppItem>>() {
+            @Override
+            public List<HomeDeviceItem.AppItem> call() {
+                return createImeAppList();
+            }
+        };
+
+        Future<List<HomeDeviceItem.AppItem>> future = executor.submit(callable);
+
+        // Flowable.fromFuture() 在非主线程执行Callable对象
+        // Flowable.fromCallable(callable).subscribe(onNext);
+        Flowable.fromFuture(future).subscribe(new Consumer<List<HomeDeviceItem.AppItem>>() {
+            @Override
+            public void accept(List<HomeDeviceItem.AppItem> appItems) {
+                Log.e(TAG, "Consumer.accept in thread " + Thread.currentThread().getName());
+                appListLiveData.setValue(appItems);
+            }
+        });
+    }
 }
