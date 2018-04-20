@@ -31,4 +31,17 @@
         "请在实际测试的设备上安装本应用进行数据上报，或者在本机运行生成所有测试结果数据。\n\n"
         "设备信息:"
     </string>
+
+
+    <string name="setup_device">
+        "设备信息:\n"
+
+        "厂商: %s\n"
+        "型号: %s\n"
+        "设备ID: %s\n\n"
+
+        "OS: %s\n"
+        "版本: %s\n"
+        "build: %s\n"
+    </string>
 </resources>

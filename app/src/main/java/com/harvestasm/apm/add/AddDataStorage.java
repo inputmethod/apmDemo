@@ -23,7 +23,9 @@ import java.util.concurrent.Future;
 
 import io.reactivex.Flowable;
 import io.reactivex.functions.Consumer;
+import typany.apm.agent.android.Agent;
 import typany.apm.agent.android.AgentInitializationException;
+import typany.apm.agent.android.harvest.DeviceInformation;
 
 public class AddDataStorage {
     private static final String TAG = AddDataStorage.class.getSimpleName();
@@ -51,6 +53,7 @@ public class AddDataStorage {
 
     // 加载本地、云端Typany版本及其它竞品ime版本的LiveData, View通过ViewModel读取并进行observe变化
     public final MutableLiveData<List<HomeDeviceItem.AppItem>> appListLiveData = new MutableLiveData<>();
+    public final MutableLiveData<DeviceInformation> hardwareLiveData = new MutableLiveData<>();
 
     // 已经选中的Typany和竞品ime版本列表
     public final List<HomeDeviceItem.AppItem> selectedImeAppList = new ArrayList<>();
@@ -117,6 +120,32 @@ public class AddDataStorage {
             public void accept(List<HomeDeviceItem.AppItem> appItems) {
                 Log.e(TAG, "Consumer.accept in thread " + Thread.currentThread().getName());
                 appListLiveData.setValue(appItems);
+            }
+        });
+    }
+
+    public void getDeviceInfoFeature(int nThreads) {
+        ExecutorService executor = Executors.newFixedThreadPool(nThreads);
+        Callable<DeviceInformation> callable = new Callable<DeviceInformation>() {
+            @Override
+            public DeviceInformation call() {
+                return Agent.getDeviceInformation();
+            }
+        };
+
+        Future<DeviceInformation> future = executor.submit(callable);
+
+        // Flowable.fromFuture() 在非主线程执行Callable对象
+        // Flowable.fromCallable(callable).subscribe(onNext);
+        Flowable.fromFuture(future).subscribe(new Consumer<DeviceInformation>() {
+            @Override
+            public void accept(DeviceInformation deviceInformation) {
+                Log.e(TAG, "Consumer.accept in thread " + Thread.currentThread().getName());
+//                HomeDeviceItem.HardwareItem hardwareItem = new HomeDeviceItem.HardwareItem();
+//                hardwareItem.setHwModel(deviceInformation.getModel());
+//                hardwareItem.setHwVendor(deviceInformation.getManufacturer());
+//                hardwareItem.setHwId(deviceInformation.getDeviceId());
+                hardwareLiveData.setValue(deviceInformation);
             }
         });
     }

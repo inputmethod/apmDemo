@@ -14,11 +14,20 @@
         android:orientation="vertical"
         >
         <TextView
+            android:id="@+id/tv_notice_title"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:layout_margin="@dimen/text_margin"
             android:text="@string/setup_notice" />
+
+        <TextView
+            android:id="@+id/tv_notice_device"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            android:layout_below="@id/tv_notice_title"
+            />
     </RelativeLayout>
 
 </android.support.v4.widget.NestedScrollView>
