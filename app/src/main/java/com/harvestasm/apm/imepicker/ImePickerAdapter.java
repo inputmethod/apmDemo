@@ -69,7 +69,11 @@ class ImePickerAdapter extends RecyclerView.Adapter<ImePickerAdapter.ViewHolder>
         holder.bind(myLive, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mOnItemClickListener.onItemClickListener(position, mMyLiveList);
+                viewMultiChartModel.toggleSelected(myLive);
+                if (null != mOnItemClickListener) {
+                    mOnItemClickListener.onItemClickListener(position, mMyLiveList);
+                }
+                notifyItemChanged(position);
             }
         }, mEditMode, viewMultiChartModel.isSelect(myLive));
     }
@@ -83,7 +87,7 @@ class ImePickerAdapter extends RecyclerView.Adapter<ImePickerAdapter.ViewHolder>
     }
 
     public interface OnItemClickListener {
-        void onItemClickListener(int pos,List<HomeDeviceItem.AppItem> myLiveList);
+        void onItemClickListener(int pos, List<HomeDeviceItem.AppItem> myLiveList);
     }
 
     public void setEditMode(int editMode) {

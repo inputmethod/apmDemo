@@ -162,6 +162,31 @@ public class HomeDeviceItem extends HomeItem {
         public String getDisplayExtra() {
             return getAppPackage();
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            AppItem item = (AppItem) o;
+
+            if (appName != null ? !appName.equals(item.appName) : item.appName != null)
+                return false;
+            if (appVersion != null ? !appVersion.equals(item.appVersion) : item.appVersion != null)
+                return false;
+            if (appVersionCode != null ? !appVersionCode.equals(item.appVersionCode) : item.appVersionCode != null)
+                return false;
+            return appPackage != null ? appPackage.equals(item.appPackage) : item.appPackage == null;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = appName != null ? appName.hashCode() : 0;
+            result = 31 * result + (appVersion != null ? appVersion.hashCode() : 0);
+            result = 31 * result + (appVersionCode != null ? appVersionCode.hashCode() : 0);
+            result = 31 * result + (appPackage != null ? appPackage.hashCode() : 0);
+            return result;
+        }
     }
 
     // device info

@@ -115,6 +115,15 @@ public class ImePickerViewModel extends ViewModel {
     }
 
     public boolean isSelect(HomeDeviceItem.AppItem myLive) {
-        return false;
+        return AddDataStorage.get().selectedImeAppList.contains(myLive);
+    }
+
+    public void toggleSelected(HomeDeviceItem.AppItem myLive) {
+        List<HomeDeviceItem.AppItem> selectedList = AddDataStorage.get().selectedImeAppList;
+        if (selectedList.contains(myLive)) {
+            selectedList.remove(myLive);
+        } else {
+            selectedList.add(myLive);
+        }
     }
 }

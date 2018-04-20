@@ -49,7 +49,11 @@ public class AddDataStorage {
 
     private final ApmRepository repository = new ApmRepository();
 
+    // 加载本地、云端Typany版本及其它竞品ime版本的LiveData, View通过ViewModel读取并进行observe变化
     public final MutableLiveData<List<HomeDeviceItem.AppItem>> appListLiveData = new MutableLiveData<>();
+
+    // 已经选中的Typany和竞品ime版本列表
+    public final List<HomeDeviceItem.AppItem> selectedImeAppList = new ArrayList<>();
 
     @WorkerThread
     public List<HomeDeviceItem.AppItem> createImeAppList() {
