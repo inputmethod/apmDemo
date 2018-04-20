@@ -21,7 +21,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
-import com.harvestasm.apm.home.HomeFragment;
 import com.harvestasm.apm.imepicker.ImePickerFragment;
 import com.harvestasm.apm.sample.R;
 
@@ -38,17 +37,20 @@ public class SetupNavigationController {
 
     private final int containerId;
     private final FragmentManager fragmentManager;
+    private final FragmentActivity activity;
 
     public SetupNavigationController(FragmentActivity compatActivity) {
         this.containerId = R.id.container;
         this.fragmentManager = compatActivity.getSupportFragmentManager();
+        this.activity = compatActivity;
+
         navigateToHome();
     }
 
     private void navigateToHome() {
         Fragment fragment = getFragmentWithTag(TAG_HOME);
         if (null == fragment) {
-            fragment = new HomeFragment();
+            fragment = new SetupNoticeFragment();
         }
         replaceFragment(fragment, null);
     }
