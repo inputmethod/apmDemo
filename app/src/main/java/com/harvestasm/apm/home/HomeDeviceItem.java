@@ -51,13 +51,13 @@ public class HomeDeviceItem extends HomeItem {
             hwSet.add(deviceText.get(2) + "," + deviceText.get(5) + "," + deviceText.get(8));
         }
 
-        parseAppItemList(appSet);
+        parseAppItemList(appItemList, appSet);
         parseOsItemList(osSet);
         parseHardwareItemList(hwSet);
 
     }
 
-    private void parseAppItemList(Set<String> appSet) {
+    public static void parseAppItemList(List<HomeDeviceItem.AppItem> appItemList, Set<String> appSet) {
         appItemList.clear();
         for (String app : appSet) {
             HomeDeviceItem.AppItem appItem = new HomeDeviceItem.AppItem();

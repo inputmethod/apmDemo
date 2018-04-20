@@ -21,8 +21,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
-import com.harvestasm.apm.dashboard.DashboardFragment;
 import com.harvestasm.apm.home.HomeFragment;
+import com.harvestasm.apm.imepicker.ImePickerFragment;
 import com.harvestasm.apm.sample.R;
 
 /**
@@ -56,7 +56,7 @@ public class SetupNavigationController {
     private void navigateEditFragment() {
         Fragment fragment = getFragmentWithTag(TAG_EDIT);
         if (null == fragment) {
-            fragment = new DashboardFragment();
+            fragment = new ImePickerFragment();
         }
         replaceFragment(fragment, TAG_EDIT);
     }
