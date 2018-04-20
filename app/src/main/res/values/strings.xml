@@ -10,6 +10,7 @@
 
     <string name="action_ok">确定</string>
     <string name="action_edit">编辑</string>
+    <string name="action_next">下一步</string>
 
     <string name="memory">内存占用</string>
     <string name="pressing_key_time">按键响应时间</string>
@@ -29,17 +30,11 @@
 
         "为了保证测试数据的精确性，在数据上报时将自动加上本设备的ID, 厂商和设备型号，系统版本号。"
         "请在实际测试的设备上安装本应用进行数据上报，或者在本机运行生成所有测试结果数据。\n\n"
-        "设备信息:"
-    </string>
 
-
-    <string name="setup_device">
         "设备信息:\n"
-
         "厂商: %s\n"
         "型号: %s\n"
         "设备ID: %s\n\n"
-
         "OS: %s\n"
         "版本: %s\n"
         "build: %s\n"

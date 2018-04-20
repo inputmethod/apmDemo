@@ -3,7 +3,6 @@ package com.harvestasm.apm.imepicker;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModel;
-import android.graphics.Typeface;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -57,7 +56,7 @@ public class ImePickerViewModel extends ViewModel {
 
     }
 
-    public void load(final Typeface typeface) {
+    public void load(final boolean full) {
         resetForLoading();
 
         AddDataStorage.get().appListLiveData.observeForever(new Observer<List<HomeDeviceItem.AppItem>>() {
@@ -68,31 +67,35 @@ public class ImePickerViewModel extends ViewModel {
                     Log.i(TAG, "load, with local size: " + appItems.size());
                     list.addAll(appItems);
                 }
-                loadRemoteList(typeface);
+                if (full) {
+                    loadRemoteList();
+                } else {
+                    onDataLoaded(list);
+                }
             }
         });
         AddDataStorage.get().getImeListFeature(2);
     }
 
-    private void loadRemoteList(final Typeface typeface) {
+    private void loadRemoteList() {
         final ApmRepositoryHelper.CallBack callBack = new ApmRepositoryHelper.CallBack() {
             @Override
             public void onConnectResponse(ApmConnectSearchResponse responseBody) {
                 connectResponse = responseBody;
-                checkResult(typeface);
+                checkResult();
             }
 
             @Override
             public void onDataResponse(ApmDataSearchResponse responseBody) {
                 dataResponse = responseBody;
-                checkResult(typeface);
+                checkResult();
             }
         };
 
         ApmRepositoryHelper.doLoadTask(repository, callBack);
     }
 
-    private void checkResult(Typeface typeface) {
+    private void checkResult() {
         if (null == connectResponse || null == dataResponse) {
             Log.i(TAG, "checkResult, skip and wait until all data loaded.");
             return;

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,26 +9,29 @@
     tools:context="com.harvestasm.apm.main.SetupActivity"
     tools:showIn="@layout/activity_setup">
 
+    <include layout="@layout/including_recyclerview" />
+
     <RelativeLayout
+        android:id="@+id/notice_tips_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         >
         <TextView
             android:id="@+id/tv_notice_title"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
+            android:layout_height="wrap_content"
             android:layout_margin="@dimen/text_margin"
             android:text="@string/setup_notice" />
 
-        <TextView
-            android:id="@+id/tv_notice_device"
+        <Button
+            android:id="@+id/tv_go"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"
-            android:layout_below="@id/tv_notice_title"
-            />
+            android:gravity="center"
+            android:layout_alignParentBottom="true"
+            android:text="@string/action_ok"
+            android:elevation="4dp"
+            android:layout_margin="10dp"/>
     </RelativeLayout>
 
-</android.support.v4.widget.NestedScrollView>
+</RelativeLayout>

@@ -17,8 +17,6 @@ import android.view.ViewGroup;
 
 import com.harvestasm.apm.sample.R;
 
-import butterknife.ButterKnife;
-
 /***
  * 带标准下拉Refresh刷新控件的Fragment抽象基类，实现view和activity创建时的回调流程。
  * 管理维护 @SwipeRefreshLayout 下拉控件和用于显示列表的list/recycler控件，开始加载
@@ -31,10 +29,10 @@ abstract public class SwipeRefreshBaseFragment<T, V extends View> extends Fragme
     private static final String TAG = SwipeRefreshBaseFragment.class.getSimpleName();
 
     private @NonNull SwipeRefreshLayout refreshLayout;
-    private @NonNull V view;  // list/grid/recycler view to display a list items
+    private @NonNull V childView;  // list/grid/recycler childView to display a list items
 
     /***
-     * 创建Fragment的root view, 记录下拉刷新的控件
+     * 创建Fragment的root childView, 记录下拉刷新的控件
      * @param inflater
      * @param container
      * @param savedInstanceState
@@ -45,12 +43,12 @@ abstract public class SwipeRefreshBaseFragment<T, V extends View> extends Fragme
                                    Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_swipe_refresh_base, container, false);
         refreshLayout = view.findViewById(R.id.swipe_refresh);
-        this.view = (V) inflater.inflate(getCollectionLayoutResourceId(), null, false);
-        if (null == this.view) {
-            throw new IllegalStateException(TAG + " MUST has not null list or recycler view.");
+        childView = (V) inflater.inflate(getCollectionLayoutResourceId(), null, false);
+        if (null == childView) {
+            throw new IllegalStateException(TAG + " MUST has not null list or recycler childView.");
         }
 
-        refreshLayout.addView(this.view);
+        refreshLayout.addView(childView);
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -58,9 +56,11 @@ abstract public class SwipeRefreshBaseFragment<T, V extends View> extends Fragme
             }
         });
 
-        ButterKnife.bind(view);
-
+        onChildViewReady(childView);
         return view;
+    }
+
+    protected void onChildViewReady(V childView) {
     }
 
     protected abstract @LayoutRes int getCollectionLayoutResourceId();
@@ -76,7 +76,7 @@ abstract public class SwipeRefreshBaseFragment<T, V extends View> extends Fragme
                     Log.w(TAG, "null data comes.");
                 } else {
                     Log.d(TAG, "data size " + dataItem);
-                    refreshChangedData(view, dataItem);
+                    refreshChangedData(childView, dataItem);
                 }
             }
         });
@@ -87,7 +87,7 @@ abstract public class SwipeRefreshBaseFragment<T, V extends View> extends Fragme
 
     protected abstract void doLoadingTask();
 
-    private void setRefreshing(Boolean aBoolean) {
+    protected void setRefreshing(Boolean aBoolean) {
         refreshLayout.setRefreshing(aBoolean);
     }
 

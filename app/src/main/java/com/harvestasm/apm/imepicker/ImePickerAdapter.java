@@ -19,7 +19,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /** adapter that supports 3 different item types */
-class ImePickerAdapter extends RecyclerView.Adapter<ImePickerAdapter.ViewHolder> {
+public class ImePickerAdapter extends RecyclerView.Adapter<ImePickerAdapter.ViewHolder> {
     private static final int MYLIVE_MODE_CHECK = 0;
 
     int mEditMode = MYLIVE_MODE_CHECK;

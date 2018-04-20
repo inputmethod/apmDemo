@@ -19,7 +19,7 @@ import java.util.List;
 public class ImePickerFragment extends BaseSwipeRefreshFragment<HomeDeviceItem.AppItem, RecyclerView> {
     private static final String TAG = ImePickerFragment.class.getSimpleName();
 
-    private ImePickerViewModel viewMultiChartModel;
+    private ImePickerViewModel imePickerViewModel;
     private ImePickerAdapter cda;
 
     @Override
@@ -29,7 +29,7 @@ public class ImePickerFragment extends BaseSwipeRefreshFragment<HomeDeviceItem.A
 
     protected void refreshChangedData(RecyclerView lv, List<HomeDeviceItem.AppItem> chartItems) {
         if (null == cda) {
-            cda = new ImePickerAdapter(getContext(), chartItems, viewMultiChartModel);
+            cda = new ImePickerAdapter(getContext(), chartItems, imePickerViewModel);
             cda.setEditMode(1);
             lv.setAdapter(cda);
         } else {
@@ -38,21 +38,21 @@ public class ImePickerFragment extends BaseSwipeRefreshFragment<HomeDeviceItem.A
     }
 
     protected void doLoadingTask() {
-        viewMultiChartModel.load(getTypeface());
+        imePickerViewModel.load(true);
     }
 
     @Override
     protected LiveData<List<HomeDeviceItem.AppItem>> setViewModel() {
-        viewMultiChartModel = newViewModel(ImePickerViewModel.class);
+        imePickerViewModel = newViewModel(ImePickerViewModel.class);
 
-        viewMultiChartModel.clickItem.observe(this, new Observer<HomeDeviceItem.AppItem>() {
+        imePickerViewModel.clickItem.observe(this, new Observer<HomeDeviceItem.AppItem>() {
             @Override
             public void onChanged(@Nullable HomeDeviceItem.AppItem item) {
                 onClickById(item);
             }
         });
 
-        viewMultiChartModel.networkState.observe(this, new Observer<Integer>() {
+        imePickerViewModel.networkState.observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer integer) {
                 Log.d(TAG, "networking value " + integer);
@@ -62,9 +62,9 @@ public class ImePickerFragment extends BaseSwipeRefreshFragment<HomeDeviceItem.A
             }
         });
 
-        startLoading(viewMultiChartModel.refreshState);
+        startLoading(imePickerViewModel.refreshState);
 
-        return viewMultiChartModel.items;
+        return imePickerViewModel.items;
     }
 
     private void onClickById(@Nullable HomeDeviceItem.AppItem item) {
