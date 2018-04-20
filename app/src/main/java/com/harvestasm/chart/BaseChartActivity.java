@@ -5,8 +5,12 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 
 import com.harvestasm.apm.sample.R;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Baseclass of all Activities of the Demo Application.
@@ -29,12 +33,23 @@ public abstract class BaseChartActivity extends AppCompatActivity {
     protected Typeface mTfRegular;
     protected Typeface mTfLight;
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mTfRegular = Typeface.createFromAsset(getAssets(), "OpenSans-Regular.ttf");
         mTfLight = Typeface.createFromAsset(getAssets(), "OpenSans-Light.ttf");
+    }
+
+    @Override
+    public void onContentChanged() {
+        super.onContentChanged();
+        ButterKnife.bind(this);
+
+        setSupportActionBar(toolbar);
     }
 
     protected float getRandom(float range, float startsfrom) {

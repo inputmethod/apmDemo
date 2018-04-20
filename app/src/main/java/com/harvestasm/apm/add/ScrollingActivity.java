@@ -7,17 +7,16 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.harvestasm.apm.home.HomeDeviceItem;
 import com.harvestasm.apm.sample.R;
+import com.harvestasm.chart.BaseChartActivity;
 
 import java.util.List;
 
-public class ScrollingActivity extends AppCompatActivity implements ItemListDialogFragment.Listener {
+public class ScrollingActivity extends BaseChartActivity implements ItemListDialogFragment.Listener {
     private static final String TAG = ScrollingActivity.class.getSimpleName();
 
     private int containerId;
@@ -28,8 +27,6 @@ public class ScrollingActivity extends AppCompatActivity implements ItemListDial
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scrolling);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         this.containerId = R.id.container;
         this.fragmentManager = getSupportFragmentManager();

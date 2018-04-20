@@ -4,7 +4,6 @@ package com.harvestasm.chart.multilist;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.harvestasm.apm.sample.R;
@@ -25,14 +24,7 @@ public class MultiChartActivity extends BaseChartActivity {
 
         setContentView(R.layout.activity_multichart);
 
-        setToolbar();
-
         setActionButton();
-    }
-
-    private void setToolbar() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
     }
 
     private void setActionButton() {
