@@ -61,6 +61,9 @@ public class AddDataStorage {
     public final Set<HomeDeviceItem.AppItem> selectedImeAppList = new HashSet<>();
     private final Set<String> localCheckedImeList = new HashSet<>();
 
+    // 下一步操作
+    public final MutableLiveData<Integer> nextStepState = new MutableLiveData<>();
+
     private boolean checkToInitSelected() {
         if (selectedImeAppList.isEmpty()) {
             localCheckedImeList.clear();

@@ -6,6 +6,9 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -32,7 +35,8 @@ public class SetupNoticeFragment extends SwipeRefreshBaseFragment<DeviceInformat
 
     private RecyclerView recyclerView;
 
-    private SetupNoticeViewModel setupNoticeViewModel;
+    private SetupFragmentViewModel fragmentViewModel;
+    private SetupActivityViewModel activityViewModel;
 
     private ImePickerAdapter cda;
 
@@ -74,23 +78,25 @@ public class SetupNoticeFragment extends SwipeRefreshBaseFragment<DeviceInformat
 
     @Override
     protected LiveData<DeviceInformation> setViewModel() {
-        setupNoticeViewModel = newViewModel(SetupNoticeViewModel.class);
+        activityViewModel = newViewModel(SetupActivityViewModel.class);
 
-        setupNoticeViewModel.networkState.observe(this, new Observer<Integer>() {
+        fragmentViewModel = newViewModel(SetupFragmentViewModel.class);
+
+        fragmentViewModel.networkState.observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer integer) {
                 Log.d(TAG, "networking value " + integer);
             }
         });
 
-        startLoading(setupNoticeViewModel.refreshState);
+        startLoading(fragmentViewModel.refreshState);
 
-        return setupNoticeViewModel.items;
+        return fragmentViewModel.items;
     }
 
     @Override
     protected void doLoadingTask() {
-        setupNoticeViewModel.load();
+        fragmentViewModel.load();
     }
 
     private void pickImeApp() {
@@ -124,5 +130,30 @@ public class SetupNoticeFragment extends SwipeRefreshBaseFragment<DeviceInformat
 
         imePickerViewModel.load(false);
         noticeTips.setVisibility(View.GONE);
+
+        setHasOptionsMenu(true);
+        getActivity().invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        inflater.inflate(R.menu.menu_setup, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == R.id.action_edit) {
+            activityViewModel.showOptions();
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
+
+        return true;
     }
 }

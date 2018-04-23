@@ -105,30 +105,8 @@ public class MainActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        ScrollingActivity.startByAction(this, id);
 
-        int textId;
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_add_memory) {
-            textId = R.string.memory;
-        } else if (id == R.id.action_add_key_time) {
-            textId = R.string.pressing_key_time;
-        } else if (id == R.id.action_add_keyboard_hide) {
-            textId = R.string.keyboard_hide;
-        } else if (id == R.id.action_add_electric_current) {
-            textId = R.string.electric_current;
-        } else if (id == R.id.action_add_frame) {
-            textId = R.string.frame;
-        } else if (id == R.id.action_add_cpu) {
-            textId = R.string.cpu;
-        } else {
-            return super.onOptionsItemSelected(item);
-        }
-
-//        startActivity(ScrollingActivity.class);
-        Intent intent = new Intent(getBaseContext(), ScrollingActivity.class);
-        intent.putExtra("actionId", id);
-        intent.putExtra("title", getString(textId));
-        startActivity(intent);
         return true;
     }
 

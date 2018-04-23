@@ -2,6 +2,8 @@ package com.harvestasm.apm.add;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -79,79 +81,34 @@ public class ScrollingActivity extends BaseChartActivity implements ItemListDial
         addViewModel.loadImeMethods();
     }
 
-//    public void loadImeMethods() {
-//        Log.d("mft","当前已经安装的输入法有");
-//        List<ConnectInformation> informationList = new ArrayList<>();
-//
-//        DeviceInformation deviceInformation = Agent.getDeviceInformation();
-//        for (String name : IMEHelper.getInstallImePackageList(this)) {
-//            Log.d("mft", name);
-//            try {
-//                ApplicationInformation applicationInformation = IMEApplicationHelper.parseInstallImePackage(this, name);
-//                ConnectInformation connectInformation = new ConnectInformation(applicationInformation, deviceInformation);
-//                informationList.add(connectInformation);
-//                if ("com.touchtype.swiftkey".equals(name)) {
-//                    testConnect(connectInformation);
-//                    testData(new HarvestData(applicationInformation, deviceInformation));
-//                }
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//            }
-//        }
-//
-//        Log.d("mft","已经勾选的输入法有");
-////        String enable = Settings.Secure.getString(getContentResolver(),
-////                Settings.Secure.ENABLED_INPUT_METHODS);
-////        Log.d("mft", enable.replace(":","\n"));
-//        for (String ime : IMEHelper.getCheckedImeList(this)) {
-//            Log.d("mft", ime);
-//        }
-//
-//
-//        Log.d("mft","当前默认输入法是");
-////        String currentInputmethod = Settings.Secure.getString(getContentResolver(),
-////                Settings.Secure.DEFAULT_INPUT_METHOD);
-////        Log.d("mft", currentInputmethod);
-//        Log.d("mft", IMEHelper.getCurrentIme(this));
-//    }
-//
-//    private void testData(final HarvestData harvestData) {
-//        runInThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    // todo: build harvest data
-//                    CustomMetricMeasurement metric = CustomMetricProducer.makeMeasurement("Typany", "keypop", 1, 170.83, 0, MetricUnit.OPERATIONS, MetricUnit.MS);
-//                    harvestData.getMetrics().addMetric(metric.getCustomMetric());
-//                    ApmConnectResponse response = repository.apmTestData(harvestData.toJsonOutput());
-//                    Log.d("mft", "That is it " + response.get_id());
-//                } catch (Exception ex) {
-//                    ex.printStackTrace();
-//                }
-//            }
-//        }, "testData");
-//    }
-//
-//    private void testConnect(final ConnectInformation connectInformation) {
-//        runInThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    ApmConnectResponse response = repository.apmTestConnect(connectInformation.asELKJson());
-//                    Log.d("mft", "That is it " + response.get_id());
-//                } catch (Exception ex) {
-//                    ex.printStackTrace();
-//                }
-//            }
-//        }, "testConnect");
-//    }
-//
-//    private void runInThread(Runnable runnable, String threadName) {
-//        new Thread(runnable, threadName).start();
-//    }
-
     @Override
     public void onItemClicked(int position) {
         // todo: response to item click
+    }
+
+    public static void startByAction(Context context, int id) {
+        int textId;
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_add_memory) {
+            textId = R.string.memory;
+        } else if (id == R.id.action_add_key_time) {
+            textId = R.string.pressing_key_time;
+        } else if (id == R.id.action_add_keyboard_hide) {
+            textId = R.string.keyboard_hide;
+        } else if (id == R.id.action_add_electric_current) {
+            textId = R.string.electric_current;
+        } else if (id == R.id.action_add_frame) {
+            textId = R.string.frame;
+        } else if (id == R.id.action_add_cpu) {
+            textId = R.string.cpu;
+        } else {
+            textId = 0;
+        }
+
+//        startActivity(ScrollingActivity.class);
+        Intent intent = new Intent(context, ScrollingActivity.class);
+        intent.putExtra("actionId", id);
+        intent.putExtra("title", context.getString(textId));
+        context.startActivity(intent);
     }
 }
