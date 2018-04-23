@@ -90,7 +90,7 @@ public class AddKeyTimeFragment extends BaseAddFragment {
         }
 
         setHasOptionsMenu(true);
-        checkMenuState();
+//        checkMenuState();
         return view;
     }
 
@@ -111,7 +111,7 @@ public class AddKeyTimeFragment extends BaseAddFragment {
                 harvestData.getMetrics().addMetric(metric.getCustomMetric());
 
             }
-            AddDataStorage.get().testData(new HarvestData(applicationInformation, deviceInformation));
+            AddDataStorage.get().testData(harvestData);
             return true;
 
         } catch (Exception ex) {
