@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.harvestasm.apm.home.HomeDeviceItem;
 import com.harvestasm.apm.repository.ApmRepository;
+import com.harvestasm.apm.repository.model.connect.ApmConnectResponse;
 import com.harvestasm.apm.utils.IMEHelper;
 
 import org.apache.http.util.Asserts;
@@ -27,7 +28,9 @@ import io.reactivex.Flowable;
 import io.reactivex.functions.Consumer;
 import typany.apm.agent.android.Agent;
 import typany.apm.agent.android.AgentInitializationException;
+import typany.apm.agent.android.harvest.ConnectInformation;
 import typany.apm.agent.android.harvest.DeviceInformation;
+import typany.apm.agent.android.harvest.HarvestData;
 
 public class AddDataStorage {
     private static final String TAG = AddDataStorage.class.getSimpleName();
@@ -172,5 +175,37 @@ public class AddDataStorage {
                 hardwareLiveData.setValue(deviceInformation);
             }
         });
+    }
+
+    public void testData(final HarvestData harvestData) {
+        runInThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ApmConnectResponse response = repository.apmTestData(harvestData.toJsonOutput());
+                    Log.d("mft", "That is it " + response.get_id());
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }, "testData");
+    }
+
+    public void testConnect(final ConnectInformation connectInformation) {
+        runInThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ApmConnectResponse response = repository.apmTestConnect(connectInformation.asELKJson());
+                    Log.d("mft", "That is it " + response.get_id());
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }, "testConnect");
+    }
+
+    private void runInThread(Runnable runnable, String threadName) {
+        new Thread(runnable, threadName).start();
     }
 }

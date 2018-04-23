@@ -138,7 +138,7 @@ public class SetupNoticeFragment extends SwipeRefreshBaseFragment<DeviceInformat
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        inflater.inflate(R.menu.menu_setup, menu);
+        inflater.inflate(R.menu.menu_next, menu);
     }
 
     @Override
@@ -148,7 +148,7 @@ public class SetupNoticeFragment extends SwipeRefreshBaseFragment<DeviceInformat
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if (id == R.id.action_edit) {
+        if (id == R.id.action_next) {
             activityViewModel.showOptions();
         } else {
             return super.onOptionsItemSelected(item);
