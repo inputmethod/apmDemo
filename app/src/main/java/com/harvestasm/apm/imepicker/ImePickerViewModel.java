@@ -21,6 +21,7 @@ import com.harvestasm.apm.utils.ApmRepositoryHelper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 // todo: simplest implement without repository to store data item.
 public class ImePickerViewModel extends ViewModel {
@@ -122,7 +123,7 @@ public class ImePickerViewModel extends ViewModel {
     }
 
     public void toggleSelected(HomeDeviceItem.AppItem myLive) {
-        List<HomeDeviceItem.AppItem> selectedList = AddDataStorage.get().selectedImeAppList;
+        Set<HomeDeviceItem.AppItem> selectedList = AddDataStorage.get().selectedImeAppList;
         if (selectedList.contains(myLive)) {
             selectedList.remove(myLive);
         } else {

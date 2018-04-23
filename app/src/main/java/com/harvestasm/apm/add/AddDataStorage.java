@@ -15,7 +15,9 @@ import com.harvestasm.apm.utils.IMEHelper;
 import org.apache.http.util.Asserts;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -56,17 +58,36 @@ public class AddDataStorage {
     public final MutableLiveData<DeviceInformation> hardwareLiveData = new MutableLiveData<>();
 
     // 已经选中的Typany和竞品ime版本列表
-    public final List<HomeDeviceItem.AppItem> selectedImeAppList = new ArrayList<>();
+    public final Set<HomeDeviceItem.AppItem> selectedImeAppList = new HashSet<>();
+    private final Set<String> localCheckedImeList = new HashSet<>();
+
+    private boolean checkToInitSelected() {
+        if (selectedImeAppList.isEmpty()) {
+            localCheckedImeList.clear();
+            for (String imeName : IMEHelper.getCheckedImeList(context)) {
+                localCheckedImeList.add(imeName.split("/")[0]);
+            }
+            return true;
+        }
+        return false;
+    }
 
     @WorkerThread
-    public List<HomeDeviceItem.AppItem> createImeAppList() {
+    private List<HomeDeviceItem.AppItem> createImeAppList() {
         Log.e(TAG, "createImeAppList thread " + Thread.currentThread().getName());
+
+        checkToInitSelected();
 
         List<HomeDeviceItem.AppItem> informationList = new ArrayList<>();
         for (String name : IMEHelper.getInstallImePackageList(context)) {
             try {
                 HomeDeviceItem.AppItem item = from(name);
-                informationList.add(item);
+                if (localCheckedImeList.contains(name)) {
+                    selectedImeAppList.add(item);
+                    informationList.add(0, item);
+                } else {
+                    informationList.add(item);
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
