@@ -84,11 +84,13 @@ public class AddKeyTimeFragment extends BaseAddFragment {
             editText.setInputType(inputType);
             editText.addTextChangedListener(watcher);
             editText.setTag(item);
+            editTextList.add(editText);
             view.addView(v);
 //            view.addView(v, lp);
         }
 
         setHasOptionsMenu(true);
+        checkMenuState();
         return view;
     }
 
