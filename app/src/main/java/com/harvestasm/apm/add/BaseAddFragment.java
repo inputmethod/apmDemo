@@ -1,16 +1,27 @@
 package com.harvestasm.apm.add;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.harvestasm.apm.sample.R;
 
+import butterknife.ButterKnife;
+
 abstract public class BaseAddFragment extends Fragment {
     private Toast nextToast;
     private MenuItem menuItem;
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ButterKnife.bind(this, view);
+    }
 
     @Override
     public void onPause() {
