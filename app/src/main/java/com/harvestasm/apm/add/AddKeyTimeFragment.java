@@ -5,6 +5,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +15,14 @@ import android.widget.TextView;
 
 import com.harvestasm.apm.home.HomeDeviceItem;
 import com.harvestasm.apm.sample.R;
+import com.harvestasm.apm.utils.IMEHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import typany.apm.agent.android.Agent;
 import typany.apm.agent.android.harvest.ApplicationInformation;
+import typany.apm.agent.android.harvest.ConnectInformation;
 import typany.apm.agent.android.harvest.DeviceInformation;
 import typany.apm.agent.android.harvest.HarvestData;
 import typany.apm.agent.android.measurement.CustomMetricMeasurement;
@@ -96,62 +99,70 @@ public class AddKeyTimeFragment extends BaseAddFragment {
 
     @Override
     protected boolean nextStep() {
-        try {
-            DeviceInformation deviceInformation = Agent.getDeviceInformation();
-            ApplicationInformation applicationInformation = IMEApplicationHelper.parseInstallImePackage(getContext(), getActivity().getPackageName());
-
-            HarvestData harvestData = new HarvestData(applicationInformation, deviceInformation);
-
-            // todo: build harvest data
-            for (EditText editText : editTextList) {
-                HomeDeviceItem.AppItem item = (HomeDeviceItem.AppItem) editText.getTag();
-                double value = Double.parseDouble(editText.getText().toString());
-                CustomMetricMeasurement metric = CustomMetricProducer.makeMeasurement(item.getAppName(),
-                        "keypop", 1, value, 0, MetricUnit.OPERATIONS, MetricUnit.MS);
-                harvestData.getMetrics().addMetric(metric.getCustomMetric());
-
-            }
-            AddDataStorage.get().testData(harvestData);
-            return true;
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        loadImeMethods();
+//        try {
+//            DeviceInformation deviceInformation = Agent.getDeviceInformation();
+//            ApplicationInformation applicationInformation = IMEApplicationHelper.parseInstallImePackage(getContext(), getActivity().getPackageName());
+//
+//            HarvestData harvestData = new HarvestData(applicationInformation, deviceInformation);
+//
+//            // todo: build harvest data
+//            for (EditText editText : editTextList) {
+//                HomeDeviceItem.AppItem item = (HomeDeviceItem.AppItem) editText.getTag();
+//                double value = Double.parseDouble(editText.getText().toString());
+//                CustomMetricMeasurement metric = CustomMetricProducer.makeMeasurement(item.getAppPackage(),
+//                        "keypop", 1, value, 0, MetricUnit.OPERATIONS, MetricUnit.MS);
+//                harvestData.getMetrics().addMetric(metric.getCustomMetric());
+//
+//            }
+//            AddDataStorage.get().testData(harvestData);
+//            return true;
+//
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
         return false;
     }
 
-//    public void loadImeMethods() {
-//        Log.d("mft","当前已经安装的输入法有");
-//        List<ConnectInformation> informationList = new ArrayList<>();
-//
-//        for (String name : IMEHelper.getInstallImePackageList(getContext())) {
-//            Log.d("mft", name);
-//            try {
-//                ApplicationInformation applicationInformation = IMEApplicationHelper.parseInstallImePackage(getContext(), name);
-//                ConnectInformation connectInformation = new ConnectInformation(applicationInformation, deviceInformation);
-//                informationList.add(connectInformation);
-//                if ("com.touchtype.swiftkey".equals(name)) {
-//                    AddDataStorage.get().testConnect(connectInformation);
-//                    AddDataStorage.get().testData(new HarvestData(applicationInformation, deviceInformation));
-//                }
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//            }
-//        }
-//
-//        Log.d("mft","已经勾选的输入法有");
-////        String enable = Settings.Secure.getString(getContentResolver(),
-////                Settings.Secure.ENABLED_INPUT_METHODS);
-////        Log.d("mft", enable.replace(":","\n"));
-//        for (String ime : IMEHelper.getCheckedImeList(getContext())) {
-//            Log.d("mft", ime);
-//        }
-//
-//
-//        Log.d("mft","当前默认输入法是");
-////        String currentInputmethod = Settings.Secure.getString(getContentResolver(),
-////                Settings.Secure.DEFAULT_INPUT_METHOD);
-////        Log.d("mft", currentInputmethod);
-//        Log.d("mft", IMEHelper.getCurrentIme(getContext()));
-//    }
+    public void loadImeMethods() {
+        Log.d("mft","当前已经安装的输入法有");
+        List<ConnectInformation> informationList = new ArrayList<>();
+
+        DeviceInformation deviceInformation = Agent.getDeviceInformation();
+        for (String name : IMEHelper.getInstallImePackageList(getContext())) {
+            Log.d("mft", name);
+            try {
+                ApplicationInformation applicationInformation = IMEApplicationHelper.parseInstallImePackage(getContext(), name);
+                ConnectInformation connectInformation = new ConnectInformation(applicationInformation, deviceInformation);
+                informationList.add(connectInformation);
+                if ("com.touchtype.swiftkey".equals(name)) {
+                    AddDataStorage.get().testConnect(connectInformation);
+
+                    HarvestData harvestData = new HarvestData(applicationInformation, deviceInformation);
+                    // todo: build harvest data
+                    CustomMetricMeasurement metric = CustomMetricProducer.makeMeasurement("Switfkey",
+                            "keypop", 1, 170.83, 0, MetricUnit.OPERATIONS, MetricUnit.MS);
+                    harvestData.getMetrics().addMetric(metric.getCustomMetric());
+                    AddDataStorage.get().testData(harvestData);
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        Log.d("mft","已经勾选的输入法有");
+//        String enable = Settings.Secure.getString(getContentResolver(),
+//                Settings.Secure.ENABLED_INPUT_METHODS);
+//        Log.d("mft", enable.replace(":","\n"));
+        for (String ime : IMEHelper.getCheckedImeList(getContext())) {
+            Log.d("mft", ime);
+        }
+
+
+        Log.d("mft","当前默认输入法是");
+//        String currentInputmethod = Settings.Secure.getString(getContentResolver(),
+//                Settings.Secure.DEFAULT_INPUT_METHOD);
+//        Log.d("mft", currentInputmethod);
+        Log.d("mft", IMEHelper.getCurrentIme(getContext()));
+    }
 }

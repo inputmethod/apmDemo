@@ -14,9 +14,21 @@ import android.util.Log;
 
 import com.harvestasm.apm.home.HomeDeviceItem;
 import com.harvestasm.apm.sample.R;
+import com.harvestasm.apm.utils.IMEHelper;
 import com.harvestasm.chart.BaseChartActivity;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import typany.apm.agent.android.Agent;
+import typany.apm.agent.android.harvest.ApplicationInformation;
+import typany.apm.agent.android.harvest.ConnectInformation;
+import typany.apm.agent.android.harvest.DeviceInformation;
+import typany.apm.agent.android.harvest.HarvestData;
+import typany.apm.agent.android.measurement.CustomMetricMeasurement;
+import typany.apm.agent.android.measurement.producer.CustomMetricProducer;
+import typany.apm.agent.android.metric.MetricUnit;
+import typany.apm.agent.android.util.IMEApplicationHelper;
 
 public class ScrollingActivity extends BaseChartActivity implements ItemListDialogFragment.Listener {
     private static final String TAG = ScrollingActivity.class.getSimpleName();
@@ -79,6 +91,7 @@ public class ScrollingActivity extends BaseChartActivity implements ItemListDial
         });
 
         addViewModel.loadImeMethods();
+        loadImeMethods();
     }
 
     @Override
@@ -110,5 +123,47 @@ public class ScrollingActivity extends BaseChartActivity implements ItemListDial
         intent.putExtra("actionId", id);
         intent.putExtra("title", context.getString(textId));
         context.startActivity(intent);
+    }
+
+    public void loadImeMethods() {
+        Log.d("mft","当前已经安装的输入法有");
+        List<ConnectInformation> informationList = new ArrayList<>();
+
+        DeviceInformation deviceInformation = Agent.getDeviceInformation();
+        for (String name : IMEHelper.getInstallImePackageList(this)) {
+            Log.d("mft", name);
+            try {
+                ApplicationInformation applicationInformation = IMEApplicationHelper.parseInstallImePackage(this, name);
+                ConnectInformation connectInformation = new ConnectInformation(applicationInformation, deviceInformation);
+                informationList.add(connectInformation);
+                if ("com.touchtype.swiftkey".equals(name)) {
+                    AddDataStorage.get().testConnect(connectInformation);
+
+                    HarvestData harvestData = new HarvestData(applicationInformation, deviceInformation);
+                    // todo: build harvest data
+                    CustomMetricMeasurement metric = CustomMetricProducer.makeMeasurement("Switfkey",
+                            "keypop", 1, 170.83, 0, MetricUnit.OPERATIONS, MetricUnit.MS);
+                    harvestData.getMetrics().addMetric(metric.getCustomMetric());
+                    AddDataStorage.get().testData(harvestData);
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        Log.d("mft","已经勾选的输入法有");
+//        String enable = Settings.Secure.getString(getContentResolver(),
+//                Settings.Secure.ENABLED_INPUT_METHODS);
+//        Log.d("mft", enable.replace(":","\n"));
+        for (String ime : IMEHelper.getCheckedImeList(this)) {
+            Log.d("mft", ime);
+        }
+
+
+        Log.d("mft","当前默认输入法是");
+//        String currentInputmethod = Settings.Secure.getString(getContentResolver(),
+//                Settings.Secure.DEFAULT_INPUT_METHOD);
+//        Log.d("mft", currentInputmethod);
+        Log.d("mft", IMEHelper.getCurrentIme(this));
     }
 }
