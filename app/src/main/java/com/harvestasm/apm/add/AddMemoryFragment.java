@@ -1,11 +1,9 @@
 package com.harvestasm.apm.add;
 
 import android.graphics.Color;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -40,21 +38,15 @@ public class AddMemoryFragment extends BaseAddFragment implements OnChartValueSe
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_add_memory, container, false);
-
+    protected void inflateChildrenView(LayoutInflater inflater, View view) {
         setHasOptionsMenu(true);
-//        checkMenuState();
-        view.post(new Runnable() {
-            @Override
-            public void run() {
-//                initChart();
-                initChart2();
-                checkMenuState();
-            }
-        });
-        return view;
+        initChart2();
+        checkMenuState();
+    }
+
+    @Override
+    protected int getFragmentLayoutResId() {
+        return R.layout.fragment_add_memory;
     }
 
     private void initChart2() {

@@ -2,6 +2,7 @@ package com.harvestasm.apm.add;
 
 import android.annotation.SuppressLint;
 import android.graphics.RectF;
+import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -44,16 +45,18 @@ import typany.apm.agent.android.util.IMEApplicationHelper;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class AddKeyTimeFragment extends BaseAddFragment implements OnChartValueSelectedListener {
+public class AddSubCpuFragment extends BaseAddFragment implements OnChartValueSelectedListener {
     @BindView(R.id.title)
     TextView titleView;
 
     @BindView(R.id.chart)
     BarChart mChart;
 
+    private int type; // 0 - cpu idle, 1 - cpu medium, 2 - cpu long
+
     private final List<EditText> editTextList = new ArrayList<>();
 
-    public AddKeyTimeFragment() {
+    public AddSubCpuFragment() {
     }
 
     protected String getCategory() {
@@ -108,6 +111,11 @@ public class AddKeyTimeFragment extends BaseAddFragment implements OnChartValueS
             editText.setTag(item);
             editTextList.add(editText);
             ((ViewGroup)view).addView(v);
+        }
+
+        Bundle bundle = getArguments();
+        if (null != bundle) {
+            type = bundle.getInt("type");
         }
 
         setHasOptionsMenu(true);

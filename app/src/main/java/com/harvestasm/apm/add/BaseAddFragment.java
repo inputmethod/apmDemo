@@ -1,12 +1,13 @@
 package com.harvestasm.apm.add;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.harvestasm.apm.sample.R;
@@ -17,11 +18,19 @@ abstract public class BaseAddFragment extends Fragment {
     private Toast nextToast;
     private MenuItem menuItem;
 
+
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public final View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(getFragmentLayoutResId(), container, false);
         ButterKnife.bind(this, view);
+        inflateChildrenView(inflater, view);
+        return view;
     }
+
+    protected abstract void inflateChildrenView(LayoutInflater inflater, View view);
+
+    protected abstract int getFragmentLayoutResId();
 
     @Override
     public void onPause() {

@@ -33,4 +33,15 @@
         "版本: %s\n"
         "build: %s\n"
     </string>
+    <string name="electric_current_offscreen">息屏电流</string>
+    <string name="electric_current_average">5分钟平均电流</string>
+    <string name="cpu_idle">空闲状态</string>
+    <string name="cpu_medium">中等规格状态</string>
+    <string name="cpu_long">中等长时间运行</string>
+    <string name="frame_theme_slide">Theme页滑动</string>
+    <string name="frame_emoji_slide">emoji页滑动</string>
+    <string name="frame_switch_kb_symbol">主键盘与符号键盘切换</string>
+    <string name="frame_switch_kb_emoji">主键盘与emoji键盘切换</string>
+    <string name="frame_switch_kb_setting">键盘到设置页面</string>
+    <string name="frame_switch_kb_typing">键盘打字弹泡</string>
 </resources>
