@@ -7,16 +7,17 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
-import com.harvestasm.apm.home.HomeDeviceItem;
 import com.harvestasm.apm.sample.R;
 import com.harvestasm.base.viewholder.BaseSwipeRefreshFragment;
 
 import java.util.List;
 
+import typany.apm.agent.android.harvest.ApplicationInformation;
+
 /**
  * A placeholder fragment containing a simple view.
  */
-public class ImePickerFragment extends BaseSwipeRefreshFragment<HomeDeviceItem.AppItem, RecyclerView> {
+public class ImePickerFragment extends BaseSwipeRefreshFragment<ApplicationInformation, RecyclerView> {
     private static final String TAG = ImePickerFragment.class.getSimpleName();
 
     private ImePickerViewModel imePickerViewModel;
@@ -27,7 +28,7 @@ public class ImePickerFragment extends BaseSwipeRefreshFragment<HomeDeviceItem.A
         return R.layout.including_recyclerview;
     }
 
-    protected void refreshChangedData(RecyclerView lv, List<HomeDeviceItem.AppItem> chartItems) {
+    protected void refreshChangedData(RecyclerView lv, List<ApplicationInformation> chartItems) {
         if (null == cda) {
             cda = new ImePickerAdapter(getContext(), chartItems, imePickerViewModel);
             cda.setEditMode(1);
@@ -42,12 +43,12 @@ public class ImePickerFragment extends BaseSwipeRefreshFragment<HomeDeviceItem.A
     }
 
     @Override
-    protected LiveData<List<HomeDeviceItem.AppItem>> setViewModel() {
+    protected LiveData<List<ApplicationInformation>> setViewModel() {
         imePickerViewModel = newViewModel(ImePickerViewModel.class);
 
-        imePickerViewModel.clickItem.observe(this, new Observer<HomeDeviceItem.AppItem>() {
+        imePickerViewModel.clickItem.observe(this, new Observer<ApplicationInformation>() {
             @Override
-            public void onChanged(@Nullable HomeDeviceItem.AppItem item) {
+            public void onChanged(@Nullable ApplicationInformation item) {
                 onClickById(item);
             }
         });
@@ -67,7 +68,7 @@ public class ImePickerFragment extends BaseSwipeRefreshFragment<HomeDeviceItem.A
         return imePickerViewModel.items;
     }
 
-    private void onClickById(@Nullable HomeDeviceItem.AppItem item) {
+    private void onClickById(@Nullable ApplicationInformation item) {
         if (null == item) {
             Log.e(TAG, "onClickById skip with null item.");
             return;

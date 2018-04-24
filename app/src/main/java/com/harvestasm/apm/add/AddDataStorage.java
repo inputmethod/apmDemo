@@ -28,9 +28,11 @@ import io.reactivex.Flowable;
 import io.reactivex.functions.Consumer;
 import typany.apm.agent.android.Agent;
 import typany.apm.agent.android.AgentInitializationException;
+import typany.apm.agent.android.harvest.ApplicationInformation;
 import typany.apm.agent.android.harvest.ConnectInformation;
 import typany.apm.agent.android.harvest.DeviceInformation;
 import typany.apm.agent.android.harvest.HarvestData;
+import typany.apm.agent.android.util.IMEApplicationHelper;
 
 public class AddDataStorage {
     private static final String TAG = AddDataStorage.class.getSimpleName();
@@ -57,11 +59,11 @@ public class AddDataStorage {
     private final ApmRepository repository = new ApmRepository();
 
     // 加载本地、云端Typany版本及其它竞品ime版本的LiveData, View通过ViewModel读取并进行observe变化
-    public final MutableLiveData<List<HomeDeviceItem.AppItem>> appListLiveData = new MutableLiveData<>();
+    public final MutableLiveData<List<ApplicationInformation>> appListLiveData = new MutableLiveData<>();
     public final MutableLiveData<DeviceInformation> hardwareLiveData = new MutableLiveData<>();
 
     // 已经选中的Typany和竞品ime版本列表
-    public final Set<HomeDeviceItem.AppItem> selectedImeAppList = new HashSet<>();
+    public final Set<ApplicationInformation> selectedImeAppList = new HashSet<>();
     private final Set<String> localCheckedImeList = new HashSet<>();
 
     // 下一步操作
@@ -79,15 +81,15 @@ public class AddDataStorage {
     }
 
     @WorkerThread
-    private List<HomeDeviceItem.AppItem> createImeAppList() {
+    private List<ApplicationInformation> createImeAppList() {
         Log.e(TAG, "createImeAppList thread " + Thread.currentThread().getName());
 
         checkToInitSelected();
 
-        List<HomeDeviceItem.AppItem> informationList = new ArrayList<>();
+        List<ApplicationInformation> informationList = new ArrayList<>();
         for (String name : IMEHelper.getInstallImePackageList(context)) {
             try {
-                HomeDeviceItem.AppItem item = from(name);
+                ApplicationInformation item = IMEApplicationHelper.parseInstallImePackage(context, name);
                 if (localCheckedImeList.contains(name)) {
                     selectedImeAppList.add(item);
                     informationList.add(0, item);
@@ -131,20 +133,20 @@ public class AddDataStorage {
 
     public void getImeListFeature(int nThreads) {
         ExecutorService executor = Executors.newFixedThreadPool(nThreads);
-        Callable<List<HomeDeviceItem.AppItem>> callable = new Callable<List<HomeDeviceItem.AppItem>>() {
+        Callable<List<ApplicationInformation>> callable = new Callable<List<ApplicationInformation>>() {
             @Override
-            public List<HomeDeviceItem.AppItem> call() {
+            public List<ApplicationInformation> call() {
                 return createImeAppList();
             }
         };
 
-        Future<List<HomeDeviceItem.AppItem>> future = executor.submit(callable);
+        Future<List<ApplicationInformation>> future = executor.submit(callable);
 
         // Flowable.fromFuture() 在非主线程执行Callable对象
         // Flowable.fromCallable(callable).subscribe(onNext);
-        Flowable.fromFuture(future).subscribe(new Consumer<List<HomeDeviceItem.AppItem>>() {
+        Flowable.fromFuture(future).subscribe(new Consumer<List<ApplicationInformation>>() {
             @Override
-            public void accept(List<HomeDeviceItem.AppItem> appItems) {
+            public void accept(List<ApplicationInformation> appItems) {
                 Log.e(TAG, "Consumer.accept in thread " + Thread.currentThread().getName());
                 appListLiveData.setValue(appItems);
             }

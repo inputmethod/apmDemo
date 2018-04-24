@@ -23,22 +23,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import typany.apm.agent.android.harvest.ApplicationInformation;
+
 // todo: simplest implement without repository to store data item.
 public class ImePickerViewModel extends ViewModel {
     private final static String TAG = ImePickerViewModel.class.getSimpleName();
 
     private final ApmRepository repository = new ApmRepository();
 
-    public final MutableLiveData<List<HomeDeviceItem.AppItem>> items = new MutableLiveData<>();
+    public final MutableLiveData<List<ApplicationInformation>> items = new MutableLiveData<>();
     public final MutableLiveData<Boolean> refreshState = new MutableLiveData<>();
     public final MutableLiveData<Integer> networkState = new MutableLiveData<>();
 
-    public final MutableLiveData<HomeDeviceItem.AppItem> clickItem = new MutableLiveData<>();
+    public final MutableLiveData<ApplicationInformation> clickItem = new MutableLiveData<>();
 
     private ApmConnectSearchResponse connectResponse = null;
     private ApmBaseSearchResponse<ApmSourceData> dataResponse = null;
 
-    private final List<HomeDeviceItem.AppItem> list = new ArrayList<>();
+    private final List<ApplicationInformation> list = new ArrayList<>();
 
     private void resetForLoading() {
         refreshState.setValue(true);
@@ -49,7 +51,7 @@ public class ImePickerViewModel extends ViewModel {
         list.clear();
     }
 
-    private void onDataLoaded(List<HomeDeviceItem.AppItem> list) {
+    private void onDataLoaded(List<ApplicationInformation> list) {
         items.setValue(list);
 
         refreshState.setValue(false);
@@ -60,9 +62,9 @@ public class ImePickerViewModel extends ViewModel {
     public void load(final boolean full) {
         resetForLoading();
 
-        AddDataStorage.get().appListLiveData.observeForever(new Observer<List<HomeDeviceItem.AppItem>>() {
+        AddDataStorage.get().appListLiveData.observeForever(new Observer<List<ApplicationInformation>>() {
             @Override
-            public void onChanged(@Nullable List<HomeDeviceItem.AppItem> appItems) {
+            public void onChanged(@Nullable List<ApplicationInformation> appItems) {
                 AddDataStorage.get().appListLiveData.removeObserver(this);
                 if (null != appItems) {
                     Log.i(TAG, "load, with local size: " + appItems.size());
@@ -106,24 +108,24 @@ public class ImePickerViewModel extends ViewModel {
 
         // parse apps
         HashMap<String, List<ApmBaseUnit<ApmSourceConnect>>> connectUnits = connectSourceIndex.getAppIndexMap();
-//        list.add(new BarChartItem(generateDataBar(connectUnits), "App分布", HomeDeviceItem.AppItem.ID.STASTIC_BY_APP, typeface));
-//        list.add(new PieChartItem(generateDataPie(connectUnits), "App分布",  HomeDeviceItem.AppItem.ID.STASTIC_BY_APP, typeface));
-        HomeDeviceItem.parseAppItemList(list, connectUnits.keySet());
+//        list.add(new BarChartItem(generateDataBar(connectUnits), "App分布", ApplicationInformation.ID.STASTIC_BY_APP, typeface));
+//        list.add(new PieChartItem(generateDataPie(connectUnits), "App分布",  ApplicationInformation.ID.STASTIC_BY_APP, typeface));
+        HomeDeviceItem.parseApplicationList(list, connectUnits.keySet());
 
         // final result list.
         onDataLoaded(list);
     }
 
-    public void performClick(HomeDeviceItem.AppItem item) {
+    public void performClick(ApplicationInformation item) {
         clickItem.setValue(item);
     }
 
-    public boolean isSelect(HomeDeviceItem.AppItem myLive) {
+    public boolean isSelect(ApplicationInformation myLive) {
         return AddDataStorage.get().selectedImeAppList.contains(myLive);
     }
 
-    public void toggleSelected(HomeDeviceItem.AppItem myLive) {
-        Set<HomeDeviceItem.AppItem> selectedList = AddDataStorage.get().selectedImeAppList;
+    public void toggleSelected(ApplicationInformation myLive) {
+        Set<ApplicationInformation> selectedList = AddDataStorage.get().selectedImeAppList;
         if (selectedList.contains(myLive)) {
             selectedList.remove(myLive);
         } else {

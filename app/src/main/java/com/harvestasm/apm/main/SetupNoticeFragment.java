@@ -13,7 +13,6 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.harvestasm.apm.home.HomeDeviceItem;
 import com.harvestasm.apm.imepicker.ImePickerAdapter;
 import com.harvestasm.apm.imepicker.ImePickerViewModel;
 import com.harvestasm.apm.sample.R;
@@ -21,6 +20,7 @@ import com.harvestasm.base.viewholder.SwipeRefreshBaseFragment;
 
 import java.util.List;
 
+import typany.apm.agent.android.harvest.ApplicationInformation;
 import typany.apm.agent.android.harvest.DeviceInformation;
 
 /**
@@ -102,9 +102,9 @@ public class SetupNoticeFragment extends SwipeRefreshBaseFragment<DeviceInformat
     private void pickImeApp() {
         final ImePickerViewModel imePickerViewModel = ViewModelProviders.of(this).get(ImePickerViewModel.class);
         imePickerViewModel.items.
-                observe(this, new Observer<List<HomeDeviceItem.AppItem>>() {
+                observe(this, new Observer<List<ApplicationInformation>>() {
             @Override
-            public void onChanged(@Nullable List<HomeDeviceItem.AppItem> chartItems) {
+            public void onChanged(@Nullable List<ApplicationInformation> chartItems) {
                 if (null == chartItems) {
                     Log.w(TAG, "null data comes.");
                 } else {

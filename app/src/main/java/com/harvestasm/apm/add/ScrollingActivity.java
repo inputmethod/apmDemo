@@ -12,11 +12,12 @@ import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.harvestasm.apm.home.HomeDeviceItem;
 import com.harvestasm.apm.sample.R;
 import com.harvestasm.chart.BaseChartActivity;
 
 import java.util.List;
+
+import typany.apm.agent.android.harvest.ApplicationInformation;
 
 public class ScrollingActivity extends BaseChartActivity implements ItemListDialogFragment.Listener {
     private static final String TAG = ScrollingActivity.class.getSimpleName();
@@ -65,14 +66,14 @@ public class ScrollingActivity extends BaseChartActivity implements ItemListDial
         ft.commitAllowingStateLoss();
 
         addViewModel = ViewModelProviders.of(this).get(AddViewModel.class);
-        addViewModel.getImeAppLiveData().observe(this, new Observer<List<HomeDeviceItem.AppItem>>() {
+        addViewModel.getImeAppLiveData().observe(this, new Observer<List<ApplicationInformation>>() {
             @Override
-            public void onChanged(@Nullable List<HomeDeviceItem.AppItem> appItems) {
+            public void onChanged(@Nullable List<ApplicationInformation> appItems) {
                 if (null == appItems) {
                     Log.e(TAG, "get null app items.");
                 }
 
-                for (HomeDeviceItem.AppItem item : appItems) {
+                for (ApplicationInformation item : appItems) {
                     Log.i(TAG, "item " + item.getAppName());
                 }
             }

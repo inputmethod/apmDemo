@@ -12,6 +12,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import typany.apm.agent.android.harvest.ApplicationInformation;
+
 public class HomeDeviceItem extends HomeItem {
     private final int dataCount;
     private final int connectCount;
@@ -63,6 +65,14 @@ public class HomeDeviceItem extends HomeItem {
             appItem.parseFrom(app.split(","));
             // todo: parse and set version code.
             appItemList.add(appItem);
+        }
+    }
+
+    public static void parseApplicationList(List<ApplicationInformation> informationList, Set<String> appSet) {
+        for (String app : appSet) {
+            String[] segments = app.split(",");
+            ApplicationInformation appItem = new ApplicationInformation(segments[0], segments[1], segments[2], segments[1]);
+            informationList.add(appItem);
         }
     }
 

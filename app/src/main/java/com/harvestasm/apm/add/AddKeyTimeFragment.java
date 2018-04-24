@@ -12,7 +12,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.harvestasm.apm.home.HomeDeviceItem;
 import com.harvestasm.apm.sample.R;
 
 import java.util.ArrayList;
@@ -75,7 +74,7 @@ public class AddKeyTimeFragment extends BaseAddFragment {
         LinearLayout view = (LinearLayout) inflater.inflate(R.layout.fragment_vertical_linear_container, container, false);
 
 //        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        for (HomeDeviceItem.AppItem item : AddDataStorage.get().selectedImeAppList) {
+        for (ApplicationInformation item : AddDataStorage.get().selectedImeAppList) {
             View v = inflater.inflate(R.layout.fragment_add_entry, null, false);
             TextView textView = v.findViewById(R.id.entry_key);
             textView.setText(item.getAppName() + "(ms)");
@@ -105,9 +104,9 @@ public class AddKeyTimeFragment extends BaseAddFragment {
 
             // todo: build harvest data
             for (EditText editText : editTextList) {
-                HomeDeviceItem.AppItem item = (HomeDeviceItem.AppItem) editText.getTag();
+                ApplicationInformation item = (ApplicationInformation) editText.getTag();
                 double value = Double.parseDouble(editText.getText().toString());
-                CustomMetricMeasurement metric = CustomMetricProducer.makeMeasurement(item.getAppPackage(),
+                CustomMetricMeasurement metric = CustomMetricProducer.makeMeasurement(item.getAppName(),
                         "keypop", 1, value, 0, MetricUnit.OPERATIONS, MetricUnit.MS);
                 harvestData.getMetrics().addMetric(metric.getCustomMetric());
 

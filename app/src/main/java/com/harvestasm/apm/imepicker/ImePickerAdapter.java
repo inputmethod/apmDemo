@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.harvestasm.apm.home.HomeDeviceItem;
 import com.harvestasm.apm.sample.R;
 
 import java.util.ArrayList;
@@ -17,6 +16,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import typany.apm.agent.android.harvest.ApplicationInformation;
 
 /** adapter that supports 3 different item types */
 public class ImePickerAdapter extends RecyclerView.Adapter<ImePickerAdapter.ViewHolder> {
@@ -27,19 +27,19 @@ public class ImePickerAdapter extends RecyclerView.Adapter<ImePickerAdapter.View
     private int secret = 0;
     private String title = "";
     private Context context;
-    private final List<HomeDeviceItem.AppItem> mMyLiveList = new ArrayList<>();
+    private final List<ApplicationInformation> mMyLiveList = new ArrayList<>();
     private OnItemClickListener mOnItemClickListener;
 
     private final ImePickerViewModel viewMultiChartModel;
 
-    public ImePickerAdapter(Context context, List<HomeDeviceItem.AppItem> chartItems, ImePickerViewModel viewMultiChartModel) {
+    public ImePickerAdapter(Context context, List<ApplicationInformation> chartItems, ImePickerViewModel viewMultiChartModel) {
         this.context = context;
         mMyLiveList.addAll(chartItems);
         this.viewMultiChartModel = viewMultiChartModel;
     }
 
 
-    public void notifyAdapter(List<HomeDeviceItem.AppItem> myLiveList, boolean isAdd) {
+    public void notifyAdapter(List<ApplicationInformation> myLiveList, boolean isAdd) {
         if (!isAdd) {
             this.mMyLiveList.clear();
         }
@@ -47,7 +47,7 @@ public class ImePickerAdapter extends RecyclerView.Adapter<ImePickerAdapter.View
         notifyDataSetChanged();
     }
 
-    public List<HomeDeviceItem.AppItem> getMyLiveList() {
+    public List<ApplicationInformation> getMyLiveList() {
         return mMyLiveList;
     }
 
@@ -65,7 +65,7 @@ public class ImePickerAdapter extends RecyclerView.Adapter<ImePickerAdapter.View
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final HomeDeviceItem.AppItem myLive = mMyLiveList.get(holder.getAdapterPosition());
+        final ApplicationInformation myLive = mMyLiveList.get(holder.getAdapterPosition());
         holder.bind(myLive, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,7 +87,7 @@ public class ImePickerAdapter extends RecyclerView.Adapter<ImePickerAdapter.View
     }
 
     public interface OnItemClickListener {
-        void onItemClickListener(int pos, List<HomeDeviceItem.AppItem> myLiveList);
+        void onItemClickListener(int pos, List<ApplicationInformation> myLiveList);
     }
 
     public void setEditMode(int editMode) {
@@ -113,7 +113,7 @@ public class ImePickerAdapter extends RecyclerView.Adapter<ImePickerAdapter.View
 
         }
 
-        public void bind(HomeDeviceItem.AppItem myLive, View.OnClickListener clickListener, int mEditMode, boolean select) {
+        public void bind(ApplicationInformation myLive, View.OnClickListener clickListener, int mEditMode, boolean select) {
             mTvTitle.setText(myLive.getAppName());
             mTvSource.setText(myLive.getAppVersion());
             if (mEditMode == MYLIVE_MODE_CHECK) {
@@ -131,7 +131,7 @@ public class ImePickerAdapter extends RecyclerView.Adapter<ImePickerAdapter.View
         }
     }
 
-    public static class MyLiveList extends HomeDeviceItem.AppItem {
+    public static class MyLiveList extends ApplicationInformation {
         public boolean isSelect() {
             // todo: check and uncheck
             return false;
