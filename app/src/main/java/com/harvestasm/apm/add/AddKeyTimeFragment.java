@@ -47,7 +47,10 @@ import typany.apm.agent.android.util.IMEApplicationHelper;
  * A placeholder fragment containing a simple view.
  */
 public class AddKeyTimeFragment extends BaseAddFragment implements OnChartValueSelectedListener {
-    @BindView(R.id.chart1)
+    @BindView(R.id.title)
+    TextView titleView;
+
+    @BindView(R.id.chart)
     BarChart mChart;
 
     private final List<EditText> editTextList = new ArrayList<>();
@@ -115,10 +118,83 @@ public class AddKeyTimeFragment extends BaseAddFragment implements OnChartValueS
         view.post(new Runnable() {
             @Override
             public void run() {
+                initChart();
                 checkMenuState();
             }
         });
         return view;
+    }
+
+    private void initChart() {
+//        mChart = (BarChart) findViewById(R.id.chart1);
+        titleView.setText(getActivity().getTitle());
+        mChart.setOnChartValueSelectedListener(this);
+
+        mChart.setDrawBarShadow(false);
+        mChart.setDrawValueAboveBar(true);
+
+        mChart.getDescription().setEnabled(false);
+
+        // if more than 60 entries are displayed in the chart, no values will be
+        // drawn
+        mChart.setMaxVisibleValueCount(60);
+
+        // scaling can now only be done on x- and y-axis separately
+        mChart.setPinchZoom(false);
+
+        mChart.setDrawGridBackground(false);
+        // mChart.setDrawYLabels(false);
+
+
+        // todo: axis formatter
+//        IAxisValueFormatter xAxisFormatter = new DayAxisValueFormatter(mChart);
+
+        XAxis xAxis = mChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        // todo: font type
+//        xAxis.setTypeface(mTfLight);
+        xAxis.setDrawGridLines(false);
+        xAxis.setGranularity(1f); // only intervals of 1 day
+        xAxis.setLabelCount(7);
+//        xAxis.setValueFormatter(xAxisFormatter);
+
+        // todo: axis formatter
+//        IAxisValueFormatter custom = new MyAxisValueFormatter();
+
+        YAxis leftAxis = mChart.getAxisLeft();
+//        leftAxis.setTypeface(mTfLight);
+        leftAxis.setLabelCount(8, false);
+//        leftAxis.setValueFormatter(custom);
+        leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+        leftAxis.setSpaceTop(15f);
+        leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+
+        YAxis rightAxis = mChart.getAxisRight();
+        rightAxis.setDrawGridLines(false);
+//        rightAxis.setTypeface(mTfLight);
+        rightAxis.setLabelCount(8, false);
+//        rightAxis.setValueFormatter(custom);
+        rightAxis.setSpaceTop(15f);
+        rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+
+        Legend l = mChart.getLegend();
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
+        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        l.setDrawInside(false);
+        l.setForm(Legend.LegendForm.SQUARE);
+        l.setFormSize(9f);
+        l.setTextSize(11f);
+        l.setXEntrySpace(4f);
+        // l.setExtra(ColorTemplate.VORDIPLOM_COLORS, new String[] { "abc",
+        // "def", "ghj", "ikl", "mno" });
+        // l.setCustom(ColorTemplate.VORDIPLOM_COLORS, new String[] { "abc",
+        // "def", "ghj", "ikl", "mno" });
+
+        // todo: set marker with axis formmater
+//        XYMarkerView mv = new XYMarkerView(getContext(), xAxisFormatter);
+//        mv.setChartView(mChart); // For bounds control
+//        mChart.setMarker(mv); // Set the marker to the chart
     }
 
     @Override
@@ -217,79 +293,6 @@ public class AddKeyTimeFragment extends BaseAddFragment implements OnChartValueS
     public void onNothingSelected() { }
 
     private void refreshBarChart() {
-//        mChart = (BarChart) findViewById(R.id.chart1);
-        mChart.setOnChartValueSelectedListener(this);
-
-        mChart.setDrawBarShadow(false);
-        mChart.setDrawValueAboveBar(true);
-
-        mChart.getDescription().setEnabled(false);
-
-        // if more than 60 entries are displayed in the chart, no values will be
-        // drawn
-        mChart.setMaxVisibleValueCount(60);
-
-        // scaling can now only be done on x- and y-axis separately
-        mChart.setPinchZoom(false);
-
-        mChart.setDrawGridBackground(false);
-        // mChart.setDrawYLabels(false);
-
-
-        // todo: axis formatter
-//        IAxisValueFormatter xAxisFormatter = new DayAxisValueFormatter(mChart);
-
-        XAxis xAxis = mChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        // todo: font type
-//        xAxis.setTypeface(mTfLight);
-        xAxis.setDrawGridLines(false);
-        xAxis.setGranularity(1f); // only intervals of 1 day
-        xAxis.setLabelCount(7);
-//        xAxis.setValueFormatter(xAxisFormatter);
-
-        // todo: axis formatter
-//        IAxisValueFormatter custom = new MyAxisValueFormatter();
-
-        YAxis leftAxis = mChart.getAxisLeft();
-//        leftAxis.setTypeface(mTfLight);
-        leftAxis.setLabelCount(8, false);
-//        leftAxis.setValueFormatter(custom);
-        leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
-        leftAxis.setSpaceTop(15f);
-        leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
-
-        YAxis rightAxis = mChart.getAxisRight();
-        rightAxis.setDrawGridLines(false);
-//        rightAxis.setTypeface(mTfLight);
-        rightAxis.setLabelCount(8, false);
-//        rightAxis.setValueFormatter(custom);
-        rightAxis.setSpaceTop(15f);
-        rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
-
-        Legend l = mChart.getLegend();
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
-        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
-        l.setDrawInside(false);
-        l.setForm(Legend.LegendForm.SQUARE);
-        l.setFormSize(9f);
-        l.setTextSize(11f);
-        l.setXEntrySpace(4f);
-        // l.setExtra(ColorTemplate.VORDIPLOM_COLORS, new String[] { "abc",
-        // "def", "ghj", "ikl", "mno" });
-        // l.setCustom(ColorTemplate.VORDIPLOM_COLORS, new String[] { "abc",
-        // "def", "ghj", "ikl", "mno" });
-
-        // todo: set marker with axis formmater
-//        XYMarkerView mv = new XYMarkerView(getContext(), xAxisFormatter);
-//        mv.setChartView(mChart); // For bounds control
-//        mChart.setMarker(mv); // Set the marker to the chart
-
-        setData();
-    }
-
-    private void setData() {
         int count = editTextList.size();
 
         ArrayList<BarEntry> yVals1 = new ArrayList<>();
@@ -331,5 +334,4 @@ public class AddKeyTimeFragment extends BaseAddFragment implements OnChartValueS
             mChart.setData(data);
         }
     }
-
 }
