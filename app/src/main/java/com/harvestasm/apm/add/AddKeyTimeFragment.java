@@ -72,6 +72,7 @@ public class AddKeyTimeFragment extends BaseAddFragment implements OnChartValueS
                 enableNextMenu(false);
             } else {
                 checkMenuState();
+                mChart.invalidate();
             }
         }
     };
@@ -111,6 +112,12 @@ public class AddKeyTimeFragment extends BaseAddFragment implements OnChartValueS
 
         setHasOptionsMenu(true);
 //        checkMenuState();
+        view.post(new Runnable() {
+            @Override
+            public void run() {
+                checkMenuState();
+            }
+        });
         return view;
     }
 
@@ -279,23 +286,21 @@ public class AddKeyTimeFragment extends BaseAddFragment implements OnChartValueS
 //        mv.setChartView(mChart); // For bounds control
 //        mChart.setMarker(mv); // Set the marker to the chart
 
-        setData(12, 50);
+        setData();
     }
 
-    private void setData(int count, float range) {
+    private void setData() {
+        int count = editTextList.size();
 
-        float start = 1f;
+        ArrayList<BarEntry> yVals1 = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            String text = editTextList.get(i).getText().toString();
+            float val = TextUtils.isEmpty(text) ? 0f : Float.parseFloat(text);
 
-        ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
-
-        for (int i = (int) start; i < start + count + 1; i++) {
-            float mult = (range + 1);
-            float val = (float) (Math.random() * mult);
-
-            if (Math.random() * 100 < 25) {
-                yVals1.add(new BarEntry(i, val, getResources().getDrawable(R.drawable.ic_home_black_24dp)));
+            if (val < 25) {
+                yVals1.add(new BarEntry(i + 1f, val, getResources().getDrawable(R.drawable.ic_home_black_24dp)));
             } else {
-                yVals1.add(new BarEntry(i, val));
+                yVals1.add(new BarEntry(i + 1f, val));
             }
         }
 
@@ -308,7 +313,7 @@ public class AddKeyTimeFragment extends BaseAddFragment implements OnChartValueS
             mChart.getData().notifyDataChanged();
             mChart.notifyDataSetChanged();
         } else {
-            set1 = new BarDataSet(yVals1, "The year 2017");
+            set1 = new BarDataSet(yVals1, getActivity().getTitle().toString());
 
             set1.setDrawIcons(false);
 
