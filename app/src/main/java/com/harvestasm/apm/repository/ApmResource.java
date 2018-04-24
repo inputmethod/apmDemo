@@ -7,6 +7,7 @@ import com.harvestasm.apm.repository.model.search.ApmConnectSearchResponse;
 import com.harvestasm.apm.repository.model.search.ApmDataSearchResponse;
 
 import typany.apm.com.google.gson.JsonElement;
+import typany.apm.com.google.gson.JsonObject;
 import typany.apm.retrofit2.Call;
 import typany.apm.retrofit2.http.Body;
 import typany.apm.retrofit2.http.GET;
@@ -43,7 +44,7 @@ public interface ApmResource {
     @POST("{index}/data")
     Call<ApmConnectResponse> data(
             @Path("index") String index,
-            @Body String data);
+            @Body JsonObject data);
 
     @Headers({ "Accept: application/json" })
     @GET("{index}/_search")

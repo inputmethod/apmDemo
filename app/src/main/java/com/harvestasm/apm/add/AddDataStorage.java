@@ -182,7 +182,7 @@ public class AddDataStorage {
             @Override
             public void run() {
                 try {
-                    ApmConnectResponse response = repository.apmTestData(harvestData.toJsonOutput());
+                    ApmConnectResponse response = repository.apmTestData(harvestData.toJson());
                     Log.d("mft", "That is it " + response.get_id());
                 } catch (Exception ex) {
                     ex.printStackTrace();
