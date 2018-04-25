@@ -37,6 +37,14 @@ public class AddMemoryFragment extends BaseAddFragment implements OnChartValueSe
     public AddMemoryFragment() {
     }
 
+    protected String getCategory() {
+        return "Memory";
+    }
+
+    protected String getName() {
+        return "Used";
+    }
+
     @Override
     protected void inflateChildrenView(LayoutInflater inflater, View view) {
         setHasOptionsMenu(true);

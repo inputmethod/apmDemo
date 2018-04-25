@@ -56,11 +56,24 @@ public class AddSubCpuFragment extends BaseAddFragment implements OnChartValueSe
 
     private final List<EditText> editTextList = new ArrayList<>();
 
-    public AddSubCpuFragment() {
+    // 按键响应时间
+    protected String getCategory() {
+        return "cpu";
     }
 
-    protected String getCategory() {
-        return "keypop";
+    protected String getName() {
+        if (0 == type) {
+            return "idle";
+        } else if (1 == type) {
+            return "medium";
+        } else if (2 == type) {
+            return "long";
+        } else {
+            return "unknown";
+        }
+    }
+
+    public AddSubCpuFragment() {
     }
 
     private final TextWatcher watcher = new TextWatcher() {

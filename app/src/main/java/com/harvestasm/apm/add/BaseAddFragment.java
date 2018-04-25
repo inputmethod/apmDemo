@@ -57,7 +57,9 @@ abstract public class BaseAddFragment extends Fragment {
         int id = item.getItemId();
 
         if (id == R.id.action_next) {
-            if (!nextStep()) {
+            if (nextStep()) {
+                getActivity().onBackPressed();
+            } else {
                 showNextStepTips();
             }
         } else {

@@ -87,14 +87,16 @@ public class AddDataStorage {
     private List<ApplicationInformation> createImeAppList() {
         Log.e(TAG, "createImeAppList thread " + Thread.currentThread().getName());
 
-        checkToInitSelected();
+        boolean noSelected = checkToInitSelected();
 
         List<ApplicationInformation> informationList = new ArrayList<>();
         for (String name : IMEHelper.getInstallImePackageList(context)) {
             try {
                 ApplicationInformation item = IMEApplicationHelper.parseInstallImePackage(context, name);
                 if (localCheckedImeList.contains(name)) {
-                    selectedImeAppList.add(item);
+                    if (noSelected) {
+                        selectedImeAppList.add(item);
+                    }
                     informationList.add(0, item);
                 } else {
                     informationList.add(item);

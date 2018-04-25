@@ -10,11 +10,14 @@ import android.view.View;
 public class AddSubElectricCurrentFragment extends AddKeyTimeFragment {
     private boolean offscreen;
 
+    // 按键响应时间
     protected String getCategory() {
-        return "electriccurrent";
+        return "electric_current";
+    }
+    protected String getName() {
+        return offscreen ? "offscree" : "arverage";
     }
 
-    // todo: 判断是息屏还是平均的电流数据
     @Override
     protected void inflateChildrenView(LayoutInflater inflater, View view) {
         super.inflateChildrenView(inflater, view);
