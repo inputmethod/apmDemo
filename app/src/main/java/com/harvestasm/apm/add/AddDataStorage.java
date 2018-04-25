@@ -16,8 +16,10 @@ import com.harvestasm.apm.utils.IMEHelper;
 import org.apache.http.util.Asserts;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -32,6 +34,7 @@ import typany.apm.agent.android.harvest.ApplicationInformation;
 import typany.apm.agent.android.harvest.ConnectInformation;
 import typany.apm.agent.android.harvest.DeviceInformation;
 import typany.apm.agent.android.harvest.HarvestData;
+import typany.apm.agent.android.measurement.CustomMetricMeasurement;
 import typany.apm.agent.android.util.IMEApplicationHelper;
 
 public class AddDataStorage {
@@ -209,5 +212,32 @@ public class AddDataStorage {
 
     private void runInThread(Runnable runnable, String threadName) {
         new Thread(runnable, threadName).start();
+    }
+
+    private final Map<ApplicationInformation, Map<String, CustomMetricMeasurement>> measurementByApp = new HashMap<>();
+    private final Map<String, Map<ApplicationInformation, CustomMetricMeasurement>> measurementByOption = new HashMap<>();
+
+    public Map<ApplicationInformation, CustomMetricMeasurement> getMeasurementByOption(String option) {
+        return measurementByOption.get(option);
+    }
+
+    // 应用item增加统计数据measurement, 更新两个索引: app -> measure list，在最后数据上报时使用，
+    // measure_option -> measure per app list，在展示图表时用，其中measure_option为字符串，取measurement里
+    // 的category/name格式
+    public void addCache(String optionName, ApplicationInformation item, CustomMetricMeasurement measurement) {
+        Map<ApplicationInformation, CustomMetricMeasurement> mapList = measurementByOption.get(optionName);
+        if (null == mapList) {
+            mapList = new HashMap<>();
+            measurementByOption.put(optionName, mapList);
+        }
+
+        mapList.put(item, measurement);
+
+        Map<String, CustomMetricMeasurement> list = measurementByApp.get(item);
+        if (null == list) {
+            list = new HashMap<>();
+            measurementByApp.put(item, list);
+        }
+        list.put(optionName, measurement);
     }
 }

@@ -2,6 +2,8 @@ package com.harvestasm.apm.add;
 
 import android.annotation.SuppressLint;
 import android.graphics.RectF;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -30,19 +32,17 @@ import com.harvestasm.apm.sample.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
-import typany.apm.agent.android.Agent;
 import typany.apm.agent.android.harvest.ApplicationInformation;
-import typany.apm.agent.android.harvest.DeviceInformation;
-import typany.apm.agent.android.harvest.HarvestData;
 import typany.apm.agent.android.measurement.CustomMetricMeasurement;
 import typany.apm.agent.android.measurement.producer.CustomMetricProducer;
 import typany.apm.agent.android.metric.MetricUnit;
-import typany.apm.agent.android.util.IMEApplicationHelper;
 
 /**
  * A placeholder fragment containing a simple view.
+ *
  */
 public class AddKeyTimeFragment extends BaseAddFragment implements OnChartValueSelectedListener {
     @BindView(R.id.title)
@@ -56,8 +56,20 @@ public class AddKeyTimeFragment extends BaseAddFragment implements OnChartValueS
     public AddKeyTimeFragment() {
     }
 
+    // 按键响应时间
     protected String getCategory() {
-        return "keypop";
+        return "Time";
+    }
+    protected String getName() {
+        return "key_press";
+    }
+
+    protected MetricUnit getValueUnit() {
+        return MetricUnit.MS;
+    }
+
+    protected MetricUnit getCountUnit() {
+        return MetricUnit.OPERATIONS;
     }
 
     private final TextWatcher watcher = new TextWatcher() {
@@ -97,27 +109,45 @@ public class AddKeyTimeFragment extends BaseAddFragment implements OnChartValueS
 
     @Override
     protected void inflateChildrenView(LayoutInflater inflater, View view) {
+        initChart();
+//        parseChartCache();
+
+        Map<ApplicationInformation, CustomMetricMeasurement> dataMap = AddDataStorage.get()
+                .getMeasurementByOption(parseOptionName());
         for (ApplicationInformation item : AddDataStorage.get().selectedImeAppList) {
             View v = inflater.inflate(R.layout.fragment_add_entry, null, false);
             TextView textView = v.findViewById(R.id.entry_key);
-            textView.setText(item.getAppName() + "(ms)");
+            textView.setText(item.getAppName() + "(" + getValueUnit() + ")");
             int inputType = InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL | InputType.TYPE_NUMBER_FLAG_DECIMAL;
             EditText editText = v.findViewById(R.id.entry_value);
             editText.setInputType(inputType);
-            editText.addTextChangedListener(watcher);
             editText.setTag(item);
+            peakEditText(editText, item, dataMap);
             editTextList.add(editText);
             ((ViewGroup)view).addView(v);
+            editText.addTextChangedListener(watcher);
         }
 
         setHasOptionsMenu(true);
-        initChart();
         view.post(new Runnable() {
             @Override
             public void run() {
                 checkMenuState();
             }
         });
+    }
+
+    private void peakEditText(@NonNull EditText editText, @NonNull ApplicationInformation information,
+                              @Nullable Map<ApplicationInformation, CustomMetricMeasurement> dataMap) {
+        if (null == dataMap) {
+            return;
+        }
+
+        CustomMetricMeasurement metricMeasurement = dataMap.get(information);
+        if (null != editText && null != metricMeasurement) {
+            float val = (float) metricMeasurement.getCustomMetric().getMax();
+            editText.setText(String.valueOf(val));
+        }
     }
 
     @Override
@@ -197,25 +227,28 @@ public class AddKeyTimeFragment extends BaseAddFragment implements OnChartValueS
 //        mChart.setMarker(mv); // Set the marker to the chart
     }
 
+    protected CustomMetricMeasurement newMetricMeasurement(double value) {
+        CustomMetricMeasurement metric = CustomMetricProducer.makeMeasurement(getName(),
+                getCategory(), 1, value, 0, getCountUnit(), getValueUnit());
+        metric.setScope("manual");
+        return metric;
+    }
+
     @Override
     protected boolean nextStep() {
-//        loadImeMethods();
         try {
-            DeviceInformation deviceInformation = Agent.getDeviceInformation();
-            ApplicationInformation applicationInformation = IMEApplicationHelper.parseInstallImePackage(getContext(), getActivity().getPackageName());
-
-            HarvestData harvestData = new HarvestData(applicationInformation, deviceInformation);
-
-            // todo: build harvest data
+//            DeviceInformation deviceInformation = Agent.getDeviceInformation();
+            // one harvest data per application
+            String option = parseOptionName();
             for (EditText editText : editTextList) {
                 ApplicationInformation item = (ApplicationInformation) editText.getTag();
+//                HarvestData harvestData = new HarvestData(item, deviceInformation);
                 double value = Double.parseDouble(editText.getText().toString());
-                CustomMetricMeasurement metric = CustomMetricProducer.makeMeasurement(item.getAppName(),
-                        getCategory(), 1, value, 0, MetricUnit.OPERATIONS, MetricUnit.MS);
-                harvestData.getMetrics().addMetric(metric.getCustomMetric());
-
+                CustomMetricMeasurement measurement = newMetricMeasurement(value);
+//                harvestData.getMetrics().addMetric(measurement.getCustomMetric());
+//                AddDataStorage.get().testData(harvestData);
+                AddDataStorage.get().addCache(option, item, measurement);
             }
-            AddDataStorage.get().testData(harvestData);
             return true;
 
         } catch (Exception ex) {
@@ -223,48 +256,6 @@ public class AddKeyTimeFragment extends BaseAddFragment implements OnChartValueS
         }
         return false;
     }
-
-//    public void loadImeMethods() {
-//        Log.d("mft","当前已经安装的输入法有");
-//        List<ConnectInformation> informationList = new ArrayList<>();
-//
-//        DeviceInformation deviceInformation = Agent.getDeviceInformation();
-//        for (String name : IMEHelper.getInstallImePackageList(getContext())) {
-//            Log.d("mft", name);
-//            try {
-//                ApplicationInformation applicationInformation = IMEApplicationHelper.parseInstallImePackage(getContext(), name);
-//                ConnectInformation connectInformation = new ConnectInformation(applicationInformation, deviceInformation);
-//                informationList.add(connectInformation);
-//                if ("com.touchtype.swiftkey".equals(name)) {
-//                    AddDataStorage.get().testConnect(connectInformation);
-//
-//                    HarvestData harvestData = new HarvestData(applicationInformation, deviceInformation);
-//                    // todo: build harvest data
-//                    CustomMetricMeasurement metric = CustomMetricProducer.makeMeasurement("Switfkey",
-//                            "keypop", 1, 170.83, 0, MetricUnit.OPERATIONS, MetricUnit.MS);
-//                    harvestData.getMetrics().addMetric(metric.getCustomMetric());
-//                    AddDataStorage.get().testData(harvestData);
-//                }
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//            }
-//        }
-//
-//        Log.d("mft","已经勾选的输入法有");
-////        String enable = Settings.Secure.getString(getContentResolver(),
-////                Settings.Secure.ENABLED_INPUT_METHODS);
-////        Log.d("mft", enable.replace(":","\n"));
-//        for (String ime : IMEHelper.getCheckedImeList(getContext())) {
-//            Log.d("mft", ime);
-//        }
-//
-//
-//        Log.d("mft","当前默认输入法是");
-////        String currentInputmethod = Settings.Secure.getString(getContentResolver(),
-////                Settings.Secure.DEFAULT_INPUT_METHOD);
-////        Log.d("mft", currentInputmethod);
-//        Log.d("mft", IMEHelper.getCurrentIme(getContext()));
-//    }
 
     protected RectF mOnValueSelectedRectF = new RectF();
 
@@ -292,6 +283,28 @@ public class AddKeyTimeFragment extends BaseAddFragment implements OnChartValueS
     @Override
     public void onNothingSelected() { }
 
+//    private void parseChartCache() {
+//        Map<ApplicationInformation, CustomMetricMeasurement> dataMap = AddDataStorage.get()
+//                .getMeasurementByOption(parseOptionName());
+//        if (null != dataMap) {
+//            ArrayList<BarEntry> yVals1 = new ArrayList<>();
+//            float index = 1f;
+//            for (EditText editText : editTextList) {
+//                ApplicationInformation item = (ApplicationInformation) editText.getTag();
+//                CustomMetricMeasurement metricMeasurement = dataMap.get(item);
+//                if (null == metricMeasurement) {
+//                } else {
+//                    float val = (float) metricMeasurement.getCustomMetric().getMax();
+//                    yVals1.add(new BarEntry(index, val));
+//                    editText.setText(String.valueOf(val));
+//                }
+//                index += 1f;
+//            }
+//            fillDataSet(yVals1);
+//            mChart.invalidate();
+//        }
+//    }
+
     private void refreshBarChart() {
         int count = editTextList.size();
 
@@ -306,9 +319,11 @@ public class AddKeyTimeFragment extends BaseAddFragment implements OnChartValueS
                 yVals1.add(new BarEntry(i + 1f, val));
             }
         }
+        fillDataSet(yVals1);
+    }
 
+    private void fillDataSet(ArrayList<BarEntry> yVals1) {
         BarDataSet set1;
-
         if (mChart.getData() != null &&
                 mChart.getData().getDataSetCount() > 0) {
             set1 = (BarDataSet) mChart.getData().getDataSetByIndex(0);
@@ -333,5 +348,9 @@ public class AddKeyTimeFragment extends BaseAddFragment implements OnChartValueS
 
             mChart.setData(data);
         }
+    }
+
+    protected final String parseOptionName() {
+        return getCategory() + "/" + getName();
     }
 }
