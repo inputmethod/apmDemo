@@ -16,7 +16,7 @@ public class AddFrameFragment extends AddElectricCurrentFragment {
         addOptionView(inflater, R.id.frame_switch_kb_symbol, R.string.frame_switch_kb_symbol);
         addOptionView(inflater, R.id.frame_switch_kb_emoji, R.string.frame_switch_kb_emoji);
         addOptionView(inflater, R.id.frame_switch_kb_setting, R.string.frame_switch_kb_setting);
-        addOptionView(inflater, R.id.frame_switch_kb_typing, R.string.frame_switch_kb_typing);
+        addOptionView(inflater, R.id.frame_kb_typing, R.string.frame_switch_kb_typing);
     }
 
 }

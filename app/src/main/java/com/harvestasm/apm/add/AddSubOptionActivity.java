@@ -85,7 +85,7 @@ public class AddSubOptionActivity extends BaseChartActivity {
                 Bundle bundle = new Bundle();
                 bundle.putInt("type", 4);
                 fragment.setArguments(bundle);
-            } else if (id == R.id.frame_switch_kb_typing) {
+            } else if (id == R.id.frame_kb_typing) {
                 fragment = new AddSubFrameFragment();
                 Bundle bundle = new Bundle();
                 bundle.putInt("type", 5);

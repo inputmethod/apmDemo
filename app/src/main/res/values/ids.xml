@@ -10,5 +10,5 @@
     <item name="frame_switch_kb_symbol" type="id" />
     <item name="frame_switch_kb_emoji" type="id" />
     <item name="frame_switch_kb_setting" type="id" />
-    <item name="frame_switch_kb_typing" type="id" />
+    <item name="frame_kb_typing" type="id" />
 </resources>
