@@ -1,0 +1,162 @@
+package com.harvestasm.apm.add;
+
+import android.annotation.SuppressLint;
+import android.graphics.RectF;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+
+import java.util.List;
+import java.util.Map;
+
+import typany.apm.agent.android.harvest.ApplicationInformation;
+import typany.apm.agent.android.measurement.CustomMetricMeasurement;
+import typany.apm.agent.android.measurement.producer.CustomMetricProducer;
+import typany.apm.agent.android.metric.MetricUnit;
+
+/**
+ * A placeholder fragment containing a simple view.
+ *
+ */
+abstract public class AddCharDataFragment extends BaseAddFragment implements OnChartValueSelectedListener {
+    protected MetricUnit getValueUnit() {
+        return MetricUnit.MS;
+    }
+    protected MetricUnit getCountUnit() {
+        return MetricUnit.OPERATIONS;
+    }
+
+    protected final TextWatcher watcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (TextUtils.isEmpty(s)) {
+                enableNextMenu(false);
+            } else {
+                refreshWithChangedText();
+            }
+        }
+    };
+
+    @Override
+    protected final void inflateChildrenView(LayoutInflater inflater, View view) {
+        initChart();
+
+        Map<ApplicationInformation, CustomMetricMeasurement> dataMap = AddDataStorage.get()
+                .getMeasurementByOption(parseOptionName());
+        for (ApplicationInformation item : AddDataStorage.get().selectedImeAppList) {
+            View v = initViewsForApp(inflater, item, dataMap);
+            ((ViewGroup)view).addView(v);
+        }
+
+        parseArguments();
+
+        setHasOptionsMenu(true);
+        view.post(new Runnable() {
+            @Override
+            public void run() {
+                checkMenuState();
+            }
+        });
+    }
+
+    protected abstract void checkMenuState();
+    protected abstract View initViewsForApp(LayoutInflater inflater, ApplicationInformation item,
+                                            Map<ApplicationInformation, CustomMetricMeasurement> dataMap);
+    protected abstract void parseArguments();
+    protected abstract void initChart();
+
+    protected abstract void refreshWithChangedText();
+
+    protected final CustomMetricMeasurement newMetricMeasurement(double value) {
+        CustomMetricMeasurement metric = CustomMetricProducer.makeMeasurement(getName(),
+                getCategory(), 1, value, 0, getCountUnit(), getValueUnit());
+        metric.setScope("manual");
+        return metric;
+    }
+
+    protected final CustomMetricMeasurement newMetricMeasurement(double value, double otherValue) {
+        CustomMetricMeasurement metric = newMetricMeasurement(value);
+        metric.getCustomMetric().setMax(otherValue);
+        return metric;
+    }
+
+    protected abstract String getCategory();
+    protected abstract String getName();
+
+    protected RectF mOnValueSelectedRectF = new RectF();
+
+    @SuppressLint("NewApi")
+    @Override
+    public void onValueSelected(Entry e, Highlight h) {
+    }
+
+    @Override
+    public void onNothingSelected() { }
+
+    protected final String parseOptionName() {
+        return getCategory() + "/" + getName();
+    }
+
+
+    protected void setEntityValue(View v, int valueId, Map<ApplicationInformation, CustomMetricMeasurement> dataMap,
+                                  ApplicationInformation item, List<EditText> editTextList, TextWatcher watcher) {
+        int inputType = InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL | InputType.TYPE_NUMBER_FLAG_DECIMAL;
+        EditText editText = v.findViewById(valueId);
+        editText.setInputType(inputType);
+        editText.setTag(item);
+        peakEditText(editText, item, dataMap);
+        editTextList.add(editText);
+        editText.addTextChangedListener(watcher);
+    }
+
+    private static void peakEditText(@NonNull EditText editText, @NonNull ApplicationInformation information,
+                              @Nullable Map<ApplicationInformation, CustomMetricMeasurement> dataMap) {
+        if (null == dataMap) {
+            return;
+        }
+
+        CustomMetricMeasurement metricMeasurement = dataMap.get(information);
+        if (null != editText && null != metricMeasurement) {
+            float val = (float) metricMeasurement.getCustomMetric().getMax();
+            editText.setText(String.valueOf(val));
+        }
+    }
+
+    protected void setEntityTitle(View v, int titleId, ApplicationInformation item) {
+        TextView textView = v.findViewById(titleId);
+        textView.setText(item.getAppName() + "(" + getValueUnit() + ")");
+    }
+
+    protected static boolean hasEmptyValue(@NonNull List<EditText> editTextList) {
+        for (EditText editText : editTextList) {
+            Editable editable = editText.getText();
+            if (TextUtils.isEmpty(editable)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}

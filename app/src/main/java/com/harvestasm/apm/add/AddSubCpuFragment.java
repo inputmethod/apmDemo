@@ -3,14 +3,10 @@ package com.harvestasm.apm.add;
 import android.annotation.SuppressLint;
 import android.graphics.RectF;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.InputType;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -24,37 +20,38 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.harvestasm.apm.sample.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
-import typany.apm.agent.android.Agent;
 import typany.apm.agent.android.harvest.ApplicationInformation;
-import typany.apm.agent.android.harvest.DeviceInformation;
-import typany.apm.agent.android.harvest.HarvestData;
 import typany.apm.agent.android.measurement.CustomMetricMeasurement;
-import typany.apm.agent.android.measurement.producer.CustomMetricProducer;
-import typany.apm.agent.android.metric.MetricUnit;
-import typany.apm.agent.android.util.IMEApplicationHelper;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class AddSubCpuFragment extends BaseAddFragment implements OnChartValueSelectedListener {
+public class AddSubCpuFragment extends AddCharDataFragment {
     @BindView(R.id.title)
     TextView titleView;
 
     @BindView(R.id.chart)
     BarChart mChart;
 
+    private final List<EditText> editTextList = new ArrayList<>();
+    private final List<EditText> otherEditTextList = new ArrayList<>();
+
     private int type; // 0 - cpu idle, 1 - cpu medium, 2 - cpu long
 
-    private final List<EditText> editTextList = new ArrayList<>();
+    @Override
+    protected void refreshWithChangedText() {
+        checkMenuState();
+        mChart.invalidate();
+    }
 
     // 按键响应时间
     protected String getCategory() {
@@ -73,72 +70,36 @@ public class AddSubCpuFragment extends BaseAddFragment implements OnChartValueSe
         }
     }
 
-    public AddSubCpuFragment() {
-    }
 
-    private final TextWatcher watcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            if (TextUtils.isEmpty(s)) {
-                enableNextMenu(false);
-            } else {
-                checkMenuState();
-                mChart.invalidate();
-            }
-        }
-    };
-
-    private void checkMenuState() {
+    @Override
+    protected void checkMenuState() {
         refreshBarChart();
-        for (EditText editText : editTextList) {
-            Editable editable = editText.getText();
-            if (TextUtils.isEmpty(editable)) {
-                enableNextMenu(false);
-                return;
-            }
+
+        if (hasEmptyValue(editTextList) || hasEmptyValue(otherEditTextList)) {
+            enableNextMenu(false);
+            return;
         }
 
         enableNextMenu(true);
     }
 
     @Override
-    protected void inflateChildrenView(LayoutInflater inflater, View view) {
-        for (ApplicationInformation item : AddDataStorage.get().selectedImeAppList) {
-            View v = inflater.inflate(R.layout.fragment_add_entry, null, false);
-            TextView textView = v.findViewById(R.id.entry_key);
-            textView.setText(item.getAppName() + "(ms)");
-            int inputType = InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL | InputType.TYPE_NUMBER_FLAG_DECIMAL;
-            EditText editText = v.findViewById(R.id.entry_value);
-            editText.setInputType(inputType);
-            editText.addTextChangedListener(watcher);
-            editText.setTag(item);
-            editTextList.add(editText);
-            ((ViewGroup)view).addView(v);
-        }
-
+    protected void parseArguments() {
         Bundle bundle = getArguments();
         if (null != bundle) {
             type = bundle.getInt("type");
         }
+    }
 
-        setHasOptionsMenu(true);
-        initChart();
-        view.post(new Runnable() {
-            @Override
-            public void run() {
-                checkMenuState();
-            }
-        });
+    @Override
+    protected View initViewsForApp(LayoutInflater inflater, ApplicationInformation item,
+                                   Map<ApplicationInformation, CustomMetricMeasurement> dataMap) {
+        View v = inflater.inflate(R.layout.fragment_add_two_entry, null, false);
+
+        setEntityTitle(v, R.id.entry_key, item);
+        setEntityValue(v, R.id.entry_value, dataMap, item, editTextList, watcher);
+        setEntityValue(v, R.id.entry_other_value, dataMap, item, otherEditTextList, watcher);
+        return v;
     }
 
     @Override
@@ -146,7 +107,9 @@ public class AddSubCpuFragment extends BaseAddFragment implements OnChartValueSe
         return R.layout.fragment_vertical_linear_container;
     }
 
-    private void initChart() {
+
+    @Override
+    protected void initChart() {
 //        mChart = (BarChart) findViewById(R.id.chart1);
         titleView.setText(getActivity().getTitle());
         mChart.setOnChartValueSelectedListener(this);
@@ -220,23 +183,22 @@ public class AddSubCpuFragment extends BaseAddFragment implements OnChartValueSe
 
     @Override
     protected boolean nextStep() {
-//        loadImeMethods();
         try {
-            DeviceInformation deviceInformation = Agent.getDeviceInformation();
-            ApplicationInformation applicationInformation = IMEApplicationHelper.parseInstallImePackage(getContext(), getActivity().getPackageName());
+            assert(editTextList.size() == otherEditTextList.size());
 
-            HarvestData harvestData = new HarvestData(applicationInformation, deviceInformation);
+            String option = parseOptionName();
 
-            // todo: build harvest data
-            for (EditText editText : editTextList) {
+            for (int i = 0; i < editTextList.size(); i++) {
+                EditText editText = editTextList.get(i);
+                EditText otherEditText = otherEditTextList.get(i);
+
                 ApplicationInformation item = (ApplicationInformation) editText.getTag();
                 double value = Double.parseDouble(editText.getText().toString());
-                CustomMetricMeasurement metric = CustomMetricProducer.makeMeasurement(item.getAppName(),
-                        getCategory(), 1, value, 0, MetricUnit.OPERATIONS, MetricUnit.MS);
-                harvestData.getMetrics().addMetric(metric.getCustomMetric());
+                double otherValue = Double.parseDouble(otherEditText.getText().toString());
 
+                CustomMetricMeasurement measurement = newMetricMeasurement(value, otherValue);
+                AddDataStorage.get().addCache(option, item, measurement);
             }
-            AddDataStorage.get().testData(harvestData);
             return true;
 
         } catch (Exception ex) {
@@ -244,50 +206,6 @@ public class AddSubCpuFragment extends BaseAddFragment implements OnChartValueSe
         }
         return false;
     }
-
-//    public void loadImeMethods() {
-//        Log.d("mft","当前已经安装的输入法有");
-//        List<ConnectInformation> informationList = new ArrayList<>();
-//
-//        DeviceInformation deviceInformation = Agent.getDeviceInformation();
-//        for (String name : IMEHelper.getInstallImePackageList(getContext())) {
-//            Log.d("mft", name);
-//            try {
-//                ApplicationInformation applicationInformation = IMEApplicationHelper.parseInstallImePackage(getContext(), name);
-//                ConnectInformation connectInformation = new ConnectInformation(applicationInformation, deviceInformation);
-//                informationList.add(connectInformation);
-//                if ("com.touchtype.swiftkey".equals(name)) {
-//                    AddDataStorage.get().testConnect(connectInformation);
-//
-//                    HarvestData harvestData = new HarvestData(applicationInformation, deviceInformation);
-//                    // todo: build harvest data
-//                    CustomMetricMeasurement metric = CustomMetricProducer.makeMeasurement("Switfkey",
-//                            "keypop", 1, 170.83, 0, MetricUnit.OPERATIONS, MetricUnit.MS);
-//                    harvestData.getMetrics().addMetric(metric.getCustomMetric());
-//                    AddDataStorage.get().testData(harvestData);
-//                }
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//            }
-//        }
-//
-//        Log.d("mft","已经勾选的输入法有");
-////        String enable = Settings.Secure.getString(getContentResolver(),
-////                Settings.Secure.ENABLED_INPUT_METHODS);
-////        Log.d("mft", enable.replace(":","\n"));
-//        for (String ime : IMEHelper.getCheckedImeList(getContext())) {
-//            Log.d("mft", ime);
-//        }
-//
-//
-//        Log.d("mft","当前默认输入法是");
-////        String currentInputmethod = Settings.Secure.getString(getContentResolver(),
-////                Settings.Secure.DEFAULT_INPUT_METHOD);
-////        Log.d("mft", currentInputmethod);
-//        Log.d("mft", IMEHelper.getCurrentIme(getContext()));
-//    }
-
-    protected RectF mOnValueSelectedRectF = new RectF();
 
     @SuppressLint("NewApi")
     @Override
@@ -310,9 +228,6 @@ public class AddSubCpuFragment extends BaseAddFragment implements OnChartValueSe
         MPPointF.recycleInstance(position);
     }
 
-    @Override
-    public void onNothingSelected() { }
-
     private void refreshBarChart() {
         int count = editTextList.size();
 
@@ -327,9 +242,11 @@ public class AddSubCpuFragment extends BaseAddFragment implements OnChartValueSe
                 yVals1.add(new BarEntry(i + 1f, val));
             }
         }
+        fillDataSet(yVals1);
+    }
 
+    private void fillDataSet(ArrayList<BarEntry> yVals1) {
         BarDataSet set1;
-
         if (mChart.getData() != null &&
                 mChart.getData().getDataSetCount() > 0) {
             set1 = (BarDataSet) mChart.getData().getDataSetByIndex(0);

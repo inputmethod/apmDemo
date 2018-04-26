@@ -2,16 +2,10 @@ package com.harvestasm.apm.add;
 
 import android.annotation.SuppressLint;
 import android.graphics.RectF;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.text.Editable;
-import android.text.InputType;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -25,7 +19,6 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.harvestasm.apm.sample.R;
@@ -37,14 +30,12 @@ import java.util.Map;
 import butterknife.BindView;
 import typany.apm.agent.android.harvest.ApplicationInformation;
 import typany.apm.agent.android.measurement.CustomMetricMeasurement;
-import typany.apm.agent.android.measurement.producer.CustomMetricProducer;
-import typany.apm.agent.android.metric.MetricUnit;
 
 /**
  * A placeholder fragment containing a simple view.
  *
  */
-public class AddKeyTimeFragment extends BaseAddFragment implements OnChartValueSelectedListener {
+public class AddKeyTimeFragment extends AddCharDataFragment {
     @BindView(R.id.title)
     TextView titleView;
 
@@ -53,7 +44,10 @@ public class AddKeyTimeFragment extends BaseAddFragment implements OnChartValueS
 
     private final List<EditText> editTextList = new ArrayList<>();
 
-    public AddKeyTimeFragment() {
+    @Override
+    protected void refreshWithChangedText() {
+        checkMenuState();
+        mChart.invalidate();
     }
 
     // 按键响应时间
@@ -64,90 +58,31 @@ public class AddKeyTimeFragment extends BaseAddFragment implements OnChartValueS
         return "key_press";
     }
 
-    protected MetricUnit getValueUnit() {
-        return MetricUnit.MS;
-    }
 
-    protected MetricUnit getCountUnit() {
-        return MetricUnit.OPERATIONS;
-    }
-
-    private final TextWatcher watcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            if (TextUtils.isEmpty(s)) {
-                enableNextMenu(false);
-            } else {
-                checkMenuState();
-                mChart.invalidate();
-            }
-        }
-    };
-
-    private void checkMenuState() {
+    @Override
+    protected void checkMenuState() {
         refreshBarChart();
-        for (EditText editText : editTextList) {
-            Editable editable = editText.getText();
-            if (TextUtils.isEmpty(editable)) {
-                enableNextMenu(false);
-                return;
-            }
+
+        if (hasEmptyValue(editTextList)) {
+            enableNextMenu(false);
+            return;
         }
 
         enableNextMenu(true);
     }
 
     @Override
-    protected void inflateChildrenView(LayoutInflater inflater, View view) {
-        initChart();
-//        parseChartCache();
-
-        Map<ApplicationInformation, CustomMetricMeasurement> dataMap = AddDataStorage.get()
-                .getMeasurementByOption(parseOptionName());
-        for (ApplicationInformation item : AddDataStorage.get().selectedImeAppList) {
-            View v = inflater.inflate(R.layout.fragment_add_entry, null, false);
-            TextView textView = v.findViewById(R.id.entry_key);
-            textView.setText(item.getAppName() + "(" + getValueUnit() + ")");
-            int inputType = InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL | InputType.TYPE_NUMBER_FLAG_DECIMAL;
-            EditText editText = v.findViewById(R.id.entry_value);
-            editText.setInputType(inputType);
-            editText.setTag(item);
-            peakEditText(editText, item, dataMap);
-            editTextList.add(editText);
-            ((ViewGroup)view).addView(v);
-            editText.addTextChangedListener(watcher);
-        }
-
-        setHasOptionsMenu(true);
-        view.post(new Runnable() {
-            @Override
-            public void run() {
-                checkMenuState();
-            }
-        });
+    protected View initViewsForApp(LayoutInflater inflater, ApplicationInformation item,
+                                 Map<ApplicationInformation, CustomMetricMeasurement> dataMap) {
+        View v = inflater.inflate(R.layout.fragment_add_entry, null, false);
+        setEntityTitle(v, R.id.entry_key, item);
+        setEntityValue(v, R.id.entry_value, dataMap, item, editTextList, watcher);
+        return v;
     }
 
-    private void peakEditText(@NonNull EditText editText, @NonNull ApplicationInformation information,
-                              @Nullable Map<ApplicationInformation, CustomMetricMeasurement> dataMap) {
-        if (null == dataMap) {
-            return;
-        }
-
-        CustomMetricMeasurement metricMeasurement = dataMap.get(information);
-        if (null != editText && null != metricMeasurement) {
-            float val = (float) metricMeasurement.getCustomMetric().getMax();
-            editText.setText(String.valueOf(val));
-        }
+    @Override
+    protected void parseArguments() {
+        // do nothing.
     }
 
     @Override
@@ -155,7 +90,9 @@ public class AddKeyTimeFragment extends BaseAddFragment implements OnChartValueS
         return R.layout.fragment_vertical_linear_container;
     }
 
-    private void initChart() {
+
+    @Override
+    protected void initChart() {
 //        mChart = (BarChart) findViewById(R.id.chart1);
         titleView.setText(getActivity().getTitle());
         mChart.setOnChartValueSelectedListener(this);
@@ -227,26 +164,14 @@ public class AddKeyTimeFragment extends BaseAddFragment implements OnChartValueS
 //        mChart.setMarker(mv); // Set the marker to the chart
     }
 
-    protected CustomMetricMeasurement newMetricMeasurement(double value) {
-        CustomMetricMeasurement metric = CustomMetricProducer.makeMeasurement(getName(),
-                getCategory(), 1, value, 0, getCountUnit(), getValueUnit());
-        metric.setScope("manual");
-        return metric;
-    }
-
     @Override
     protected boolean nextStep() {
         try {
-//            DeviceInformation deviceInformation = Agent.getDeviceInformation();
-            // one harvest data per application
             String option = parseOptionName();
             for (EditText editText : editTextList) {
                 ApplicationInformation item = (ApplicationInformation) editText.getTag();
-//                HarvestData harvestData = new HarvestData(item, deviceInformation);
                 double value = Double.parseDouble(editText.getText().toString());
                 CustomMetricMeasurement measurement = newMetricMeasurement(value);
-//                harvestData.getMetrics().addMetric(measurement.getCustomMetric());
-//                AddDataStorage.get().testData(harvestData);
                 AddDataStorage.get().addCache(option, item, measurement);
             }
             return true;
@@ -256,8 +181,6 @@ public class AddKeyTimeFragment extends BaseAddFragment implements OnChartValueS
         }
         return false;
     }
-
-    protected RectF mOnValueSelectedRectF = new RectF();
 
     @SuppressLint("NewApi")
     @Override
@@ -279,31 +202,6 @@ public class AddKeyTimeFragment extends BaseAddFragment implements OnChartValueS
 
         MPPointF.recycleInstance(position);
     }
-
-    @Override
-    public void onNothingSelected() { }
-
-//    private void parseChartCache() {
-//        Map<ApplicationInformation, CustomMetricMeasurement> dataMap = AddDataStorage.get()
-//                .getMeasurementByOption(parseOptionName());
-//        if (null != dataMap) {
-//            ArrayList<BarEntry> yVals1 = new ArrayList<>();
-//            float index = 1f;
-//            for (EditText editText : editTextList) {
-//                ApplicationInformation item = (ApplicationInformation) editText.getTag();
-//                CustomMetricMeasurement metricMeasurement = dataMap.get(item);
-//                if (null == metricMeasurement) {
-//                } else {
-//                    float val = (float) metricMeasurement.getCustomMetric().getMax();
-//                    yVals1.add(new BarEntry(index, val));
-//                    editText.setText(String.valueOf(val));
-//                }
-//                index += 1f;
-//            }
-//            fillDataSet(yVals1);
-//            mChart.invalidate();
-//        }
-//    }
 
     private void refreshBarChart() {
         int count = editTextList.size();
@@ -348,9 +246,5 @@ public class AddKeyTimeFragment extends BaseAddFragment implements OnChartValueS
 
             mChart.setData(data);
         }
-    }
-
-    protected final String parseOptionName() {
-        return getCategory() + "/" + getName();
     }
 }
