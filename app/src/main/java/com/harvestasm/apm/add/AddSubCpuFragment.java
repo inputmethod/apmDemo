@@ -3,6 +3,7 @@ package com.harvestasm.apm.add;
 import android.annotation.SuppressLint;
 import android.graphics.RectF;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -271,5 +272,13 @@ public class AddSubCpuFragment extends AddCharDataFragment {
 
             mChart.setData(data);
         }
+    }
+
+    public static Fragment newInstance(int type) {
+        Fragment fragment = new AddSubCpuFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("type", type);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 }

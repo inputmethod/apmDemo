@@ -61,6 +61,7 @@ abstract public class AddCharDataFragment extends BaseAddFragment implements OnC
 
     @Override
     protected final void inflateChildrenView(LayoutInflater inflater, View view) {
+        parseArguments();
         initChart();
 
         Map<ApplicationInformation, CustomMetricMeasurement> dataMap = AddDataStorage.get()
@@ -69,8 +70,6 @@ abstract public class AddCharDataFragment extends BaseAddFragment implements OnC
             View v = initViewsForApp(inflater, item, dataMap);
             ((ViewGroup)view).addView(v);
         }
-
-        parseArguments();
 
         setHasOptionsMenu(true);
         view.post(new Runnable() {

@@ -8,7 +8,7 @@ import com.harvestasm.apm.sample.R;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class AddFrameFragment extends AddElectricCurrentFragment {
+public class AddFrameFragment extends AddCategoryFragment {
     @Override
     protected void inflateChildrenView(LayoutInflater inflater, View view) {
         addOptionView(inflater, R.id.frame_theme_slide, R.string.frame_theme_slide);

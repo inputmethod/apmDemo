@@ -8,7 +8,7 @@ import com.harvestasm.apm.sample.R;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class AddCpuFragment  extends AddElectricCurrentFragment {
+public class AddCpuFragment  extends AddCategoryFragment {
     @Override
     protected void inflateChildrenView(LayoutInflater inflater, View view) {
         addOptionView(inflater, R.id.cpu_idle, R.string.cpu_idle);

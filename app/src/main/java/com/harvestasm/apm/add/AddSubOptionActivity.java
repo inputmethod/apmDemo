@@ -36,60 +36,27 @@ public class AddSubOptionActivity extends BaseChartActivity {
         Fragment fragment = fragmentManager.findFragmentByTag(tag);
         if (null == fragment) {
             if (id == R.id.electric_current_average) {
-                fragment = new AddSubElectricCurrentFragment();
-                Bundle bundle = new Bundle();
-                bundle.putBoolean("offscreen", false);
-                fragment.setArguments(bundle);
+                fragment = AddSubElectricCurrentFragment.newInstance(false);
             } else if (id == R.id.electric_current_offscreen) {
-                fragment = new AddSubElectricCurrentFragment();
-                Bundle bundle = new Bundle();
-                bundle.putBoolean("offscreen", true);
-                fragment.setArguments(bundle);
+                fragment = AddSubElectricCurrentFragment.newInstance(true);
             } else if (id == R.id.cpu_idle) {
-                fragment = new AddSubCpuFragment();
-                Bundle bundle = new Bundle();
-                bundle.putInt("type", 0);
-                fragment.setArguments(bundle);
+                fragment = AddSubCpuFragment.newInstance(0);
             } else if (id == R.id.cpu_medium) {
-                fragment = new AddSubCpuFragment();
-                Bundle bundle = new Bundle();
-                bundle.putInt("type", 1);
-                fragment.setArguments(bundle);
+                fragment = AddSubCpuFragment.newInstance(1);
             } else if (id == R.id.cpu_long) {
-                fragment = new AddSubCpuFragment();
-                Bundle bundle = new Bundle();
-                bundle.putInt("type", 2);
-                fragment.setArguments(bundle);
+                fragment = AddSubCpuFragment.newInstance(2);
             } else if (id == R.id.frame_theme_slide) {
-                fragment = new AddSubFrameFragment();
-                Bundle bundle = new Bundle();
-                bundle.putInt("type", 0);
-                fragment.setArguments(bundle);
+                fragment = AddSubFrameFragment.newInstance(0);
             } else if (id == R.id.frame_emoji_slide) {
-                fragment = new AddSubFrameFragment();
-                Bundle bundle = new Bundle();
-                bundle.putInt("type", 1);
-                fragment.setArguments(bundle);
+                fragment = AddSubFrameFragment.newInstance(1);
             } else if (id == R.id.frame_switch_kb_symbol) {
-                fragment = new AddSubFrameFragment();
-                Bundle bundle = new Bundle();
-                bundle.putInt("type", 2);
-                fragment.setArguments(bundle);
+                fragment = AddSubFrameFragment.newInstance(2);
             } else if (id == R.id.frame_switch_kb_emoji) {
-                fragment = new AddSubFrameFragment();
-                Bundle bundle = new Bundle();
-                bundle.putInt("type", 3);
-                fragment.setArguments(bundle);
+                fragment = AddSubFrameFragment.newInstance(3);
             } else if (id == R.id.frame_switch_kb_setting) {
-                fragment = new AddSubFrameFragment();
-                Bundle bundle = new Bundle();
-                bundle.putInt("type", 4);
-                fragment.setArguments(bundle);
+                fragment = AddSubFrameFragment.newInstance(4);
             } else if (id == R.id.frame_kb_typing) {
-                fragment = new AddSubFrameFragment();
-                Bundle bundle = new Bundle();
-                bundle.putInt("type", 5);
-                fragment.setArguments(bundle);
+                fragment = AddSubFrameFragment.newInstance(5);
             } else {
                 // unknown cases.
                 Log.e(TAG, "onCreate skip with unknown id = " + id);

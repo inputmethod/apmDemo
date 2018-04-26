@@ -1,6 +1,7 @@
 package com.harvestasm.apm.add;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -44,5 +45,13 @@ public class AddSubFrameFragment extends AddKeyTimeFragment {
         if (null != bundle) {
             type = bundle.getInt("type");
         }
+    }
+
+    public static Fragment newInstance(int type) {
+        Fragment fragment = new AddSubFrameFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("type", type);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 }
