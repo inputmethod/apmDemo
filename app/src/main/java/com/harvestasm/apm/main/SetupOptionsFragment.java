@@ -23,9 +23,6 @@ public class SetupOptionsFragment extends Fragment {
         return activityViewModel;
     }
 
-    public SetupOptionsFragment() {
-    }
-
     private final View.OnClickListener listener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {

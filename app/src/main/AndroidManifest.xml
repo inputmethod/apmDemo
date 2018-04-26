@@ -47,6 +47,8 @@
         <activity android:name="com.harvestasm.apm.add.AddSubOptionActivity"
             android:label="@string/action_add_data"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name="com.harvestasm.apm.preview.PreviewActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

@@ -6,9 +6,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.MenuItem;
 
 import com.harvestasm.apm.add.AddDataStorage;
 import com.harvestasm.apm.add.ScrollingActivity;
+import com.harvestasm.apm.preview.PreviewActivity;
 import com.harvestasm.apm.sample.R;
 import com.harvestasm.chart.BaseChartActivity;
 
@@ -40,22 +42,22 @@ public class SetupActivity extends BaseChartActivity {
 //        getMenuInflater().inflate(R.menu.menu_next, menu);
 //        return true;
 //    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        if (id == R.id.action_edit) {
-//            navigationController.showOptions();
-//        } else {
-//            return super.onOptionsItemSelected(item);
-//        }
-//
-//        return true;
-//    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == R.id.action_next) {
+            PreviewActivity.start(this);
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
+
+        return true;
+    }
 
     private Fragment createFragmentFor(int id) {
         if (0 == id) {
