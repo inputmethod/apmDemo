@@ -57,7 +57,7 @@ abstract public class BaseAddFragment extends Fragment {
         int id = item.getItemId();
 
         if (id == R.id.action_next) {
-            if (nextStep()) {
+            if (onNextStep()) {
                 getActivity().onBackPressed();
             } else {
                 showNextStepTips();
@@ -67,6 +67,16 @@ abstract public class BaseAddFragment extends Fragment {
         }
 
         return true;
+    }
+
+    private boolean onNextStep() {
+        try {
+            performNextTask();
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return false;
     }
 
     private void showNextStepTips() {
@@ -82,5 +92,5 @@ abstract public class BaseAddFragment extends Fragment {
         menuItem.setEnabled(enabled);
     }
 
-    protected abstract boolean nextStep();
+    protected abstract void performNextTask();
 }

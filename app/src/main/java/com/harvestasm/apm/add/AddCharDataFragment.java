@@ -88,17 +88,24 @@ abstract public class AddCharDataFragment extends BaseAddFragment implements OnC
 
     protected abstract void refreshWithChangedText();
 
-    protected final CustomMetricMeasurement newMetricMeasurement(double value) {
-        CustomMetricMeasurement metric = CustomMetricProducer.makeMeasurement(getName(),
-                getCategory(), 1, value, 0, getCountUnit(), getValueUnit());
-        metric.setScope("manual");
-        return metric;
+    protected void addDataItem(String option, EditText editText) {
+        addDataItem(option, editText, null);
     }
 
-    protected final CustomMetricMeasurement newMetricMeasurement(double value, double otherValue) {
-        CustomMetricMeasurement metric = newMetricMeasurement(value);
-        metric.getCustomMetric().setMax(otherValue);
-        return metric;
+    protected void addDataItem(String option, EditText editText, EditText otherEditText) {
+        ApplicationInformation item = (ApplicationInformation) editText.getTag();
+        double value = Double.parseDouble(editText.getText().toString());
+        CustomMetricMeasurement measurement = CustomMetricProducer.makeMeasurement(getName(),
+                getCategory(), 1, value, 0, getCountUnit(), getValueUnit());
+
+        measurement.setScope("manual");
+
+        if (null != otherEditText) {
+            double otherValue = Double.parseDouble(otherEditText.getText().toString());
+            measurement.getCustomMetric().setMax(otherValue);
+        }
+
+        AddDataStorage.get().addCache(option, item, measurement);
     }
 
     protected abstract String getCategory();

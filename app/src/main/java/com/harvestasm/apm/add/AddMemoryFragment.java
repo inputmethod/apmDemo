@@ -1,7 +1,6 @@
 package com.harvestasm.apm.add;
 
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -13,29 +12,25 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.harvestasm.apm.sample.R;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import butterknife.BindView;
+import typany.apm.agent.android.harvest.ApplicationInformation;
+import typany.apm.agent.android.measurement.CustomMetricMeasurement;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class AddMemoryFragment extends BaseAddFragment implements OnChartValueSelectedListener {
-
+public class AddMemoryFragment extends AddCharDataFragment {
     @BindView(R.id.title)
     TextView titleView;
 
     @BindView(R.id.chart)
     LineChart mChart;
-
-    public AddMemoryFragment() {
-    }
 
     protected String getCategory() {
         return "Memory";
@@ -46,18 +41,12 @@ public class AddMemoryFragment extends BaseAddFragment implements OnChartValueSe
     }
 
     @Override
-    protected void inflateChildrenView(LayoutInflater inflater, View view) {
-        setHasOptionsMenu(true);
-        initChart2();
-        checkMenuState();
-    }
-
-    @Override
     protected int getFragmentLayoutResId() {
         return R.layout.fragment_add_memory;
     }
 
-    private void initChart2() {
+    @Override
+    protected void initChart() {
         mChart.setOnChartValueSelectedListener(this);
 
         // no description text
@@ -124,52 +113,47 @@ public class AddMemoryFragment extends BaseAddFragment implements OnChartValueSe
         rightAxis.setGranularityEnabled(false);
     }
 
-    private void initChart() {
-        titleView.setText(getActivity().getTitle());
-        mChart.setOnChartValueSelectedListener(this);
-
-        mChart.setDrawGridBackground(false);
-        mChart.getDescription().setEnabled(false);
-        mChart.setDrawBorders(false);
-
-        mChart.getAxisLeft().setEnabled(false);
-        mChart.getAxisRight().setDrawAxisLine(false);
-        mChart.getAxisRight().setDrawGridLines(false);
-        mChart.getXAxis().setDrawAxisLine(false);
-        mChart.getXAxis().setDrawGridLines(false);
-
-        // enable touch gestures
-        mChart.setTouchEnabled(true);
-
-        // enable scaling and dragging
-        mChart.setDragEnabled(true);
-        mChart.setScaleEnabled(true);
-
-        // if disabled, scaling can be done on x- and y-axis separately
-        mChart.setPinchZoom(false);
-
-        Legend l = mChart.getLegend();
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-        l.setOrientation(Legend.LegendOrientation.VERTICAL);
-        l.setDrawInside(false);
+    @Override
+    protected void refreshWithChangedText() {
+        checkMenuState();
+        mChart.invalidate();
     }
 
-    private void checkMenuState() {
-        refreshBarChart2();
-//        refreshBarChart();
+    @Override
+    protected void checkMenuState() {
+        refreshBarChart();
+
+        // todo: 检查输入控件设置下一步状态
+//        if (hasEmptyValue(editTextList) || hasEmptyValue(otherEditTextList)) {
+//            enableNextMenu(false);
+//            return;
+//        }
+
+        enableNextMenu(true);
     }
 
-    private int[] mColors = new int[] {
-            ColorTemplate.VORDIPLOM_COLORS[0],
-            ColorTemplate.VORDIPLOM_COLORS[1],
-            ColorTemplate.VORDIPLOM_COLORS[2]
-    };
+    @Override
+    protected View initViewsForApp(LayoutInflater inflater, ApplicationInformation item,
+                                   Map<ApplicationInformation, CustomMetricMeasurement> dataMap) {
+        View v = inflater.inflate(R.layout.fragment_add_list_entry, null, false);
 
-    private void refreshBarChart2() {
+        // todo: 初始化每个应用输入内存点的控件
+        setEntityTitle(v, R.id.entry_key, item);
+//        setEntityValue(v, R.id.entry_value, dataMap, item, editTextList, watcher);
+//        setEntityValue(v, R.id.entry_other_value, dataMap, item, otherEditTextList, watcher);
+
+        return v;
+    }
+
+    @Override
+    protected void parseArguments() {
+
+    }
+
+    private void refreshBarChart() {
         int count = 20;
         float range = 30;
-        ArrayList<Entry> yVals1 = new ArrayList<Entry>();
+        ArrayList<Entry> yVals1 = new ArrayList<>();
 
         for (int i = 0; i < count; i++) {
             float mult = range / 2f;
@@ -177,7 +161,7 @@ public class AddMemoryFragment extends BaseAddFragment implements OnChartValueSe
             yVals1.add(new Entry(i, val));
         }
 
-        ArrayList<Entry> yVals2 = new ArrayList<Entry>();
+        ArrayList<Entry> yVals2 = new ArrayList<>();
 
         for (int i = 0; i < count-1; i++) {
             float mult = range;
@@ -188,7 +172,7 @@ public class AddMemoryFragment extends BaseAddFragment implements OnChartValueSe
 //            }
         }
 
-        ArrayList<Entry> yVals3 = new ArrayList<Entry>();
+        ArrayList<Entry> yVals3 = new ArrayList<>();
 
         for (int i = 0; i < count; i++) {
             float mult = range;
@@ -261,56 +245,12 @@ public class AddMemoryFragment extends BaseAddFragment implements OnChartValueSe
         mChart.invalidate();
     }
 
-    private void refreshBarChart() {
-        mChart.resetTracking();
-
-        ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
-
-        for (int z = 0; z < AddDataStorage.get().selectedImeAppList.size(); z++) {
-
-            ArrayList<Entry> values = new ArrayList<Entry>();
-
-            for (int i = 0; i < 20; i++) {
-                double val = (Math.random() * 80000) + 70000;
-                values.add(new Entry(i, (float) val));
-            }
-
-            LineDataSet d = new LineDataSet(values, "DataSet " + (z + 1));
-            d.setLineWidth(2.5f);
-            d.setCircleRadius(4f);
-
-            int color = mColors[z % mColors.length];
-            d.setColor(color);
-            d.setCircleColor(color);
-            dataSets.add(d);
-        }
-
-        // make the first DataSet dashed
-        ((LineDataSet) dataSets.get(0)).enableDashedLine(10, 10, 0);
-        ((LineDataSet) dataSets.get(0)).setColors(ColorTemplate.VORDIPLOM_COLORS);
-        ((LineDataSet) dataSets.get(0)).setCircleColors(ColorTemplate.VORDIPLOM_COLORS);
-
-        LineData data = new LineData(dataSets);
-        mChart.setData(data);
-        mChart.invalidate();
-    }
-    // todo: to be implemented
     @Override
-    protected boolean nextStep() {
-        return false;
+    protected void performNextTask() {
+        // todo: save typed-in data and save to cache.
+        String option = parseOptionName();
+//        for (EditText editText : editTextList) {
+//            addDataItem(option, editText);
+//        }
     }
-
-    @Override
-    public void onValueSelected(Entry e, Highlight h) {
-        Log.i("VAL SELECTED",
-                "Value: " + e.getY() + ", xIndex: " + e.getX()
-                        + ", DataSet index: " + h.getDataSetIndex());
-    }
-
-    @Override
-    public void onNothingSelected() {
-        // TODO Auto-generated method stub
-
-    }
-
 }

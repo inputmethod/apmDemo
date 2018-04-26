@@ -183,29 +183,16 @@ public class AddSubCpuFragment extends AddCharDataFragment {
     }
 
     @Override
-    protected boolean nextStep() {
-        try {
-            assert(editTextList.size() == otherEditTextList.size());
+    protected void performNextTask() {
+        assert(editTextList.size() == otherEditTextList.size());
 
-            String option = parseOptionName();
+        String option = parseOptionName();
 
-            for (int i = 0; i < editTextList.size(); i++) {
-                EditText editText = editTextList.get(i);
-                EditText otherEditText = otherEditTextList.get(i);
-
-                ApplicationInformation item = (ApplicationInformation) editText.getTag();
-                double value = Double.parseDouble(editText.getText().toString());
-                double otherValue = Double.parseDouble(otherEditText.getText().toString());
-
-                CustomMetricMeasurement measurement = newMetricMeasurement(value, otherValue);
-                AddDataStorage.get().addCache(option, item, measurement);
-            }
-            return true;
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        for (int i = 0; i < editTextList.size(); i++) {
+            EditText editText = editTextList.get(i);
+            EditText otherEditText = otherEditTextList.get(i);
+            addDataItem(option, editText, otherEditText);
         }
-        return false;
     }
 
     @SuppressLint("NewApi")

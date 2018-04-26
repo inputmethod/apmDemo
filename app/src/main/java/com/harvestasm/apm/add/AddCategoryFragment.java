@@ -49,9 +49,15 @@ abstract public class AddCategoryFragment extends BaseAddFragment {
         return R.layout.fragment_add_electric_current;
     }
 
-
     @Override
-    protected boolean nextStep() {
-        return false;
+    protected final void inflateChildrenView(LayoutInflater inflater, View view) {
+        initCategoryItem(inflater);
+    }
+
+    protected abstract void initCategoryItem(LayoutInflater inflater);
+
+    // todo: 去掉基类空实现，各个子类自行实现
+    @Override
+    protected void performNextTask() {
     }
 }

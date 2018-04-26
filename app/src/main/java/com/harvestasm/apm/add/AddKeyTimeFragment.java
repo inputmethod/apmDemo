@@ -165,21 +165,11 @@ public class AddKeyTimeFragment extends AddCharDataFragment {
     }
 
     @Override
-    protected boolean nextStep() {
-        try {
-            String option = parseOptionName();
-            for (EditText editText : editTextList) {
-                ApplicationInformation item = (ApplicationInformation) editText.getTag();
-                double value = Double.parseDouble(editText.getText().toString());
-                CustomMetricMeasurement measurement = newMetricMeasurement(value);
-                AddDataStorage.get().addCache(option, item, measurement);
-            }
-            return true;
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
+    protected void performNextTask() {
+        String option = parseOptionName();
+        for (EditText editText : editTextList) {
+            addDataItem(option, editText);
         }
-        return false;
     }
 
     @SuppressLint("NewApi")

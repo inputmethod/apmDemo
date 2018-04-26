@@ -1,7 +1,6 @@
 package com.harvestasm.apm.add;
 
 import android.view.LayoutInflater;
-import android.view.View;
 
 import com.harvestasm.apm.sample.R;
 
@@ -10,7 +9,7 @@ import com.harvestasm.apm.sample.R;
  */
 public class AddFrameFragment extends AddCategoryFragment {
     @Override
-    protected void inflateChildrenView(LayoutInflater inflater, View view) {
+    protected void initCategoryItem(LayoutInflater inflater) {
         addOptionView(inflater, R.id.frame_theme_slide, R.string.frame_theme_slide);
         addOptionView(inflater, R.id.frame_emoji_slide, R.string.frame_emoji_slide);
         addOptionView(inflater, R.id.frame_switch_kb_symbol, R.string.frame_switch_kb_symbol);
