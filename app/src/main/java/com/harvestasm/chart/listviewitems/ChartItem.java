@@ -44,6 +44,8 @@ public abstract class ChartItem {
 
         public static final int STASTIC_BY_DEVICE = 100;
         public static final int STASTIC_BY_APP = 101;
+
+        public static final int STASTIC_PREVIEW = 200;
     }
     
     protected static final int TYPE_BARCHART = 0;

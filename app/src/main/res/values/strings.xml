@@ -11,6 +11,7 @@
     <string name="action_ok">确定</string>
     <string name="action_edit">编辑</string>
     <string name="action_next">下一步</string>
+    <string name="action_preview">预览</string>
 
     <string name="memory">内存占用</string>
     <string name="pressing_key_time">按键响应时间</string>

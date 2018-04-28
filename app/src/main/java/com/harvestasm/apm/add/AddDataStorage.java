@@ -219,6 +219,10 @@ public class AddDataStorage {
     private final Map<ApplicationInformation, Map<String, CustomMetricMeasurement>> measurementByApp = new HashMap<>();
     private final Map<String, Map<ApplicationInformation, CustomMetricMeasurement>> measurementByOption = new HashMap<>();
 
+    public Map<String, Map<ApplicationInformation, CustomMetricMeasurement>> getMeasurementByOption() {
+        return measurementByOption;
+    }
+
     public Map<ApplicationInformation, CustomMetricMeasurement> getMeasurementByOption(String option) {
         return measurementByOption.get(option);
     }

@@ -132,7 +132,7 @@ public class SetupNoticeFragment extends SwipeRefreshBaseFragment<DeviceInformat
         noticeTips.setVisibility(View.GONE);
 
         setHasOptionsMenu(true);
-        getActivity().invalidateOptionsMenu();
+//        getActivity().invalidateOptionsMenu();
     }
 
     @Override
