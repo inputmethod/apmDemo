@@ -24,12 +24,21 @@
                 <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
         <!--</activity>-->
-        <activity
-            android:name="com.harvestasm.chart.multilist.MultiChartActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name="com.harvestasm.chart.multibar.MultiBarChartActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+        <!--<activity-->
+            <!--android:name="com.harvestasm.chart.multilist.MultiChartActivity"-->
+            <!--android:theme="@style/AppTheme.NoActionBar" />-->
+        <!--<activity-->
+            <!--android:name="com.harvestasm.chart.multibar.MultiBarChartActivity"-->
+            <!--android:theme="@style/AppTheme.NoActionBar" />-->
+        <activity android:name="com.harvestasm.apm.browser.BrowserActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name="com.harvestasm.apm.main.SetupActivity"
             android:label="@string/title_main"
@@ -39,6 +48,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name="com.harvestasm.apm.add.ScrollingActivity"
             android:label="@string/action_add_data"

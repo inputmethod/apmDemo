@@ -49,7 +49,7 @@ public class SetupActivity extends BaseChartActivity {
 //        int id = item.getItemId();
 //
 //        if (id == R.id.action_next) {
-//            PreviewActivity.start(this);
+//            BrowserActivity.start(this);
 //        } else {
 //            return super.onOptionsItemSelected(item);
 //        }
