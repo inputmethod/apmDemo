@@ -1,5 +1,7 @@
 package com.harvestasm.apm.repository.model.search;
 
+import java.util.List;
+
 import typany.apm.com.google.gson.annotations.SerializedName;
 
 /**
@@ -11,6 +13,7 @@ public class ApmBaseSourceType {
     private String deviceId;
     @SerializedName("@timestamp")
     private String timestamp;
+    private List<String> app;
 
     public String getDeviceId() {
         return deviceId;
@@ -26,5 +29,13 @@ public class ApmBaseSourceType {
 
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public List<String> getApp() {
+        return app;
+    }
+
+    public void setApp(List<String> app) {
+        this.app = app;
     }
 }

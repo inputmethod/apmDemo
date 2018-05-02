@@ -48,6 +48,14 @@ public class ApmRepository extends BaseRepository<ApmResource> {
         return getSource().connectSearch(INDEX_MOBILE, MAX_QUERY_COUNT);
     }
 
+    public Call<ApmDataSearchResponse> apmTestDataSearch() {
+        return getSource().dataSearch(INDEX_TEST, MAX_QUERY_COUNT);
+    }
+
+    public Call<ApmConnectSearchResponse> apmTestConnectSearch() {
+        return getSource().connectSearch(INDEX_TEST, MAX_QUERY_COUNT);
+    }
+
     public ApmConnectResponse apmTestData(JsonObject data) throws Exception {
         Call<ApmConnectResponse> call = getSource().data(INDEX_TEST, data);
         Response<ApmConnectResponse> response = call.execute();
