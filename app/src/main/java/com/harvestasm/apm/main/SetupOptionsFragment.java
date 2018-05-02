@@ -49,7 +49,7 @@ public class SetupOptionsFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        inflater.inflate(R.menu.menu_next, menu);
+        inflater.inflate(R.menu.menu_preview, menu);
     }
 
     @Override
