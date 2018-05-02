@@ -14,17 +14,17 @@ import static android.content.ContentValues.TAG;
 
 public class ApmRepositoryHelper {
     public static void doLoadTask(ApmRepository repository, final CallBack callBack) {
-        repository.apmTestConnectSearch().enqueue(new Callback<ApmConnectSearchResponse>() {
-            @Override
-            public void onResponse(Call<ApmConnectSearchResponse> call, Response<ApmConnectSearchResponse> response) {
-                callBack.onConnectResponse(response.body());
-            }
-
-            @Override
-            public void onFailure(Call<ApmConnectSearchResponse> call, Throwable throwable) {
-                Log.e(TAG, "repository.connectSearch() failed " + throwable.getMessage());
-            }
-        });
+//        repository.apmTestConnectSearch().enqueue(new Callback<ApmConnectSearchResponse>() {
+//            @Override
+//            public void onResponse(Call<ApmConnectSearchResponse> call, Response<ApmConnectSearchResponse> response) {
+//                callBack.onConnectResponse(response.body());
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ApmConnectSearchResponse> call, Throwable throwable) {
+//                Log.e(TAG, "repository.connectSearch() failed " + throwable.getMessage());
+//            }
+//        });
 
         repository.apmTestDataSearch().enqueue(new Callback<ApmDataSearchResponse>() {
             @Override

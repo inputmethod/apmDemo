@@ -17,9 +17,7 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.IPieDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.harvestasm.apm.add.AddDataStorage;
-import com.harvestasm.apm.reporter.ApmConnectSourceIndex;
 import com.harvestasm.apm.reporter.ApmDataSourceIndex;
-import com.harvestasm.apm.reporter.ApmSourceGroup;
 import com.harvestasm.apm.repository.model.ApmMeasurementItem;
 import com.harvestasm.apm.repository.model.ApmSourceData;
 import com.harvestasm.apm.repository.model.search.ApmBaseUnit;
@@ -84,14 +82,14 @@ public class BrowserViewModel extends ViewModel {
     }
 
     private void checkResult(final Typeface typeface) {
-        if (null == connectResponse || null == dataResponse) {
+        if (/*null == connectResponse || */null == dataResponse) {
             Log.i(TAG, "checkResult, skip and wait until all data loaded.");
             return;
         }
 
-        ApmConnectSourceIndex connectSourceIndex = new ApmConnectSourceIndex(connectResponse);
+//        ApmConnectSourceIndex connectSourceIndex = new ApmConnectSourceIndex(connectResponse);
         ApmDataSourceIndex dataSourceIndex = new ApmDataSourceIndex(dataResponse);
-        List<ApmSourceGroup> deviceGroupList = ApmSourceGroup.parseSourceGroup(dataSourceIndex, connectSourceIndex);
+//        List<ApmSourceGroup> deviceGroupList = ApmSourceGroup.parseSourceGroup(dataSourceIndex, connectSourceIndex);
         HashMap<String, List<ApmBaseUnit<ApmSourceData>>> dataByOption = dataSourceIndex.getMeasureNameIndexMap();
 
         List<ChartItem> list = new ArrayList<>();
