@@ -3,8 +3,12 @@ package com.harvestasm.apm.preview;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ListView;
 
 import com.harvestasm.apm.sample.R;
@@ -19,7 +23,7 @@ import java.util.List;
 public class PreviewFragment extends BaseSwipeRefreshFragment<ChartItem, ListView> {
     private static final String TAG = PreviewFragment.class.getSimpleName();
 
-    private PreviewViewModel viewMultiChartModel;
+    private PreviewViewModel previewViewModel;
     private PreviewAdapter cda;
 
     @Override
@@ -27,27 +31,28 @@ public class PreviewFragment extends BaseSwipeRefreshFragment<ChartItem, ListVie
         return R.layout.including_listview;
     }
 
-    protected void refreshChangedData(ListView lv, List<ChartItem> chartItems) {
-        cda = new PreviewAdapter(getContext(), chartItems, viewMultiChartModel);
+    protected void refreshChangedData(@NonNull ListView lv, @NonNull List<ChartItem> chartItems) {
+        cda = new PreviewAdapter(getContext(), chartItems, previewViewModel);
         lv.setAdapter(cda);
+        setHasOptionsMenu(!chartItems.isEmpty());
     }
 
     protected void doLoadingTask() {
-        viewMultiChartModel.load(getTypeface());
+        previewViewModel.load(getTypeface());
     }
 
     @Override
     protected LiveData<List<ChartItem>> setViewModel() {
-        viewMultiChartModel = newViewModel(PreviewViewModel.class);
+        previewViewModel = newViewModel(PreviewViewModel.class);
 
-        viewMultiChartModel.clickItem.observe(this, new Observer<ChartItem>() {
+        previewViewModel.clickItem.observe(this, new Observer<ChartItem>() {
             @Override
             public void onChanged(@Nullable ChartItem item) {
                 onClickById(item);
             }
         });
 
-        viewMultiChartModel.networkState.observe(this, new Observer<Integer>() {
+        previewViewModel.networkState.observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer integer) {
                 Log.d(TAG, "networking value " + integer);
@@ -57,9 +62,9 @@ public class PreviewFragment extends BaseSwipeRefreshFragment<ChartItem, ListVie
             }
         });
 
-        startLoading(viewMultiChartModel.refreshState);
+        startLoading(previewViewModel.refreshState);
 
-        return viewMultiChartModel.items;
+        return previewViewModel.items;
     }
 
     private void onClickById(@Nullable ChartItem item) {
@@ -70,30 +75,34 @@ public class PreviewFragment extends BaseSwipeRefreshFragment<ChartItem, ListVie
 
         int id = item.getId();
         Log.v(TAG, "onClickById, id = " + id);
-        if (ChartItem.ID.MEMORY == id) {
-            viewMultiChartModel.parseLineChartItem(item);
-        } else if (ChartItem.ID.KEYBOARD_HIDE == id) {
-            viewMultiChartModel.parseBarChartItem(item);
-        } else if (ChartItem.ID.BATTARY == id) {
-            viewMultiChartModel.parseBarChartItem(item);
-        } else if (ChartItem.ID.CPU == id) {
-            viewMultiChartModel.parseBarChartItem(item);
-        } else if (ChartItem.ID.SKIN_SLIP == id) {
-            viewMultiChartModel.parseBarChartItem(item);
-        } else if (ChartItem.ID.EMOJI_SLIP == id) {
-            viewMultiChartModel.parseBarChartItem(item);
-        } else if (ChartItem.ID.SYMBOL_KB_SWITCH == id) {
-            viewMultiChartModel.parseBarChartItem(item);
-        } else if (ChartItem.ID.EMOJI_KB_SWITCH == id) {
-            viewMultiChartModel.parseBarChartItem(item);
-        } else if (ChartItem.ID.KB_SETTING == id) {
-            viewMultiChartModel.parseBarChartItem(item);
-        } else if (ChartItem.ID.KB_BALLOOM == id) {
-            viewMultiChartModel.parseBarChartItem(item);
-        } else if (ChartItem.ID.DEMO_PI == id) {
-            viewMultiChartModel.parsePieChartItem(item);
+        if (ChartItem.ID.STASTIC_PREVIEW == id) {
+            // todo: handle click event on item.
         } else {
-            Log.e(TAG, "Unknown item id: " + id);
+            Log.e(TAG, "Unexpected item id: " + id);
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        inflater.inflate(R.menu.menu_next, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == R.id.action_next) {
+            // todo: close the preview activity or show error when with error
+            previewViewModel.pushCache();
+//            getActivity().finish();
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
+
+        return true;
     }
 }

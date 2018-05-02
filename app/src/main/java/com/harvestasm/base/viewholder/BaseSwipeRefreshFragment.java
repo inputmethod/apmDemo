@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 
 import com.harvestasm.apm.sample.R;
 
+import java.util.Collections;
 import java.util.List;
 
 /***
@@ -75,6 +76,7 @@ abstract public class BaseSwipeRefreshFragment<T, V extends View> extends Fragme
             public void onChanged(@Nullable List<T> dataItems) {
                 if (null == dataItems) {
                     Log.w(TAG, "null data comes.");
+                    refreshChangedData(listView, Collections.<T>emptyList());
                 } else {
                     Log.d(TAG, "data size " + dataItems.size());
                     refreshChangedData(listView, dataItems);
@@ -83,7 +85,7 @@ abstract public class BaseSwipeRefreshFragment<T, V extends View> extends Fragme
         });
     }
 
-    protected abstract void refreshChangedData(V lv, List<T> dataItems);
+    protected abstract void refreshChangedData(@NonNull V lv, @NonNull List<T> dataItems);
     protected abstract LiveData<List<T>> setViewModel();
 
     protected abstract void doLoadingTask();

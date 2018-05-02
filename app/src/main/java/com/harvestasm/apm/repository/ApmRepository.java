@@ -7,11 +7,10 @@ import com.harvestasm.apm.repository.model.search.ApmCommonSearchResponse;
 import com.harvestasm.apm.repository.model.search.ApmConnectSearchResponse;
 import com.harvestasm.apm.repository.model.search.ApmDataSearchResponse;
 
-import org.json.JSONObject;
-
 import typany.apm.com.google.gson.JsonElement;
 import typany.apm.com.google.gson.JsonObject;
 import typany.apm.retrofit2.Call;
+import typany.apm.retrofit2.Callback;
 import typany.apm.retrofit2.Response;
 
 /**
@@ -59,5 +58,10 @@ public class ApmRepository extends BaseRepository<ApmResource> {
         Call<ApmConnectResponse> call = getSource().connect(INDEX_TEST, data);
         Response<ApmConnectResponse> response = call.execute();
         return response.body();
+    }
+
+    public void apmTestConnectAsync(JsonElement data, Callback<ApmConnectResponse> callback) {
+        Call<ApmConnectResponse> call = getSource().connect(INDEX_TEST, data);
+        call.enqueue(callback);
     }
 }

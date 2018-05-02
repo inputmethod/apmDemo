@@ -24,13 +24,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
-import io.reactivex.Flowable;
 import io.reactivex.functions.Consumer;
 import typany.apm.agent.android.harvest.ApplicationInformation;
+import typany.apm.agent.android.harvest.ConnectInformation;
+import typany.apm.agent.android.harvest.HarvestData;
 import typany.apm.agent.android.measurement.CustomMetricMeasurement;
 
 // todo: simplest implement without repository to store data item.
@@ -42,7 +40,6 @@ public class PreviewViewModel extends ViewModel {
     public final MutableLiveData<Integer> networkState = new MutableLiveData<>();
 
     public final MutableLiveData<ChartItem> clickItem = new MutableLiveData<>();
-
 
     private void resetForLoading() {
         refreshState.setValue(true);
@@ -78,29 +75,66 @@ public class PreviewViewModel extends ViewModel {
 //        ApmRepositoryHelper.doLoadTask(repository, callBack);
     }
 
+
+    // todo: 设置上传中状态，上传保存，清除上传状态，处理上传成功或失败结果
+    public void pushCache() {
+//        AddDataStorage.get().pushCache();
+        // upload connection
+        final Callable<List<ConnectInformation>> callable = new Callable<List<ConnectInformation>>() {
+            @Override
+            public List<ConnectInformation> call() {
+                return AddDataStorage.get().getCachedConnection();
+            }
+        };
+        final Consumer<List<ConnectInformation>> consumer = new Consumer<List<ConnectInformation>>() {
+            @Override
+            public void accept(List<ConnectInformation> connectInformationList) {
+                for (ConnectInformation info : connectInformationList) {
+                    AddDataStorage.get().testConnect(info);
+                }
+            }
+        };
+
+        AddDataStorage.get().runWithFlowable(callable, consumer);
+
+        // upload data
+        final Callable<List<HarvestData>> dataCallable = new Callable<List<HarvestData>>() {
+            @Override
+            public List<HarvestData> call() {
+                return AddDataStorage.get().getCachedData();
+            }
+        };
+
+        final Consumer<List<HarvestData>> dataConsumer = new Consumer<List<HarvestData>>() {
+            @Override
+            public void accept(List<HarvestData> harvestData) {
+                for (HarvestData d : harvestData) {
+                    AddDataStorage.get().testData(d);
+                }
+            }
+        };
+        AddDataStorage.get().runWithFlowable(dataCallable, dataConsumer);
+    }
+
     private void checkResult(final Typeface typeface) {
         // SEETO: rxjava
 //        AddDataStorage.get().getDeviceInfoFeature(2);
-        ExecutorService executor = Executors.newFixedThreadPool(2);
         Callable<List<ChartItem>> callable = new Callable<List<ChartItem>>() {
             @Override
             public List<ChartItem> call() {
                 return getDisplayChartItemList(typeface);
             }
         };
-
-        Future<List<ChartItem>> future = executor.submit(callable);
-
-        // Flowable.fromFuture() 在非主线程执行Callable对象
-        // Flowable.fromCallable(callable).subscribe(onNext);
-        Flowable.fromFuture(future).subscribe(new Consumer<List<ChartItem>>() {
+        Consumer<List<ChartItem>> consumer = new Consumer<List<ChartItem>>() {
             @Override
             public void accept(List<ChartItem> chartItemList) {
                 Log.e(TAG, "Consumer.accept in thread " + Thread.currentThread().getName());
 //                hardwareLiveData.setValue(deviceInformation);
                 onDataLoaded(chartItemList);
             }
-        });
+        };
+
+        AddDataStorage.get().runWithFlowable(callable, consumer);
         
         
 //        if (null == connectResponse || null == dataResponse) {

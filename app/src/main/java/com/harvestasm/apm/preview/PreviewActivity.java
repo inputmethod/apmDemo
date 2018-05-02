@@ -7,10 +7,17 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 
 import com.harvestasm.apm.sample.R;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class PreviewActivity extends AppCompatActivity {
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     private int containerId;
     private FragmentManager fragmentManager;
@@ -19,6 +26,11 @@ public class PreviewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preview);
+
+        ButterKnife.bind(this);
+
+        setSupportActionBar(toolbar);
+        setTitle(R.string.action_preview);
 
         this.containerId = R.id.container;
         this.fragmentManager = getSupportFragmentManager();

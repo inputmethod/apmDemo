@@ -16,6 +16,7 @@ import com.harvestasm.apm.utils.IMEHelper;
 import org.apache.http.util.Asserts;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -42,6 +43,15 @@ public class AddDataStorage {
 
     private final Context context;
     private static AddDataStorage _instance;
+
+    // RxJava异步执行Callable的Service对象
+    private final ExecutorService executor = Executors.newFixedThreadPool(2);
+    public  <T> void runWithFlowable(Callable<List<T>> callable, Consumer<List<T>> consumer) {
+        // Flowable.fromFuture() 在非主线程执行Callable对象
+        // Flowable.fromCallable(callable).subscribe(onNext);
+        Future<List<T>> future = executor.submit(callable);
+        Flowable.fromFuture(future).subscribe(consumer);
+    }
 
     public static final void init(Context context) {
         if (null == _instance) {
@@ -184,6 +194,7 @@ public class AddDataStorage {
         });
     }
 
+    // todo: change without new Thread, call.enque() instead
     public void testData(final HarvestData harvestData) {
         runInThread(new Runnable() {
             @Override
@@ -192,12 +203,14 @@ public class AddDataStorage {
                     ApmConnectResponse response = repository.apmTestData(harvestData.toJson());
                     Log.d("mft", "That is it " + response.get_id());
                 } catch (Exception ex) {
+                    Log.d("mft", "testData exception: " + ex.getMessage());
                     ex.printStackTrace();
                 }
             }
         }, "testData");
     }
 
+    // todo: change without new Thread
     public void testConnect(final ConnectInformation connectInformation) {
         runInThread(new Runnable() {
             @Override
@@ -206,10 +219,48 @@ public class AddDataStorage {
                     ApmConnectResponse response = repository.apmTestConnect(connectInformation.asELKJson());
                     Log.d("mft", "That is it " + response.get_id());
                 } catch (Exception ex) {
+                    Log.d("mft", "testConnect exception: " + ex.getMessage());
                     ex.printStackTrace();
                 }
             }
         }, "testConnect");
+    }
+
+
+    public List<ConnectInformation> getCachedConnection() {
+        if (selectedImeAppList.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<ConnectInformation> informationList = new ArrayList<>();
+        DeviceInformation deviceInformation = Agent.getDeviceInformation();
+        for (ApplicationInformation applicationInformation : selectedImeAppList) {
+            ConnectInformation connectInformation = new ConnectInformation(applicationInformation, deviceInformation);
+            informationList.add(connectInformation);
+        }
+        return informationList;
+    }
+
+
+    public List<HarvestData> getCachedData() {
+        if (selectedImeAppList.isEmpty() || measurementByApp.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        assert (selectedImeAppList.size() == measurementByApp.size());
+
+        final DeviceInformation deviceInformation = Agent.getDeviceInformation();
+        List<HarvestData> dataList = new ArrayList<>();
+        for (ApplicationInformation app : measurementByApp.keySet()) {
+            HarvestData harvestData = new HarvestData(app, deviceInformation);
+            Map<String, CustomMetricMeasurement> m = measurementByApp.get(app);
+            for (String s : m.keySet()) {
+                CustomMetricMeasurement measurement = m.get(s);
+                harvestData.getMetrics().addMetric(measurement.getCustomMetric());
+            }
+            dataList.add(harvestData);
+        }
+        return dataList;
     }
 
     private void runInThread(Runnable runnable, String threadName) {
