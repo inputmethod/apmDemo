@@ -104,17 +104,17 @@ public class SetupNoticeFragment extends SwipeRefreshBaseFragment<DeviceInformat
         imePickerViewModel.items.
                 observe(this, new Observer<List<ApplicationInformation>>() {
             @Override
-            public void onChanged(@Nullable List<ApplicationInformation> chartItems) {
-                if (null == chartItems) {
+            public void onChanged(@Nullable List<ApplicationInformation> applicationInformations) {
+                if (null == applicationInformations) {
                     Log.w(TAG, "null data comes.");
                 } else {
-                    Log.d(TAG, "data size " + chartItems.size());
+                    Log.d(TAG, "data size " + applicationInformations.size());
                     if (null == cda) {
-                        cda = new ImePickerAdapter(getContext(), chartItems, imePickerViewModel);
+                        cda = new ImePickerAdapter(getContext(), applicationInformations, imePickerViewModel);
                         cda.setEditMode(1);
                         recyclerView.setAdapter(cda);
                     } else {
-                        cda.notifyAdapter(chartItems, false);
+                        cda.notifyAdapter(applicationInformations, false);
                     }
                 }
             }

@@ -22,6 +22,7 @@ import com.harvestasm.chart.listviewitems.ChartItem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 // todo: simplest implement without repository to store data item.
 public class BrowserViewModel extends ViewModel {
@@ -66,21 +67,45 @@ public class BrowserViewModel extends ViewModel {
         AddDataStorage.get().doLoadTask(callBack);
     }
 
+    // todo: 以设备进行过滤或者按设备取数据
     private void checkResult(final Typeface typeface) {
         Map<String, List<ApmBaseUnit<ApmSourceData>>> dataByOption = DataStorage.get().queryByOption();
         if (dataByOption.isEmpty()) {
             return;
         }
 
+        final Set<String> optionFilterList = DataStorage.get().getFilterOptions();
+        assert(dataByOption.keySet().containsAll(optionFilterList));
+
+        final Set<String> appFilterList = DataStorage.get().getFilterApps();
+
+        final Set<String> deviceIdList = DataStorage.get().getFilterDeviceIds();
+
         List<ChartItem> list = new ArrayList<>();
         for (String key : dataByOption.keySet()) {
+            if (!optionFilterList.contains(key)) {
+                // skip as it is filtered out by options.
+                continue;
+            }
+
             List<ApmBaseUnit<ApmSourceData>> dataList = dataByOption.get(key);
             ArrayList<BarEntry> entries = new ArrayList<>();
             int index = 0;
             List<String> appList = new ArrayList<>();
             for (ApmBaseUnit<ApmSourceData> d : dataList) {
                 ApmSourceData sourceData = d.get_source();
+                String deviceId = sourceData.getDeviceId();
+                if (!deviceIdList.contains(deviceId)) {
+                    // skip as it is filtered out by devices.
+                    continue;
+                }
                 List<String> app = sourceData.getApp();
+                String appText = null == app ? "" : app.toString();
+                if (!appFilterList.contains(appText)) {
+                    // skip as it is filtered out by apps.
+                    continue;
+                }
+
                 appList.add(app.get(0) + "," + app.get(1));
                 for (ApmMeasurementItem item : sourceData.getMeasurement()) {
                     if (TextUtils.equals(key, item.getName())) {

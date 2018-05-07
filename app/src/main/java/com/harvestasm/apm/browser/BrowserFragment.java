@@ -34,7 +34,7 @@ public class BrowserFragment extends BaseSwipeRefreshFragment<ChartItem, ListVie
     protected void refreshChangedData(@NonNull ListView lv, @NonNull List<ChartItem> chartItems) {
         cda = new BrowserAdapter(getContext(), chartItems, browserViewModel);
         lv.setAdapter(cda);
-//        setHasOptionsMenu(!chartItems.isEmpty());
+        setHasOptionsMenu(!chartItems.isEmpty());
     }
 
     protected void doLoadingTask() {
@@ -85,7 +85,8 @@ public class BrowserFragment extends BaseSwipeRefreshFragment<ChartItem, ListVie
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
-//        inflater.inflate(R.menu.menu_next, menu);
+        inflater.inflate(R.menu.menu_next, menu);
+        menu.findItem(R.id.action_next).setTitle(R.string.data_filter);
     }
 
     @Override
@@ -96,9 +97,7 @@ public class BrowserFragment extends BaseSwipeRefreshFragment<ChartItem, ListVie
         int id = item.getItemId();
 
         if (id == R.id.action_next) {
-            // todo: close the preview activity or show error when with error
-//            browserViewModel.pushCache();
-//            getActivity().finish();
+            DataStorage.get().currentState.setValue(true);
         } else {
             return super.onOptionsItemSelected(item);
         }

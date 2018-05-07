@@ -1,6 +1,7 @@
 package com.harvestasm.apm.add;
 
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -90,6 +91,12 @@ abstract public class BaseAddFragment extends Fragment {
 
     protected void enableNextMenu(boolean enabled) {
         menuItem.setEnabled(enabled);
+    }
+
+    protected void setMenuLabel(@StringRes int labelId) {
+        if (null != menuItem) {
+            menuItem.setTitle(labelId);
+        }
     }
 
     protected abstract void performNextTask();
