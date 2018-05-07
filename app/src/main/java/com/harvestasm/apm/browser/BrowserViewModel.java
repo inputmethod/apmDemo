@@ -4,14 +4,12 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.graphics.Typeface;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.harvestasm.apm.add.AddDataStorage;
-import com.harvestasm.apm.reporter.ApmDataSourceIndex;
 import com.harvestasm.apm.repository.model.ApmMeasurementItem;
 import com.harvestasm.apm.repository.model.ApmSourceData;
 import com.harvestasm.apm.repository.model.search.ApmBaseUnit;
@@ -22,8 +20,8 @@ import com.harvestasm.chart.listviewitems.BarChartItem;
 import com.harvestasm.chart.listviewitems.ChartItem;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 // todo: simplest implement without repository to store data item.
 public class BrowserViewModel extends ViewModel {
@@ -48,21 +46,19 @@ public class BrowserViewModel extends ViewModel {
 
     }
 
-    private ApmConnectSearchResponse connectResponse;
-    private ApmDataSearchResponse dataResponse;
     public void load(final Typeface typeface) {
         resetForLoading();
 
         final ApmRepositoryHelper.CallBack callBack = new ApmRepositoryHelper.CallBack() {
             @Override
             public void onConnectResponse(ApmConnectSearchResponse responseBody) {
-                connectResponse = responseBody;
+                DataStorage.get().setConnectResponse(responseBody);
                 checkResult(typeface);
             }
 
             @Override
             public void onDataResponse(ApmDataSearchResponse responseBody) {
-                dataResponse = responseBody;
+                DataStorage.get().setDataResponse(responseBody);
                 checkResult(typeface);
             }
         };
@@ -71,18 +67,12 @@ public class BrowserViewModel extends ViewModel {
     }
 
     private void checkResult(final Typeface typeface) {
-        if (/*null == connectResponse || */null == dataResponse) {
-            Log.i(TAG, "checkResult, skip and wait until all data loaded.");
+        Map<String, List<ApmBaseUnit<ApmSourceData>>> dataByOption = DataStorage.get().queryByOption();
+        if (dataByOption.isEmpty()) {
             return;
         }
 
-//        ApmConnectSourceIndex connectSourceIndex = new ApmConnectSourceIndex(connectResponse);
-        ApmDataSourceIndex dataSourceIndex = new ApmDataSourceIndex(dataResponse);
-//        List<ApmSourceGroup> deviceGroupList = ApmSourceGroup.parseSourceGroup(dataSourceIndex, connectSourceIndex);
-        HashMap<String, List<ApmBaseUnit<ApmSourceData>>> dataByOption = dataSourceIndex.getMeasureNameIndexMap();
-
         List<ChartItem> list = new ArrayList<>();
-
         for (String key : dataByOption.keySet()) {
             List<ApmBaseUnit<ApmSourceData>> dataList = dataByOption.get(key);
             ArrayList<BarEntry> entries = new ArrayList<>();
