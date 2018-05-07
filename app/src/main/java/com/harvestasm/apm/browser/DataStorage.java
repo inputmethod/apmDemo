@@ -63,6 +63,35 @@ public class DataStorage {
             deviceGroupList = ApmSourceGroup.parseSourceGroup(dataSourceIndex, connectSourceIndex);
             // todo: 统计出所有设备列表，可显示的app及版本列表和可显示数据选项列表
             // 同一台设备x同一app版本上多次数据的过滤，用timestamp??
+            // 连接设备列表
+            Log.v(TAG, "/n  updateData, device size: " + connectSourceIndex.getDeviceIndexMap().size());
+            for (String key : connectSourceIndex.getDeviceIndexMap().keySet()) {
+                Log.v(TAG, "    updateData, " + key);
+            }
+
+            // 连接应用列表
+            Log.v(TAG, "/n  updateData, app(version) size: " + connectSourceIndex.getAppIndexMap().size());
+            for (String key : connectSourceIndex.getAppIndexMap().keySet()) {
+                Log.v(TAG, "    updateData, " + key);
+            }
+
+            // 上报时间戳列表
+            Log.v(TAG, "/n  updateData, time stamp size: " + connectSourceIndex.getAppIndexMap().size());
+            for (String key : connectSourceIndex.getTimestampIndexMap().keySet()) {
+                Log.v(TAG, "    updateData, " + key);
+            }
+
+            // 数据显示选项列表
+            Log.v(TAG, "/n  updateData, data option size: " + dataSourceIndex.getMeasureNameIndexMap().size());
+            for (String key : dataSourceIndex.getMeasureNameIndexMap().keySet()) {
+                Log.v(TAG, "    updateData, " + key);
+            }
+
+            // 数据关联app(版本)列表
+            Log.v(TAG, "/n  updateData, data app size: " + dataSourceIndex.getAppIndexMap().size());
+            for (String key : dataSourceIndex.getAppIndexMap().keySet()) {
+                Log.v(TAG, "    updateData, " + key);
+            }
         }
 
     }

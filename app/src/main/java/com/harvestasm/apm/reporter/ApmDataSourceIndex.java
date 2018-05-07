@@ -24,6 +24,7 @@ public class ApmDataSourceIndex extends ApmBaseSourceIndex {
     // 字段与数据映射
     private HashMap<String, List<ApmBaseUnit<ApmSourceData>>> deviceIdIndexMap = new HashMap<>();
     private HashMap<String, List<ApmBaseUnit<ApmSourceData>>> timestampIndexMap = new HashMap<>();
+    private HashMap<String, List<ApmBaseUnit<ApmSourceData>>> appIndexMap = new HashMap<>();
 
     private HashMap<String, List<ApmBaseUnit<ApmSourceData>>> transactionUrlIndexMap = new HashMap<>();
     private HashMap<String, List<ApmBaseUnit<ApmSourceData>>> measureNameIndexMap = new HashMap<>();
@@ -42,6 +43,7 @@ public class ApmDataSourceIndex extends ApmBaseSourceIndex {
         for (ApmBaseUnit<ApmSourceData> unit : apmData.getHits().getHits()) {
             ApmSourceData ctc = unit.get_source();
 
+            List<String> apps = ctc.getApp();
             String deviceId = ctc.getDeviceId();
             String timestamp = ctc.getTimestamp();
 
@@ -52,6 +54,9 @@ public class ApmDataSourceIndex extends ApmBaseSourceIndex {
             addListSizeSet(healthLengthSet, ctc.getHealth());
             // todo: event need to be check and parse
 //            eventsLengthSet.add(ctc.getEvents().size());
+
+            String appText = null == apps ? "" : apps.toString();
+            addToMap(appIndexMap, unit, appText);
 
             addToMap(deviceIdIndexMap, unit, deviceId);
             addToMap(timestampIndexMap, unit, timestamp);
@@ -137,6 +142,14 @@ public class ApmDataSourceIndex extends ApmBaseSourceIndex {
 
     public void setDeviceIdIndexMap(HashMap<String, List<ApmBaseUnit<ApmSourceData>>> deviceIdIndexMap) {
         this.deviceIdIndexMap = deviceIdIndexMap;
+    }
+
+    public HashMap<String, List<ApmBaseUnit<ApmSourceData>>> getAppIndexMap() {
+        return appIndexMap;
+    }
+
+    public void setAppIndexMap(HashMap<String, List<ApmBaseUnit<ApmSourceData>>> appIndexMap) {
+        this.appIndexMap = appIndexMap;
     }
 
     public HashMap<String, List<ApmBaseUnit<ApmSourceData>>> getTimestampIndexMap() {

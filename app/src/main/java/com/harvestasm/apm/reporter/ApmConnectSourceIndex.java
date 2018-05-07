@@ -17,8 +17,8 @@ public class ApmConnectSourceIndex extends ApmBaseSourceIndex {
 
     private HashMap<String, List<ApmBaseUnit<ApmSourceConnect>>> deviceIdIndexMap = new HashMap<>();
     private HashMap<String, List<ApmBaseUnit<ApmSourceConnect>>> timestampIndexMap = new HashMap<>();
-
     private HashMap<String, List<ApmBaseUnit<ApmSourceConnect>>> appIndexMap = new HashMap<>();
+
     private HashMap<String, List<ApmBaseUnit<ApmSourceConnect>>> deviceIndexMap = new HashMap<>();
     private HashMap<ApmDeviceMicsItem, List<ApmBaseUnit<ApmSourceConnect>>> deviceMicsItemListHashMap = new HashMap<>();
 
@@ -45,8 +45,8 @@ public class ApmConnectSourceIndex extends ApmBaseSourceIndex {
 
             addToMap(deviceIdIndexMap, unit, deviceId);
             addToMap(timestampIndexMap, unit, timestamp);
-
             addToMap(appIndexMap, unit, apps.toString());
+
             addToMap(deviceIndexMap, unit, devices.toString());
             addPartToMap(deviceMicsItemListHashMap, unit, deviceMicsItems);
         }

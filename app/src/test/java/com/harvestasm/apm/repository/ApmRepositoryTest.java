@@ -1,5 +1,6 @@
 package com.harvestasm.apm.repository;
 
+import com.harvestasm.apm.browser.DataStorage;
 import com.harvestasm.apm.reporter.ApmConnectSourceIndex;
 import com.harvestasm.apm.reporter.ApmDataSourceIndex;
 import com.harvestasm.apm.reporter.ApmSourceGroup;
@@ -114,7 +115,7 @@ public class ApmRepositoryTest {
 //        Assert.assertNotNull(groupList);
     }
 
-    private ApmBaseSearchResponse<ApmSourceData> mobileDataSearch() throws Exception {
+    private ApmDataSearchResponse mobileDataSearch() throws Exception {
         Call<ApmDataSearchResponse> call = repository.mobileDataSearch();
         Response<ApmDataSearchResponse> response = call.execute();
         return response.body();
@@ -125,4 +126,12 @@ public class ApmRepositoryTest {
 //        ApmConnectResponse response = repository.connect(apmSourceConnect);
 //        Assert.assertNotNull(response);
 //    }
+    @Test
+    public void testCombineDataConnection() throws Exception {
+        ApmDataSearchResponse dataResponse = mobileDataSearch();
+        ApmConnectSearchResponse connectResponse = mobileConnectSearch();
+        DataStorage.get().setDataResponse(dataResponse);
+        DataStorage.get().setConnectResponse(connectResponse);
+        Assert.assertNotNull(DataStorage.get().queryByOption());
+    }
 }

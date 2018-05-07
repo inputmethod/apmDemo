@@ -31,6 +31,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    // http://g.co/androidstudio/not-mocked
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
 
 dependencies {
