@@ -110,7 +110,7 @@ public class SetupNoticeFragment extends SwipeRefreshBaseFragment<DeviceInformat
                 } else {
                     Log.d(TAG, "data size " + applicationInformations.size());
                     if (null == cda) {
-                        cda = new ImePickerAdapter(getContext(), applicationInformations, imePickerViewModel);
+                        cda = new ImePickerAdapter(applicationInformations, imePickerViewModel);
                         cda.setEditMode(1);
                         recyclerView.setAdapter(cda);
                     } else {

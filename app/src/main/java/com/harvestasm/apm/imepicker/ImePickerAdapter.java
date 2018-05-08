@@ -1,6 +1,5 @@
 package com.harvestasm.apm.imepicker;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,16 +23,11 @@ public class ImePickerAdapter extends RecyclerView.Adapter<ImePickerAdapter.View
 
     int mEditMode = MYLIVE_MODE_CHECK;
 
-    private int secret = 0;
-    private String title = "";
-    private Context context;
     private final List<ApplicationInformation> mMyLiveList = new ArrayList<>();
-    private OnItemClickListener mOnItemClickListener;
 
     private final ImePickerViewModel viewMultiChartModel;
 
-    public ImePickerAdapter(Context context, List<ApplicationInformation> chartItems, ImePickerViewModel viewMultiChartModel) {
-        this.context = context;
+    public ImePickerAdapter(List<ApplicationInformation> chartItems, ImePickerViewModel viewMultiChartModel) {
         mMyLiveList.addAll(chartItems);
         this.viewMultiChartModel = viewMultiChartModel;
     }
@@ -45,10 +39,6 @@ public class ImePickerAdapter extends RecyclerView.Adapter<ImePickerAdapter.View
         }
             this.mMyLiveList.addAll(myLiveList);
         notifyDataSetChanged();
-    }
-
-    public List<ApplicationInformation> getMyLiveList() {
-        return mMyLiveList;
     }
 
     @Override
@@ -70,24 +60,13 @@ public class ImePickerAdapter extends RecyclerView.Adapter<ImePickerAdapter.View
             @Override
             public void onClick(View v) {
                 viewMultiChartModel.toggleSelected(myLive);
-                if (null != mOnItemClickListener) {
-                    mOnItemClickListener.onItemClickListener(position, mMyLiveList);
-                }
                 notifyItemChanged(position);
             }
         }, mEditMode, viewMultiChartModel.isSelect(myLive));
     }
 
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        this.mOnItemClickListener = onItemClickListener;
-    }
-
     public void setNetworkState(Integer integer) {
 
-    }
-
-    public interface OnItemClickListener {
-        void onItemClickListener(int pos, List<ApplicationInformation> myLiveList);
     }
 
     public void setEditMode(int editMode) {

@@ -26,7 +26,6 @@ public class FilterItemAdapter extends RecyclerView.Adapter<FilterItemAdapter.Vi
     int mEditMode = MYLIVE_MODE_CHECK;
 
     private final List<String> optionsList = new ArrayList<>();
-    private OnItemClickListener mOnItemClickListener;
 
     private final String category;
     private final FilterViewModel viewMultiChartModel;
@@ -65,24 +64,13 @@ public class FilterItemAdapter extends RecyclerView.Adapter<FilterItemAdapter.Vi
             @Override
             public void onClick(View v) {
                 viewMultiChartModel.toggleSelected(category, name);
-                if (null != mOnItemClickListener) {
-                    mOnItemClickListener.onItemClickListener(position, optionsList);
-                }
                 notifyItemChanged(position);
             }
         }, mEditMode, viewMultiChartModel.isSelect(category, name));
     }
 
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        this.mOnItemClickListener = onItemClickListener;
-    }
-
     public void setNetworkState(Integer integer) {
 
-    }
-
-    public interface OnItemClickListener {
-        void onItemClickListener(int pos, List<String> myLiveList);
     }
 
     public void setEditMode(int editMode) {
