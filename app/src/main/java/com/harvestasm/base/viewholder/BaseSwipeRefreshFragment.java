@@ -58,7 +58,7 @@ abstract public class BaseSwipeRefreshFragment<T, V extends View> extends Fragme
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                doLoadingTask();
+                doLoadingTask(true);
             }
         });
 
@@ -88,7 +88,7 @@ abstract public class BaseSwipeRefreshFragment<T, V extends View> extends Fragme
     protected abstract void refreshChangedData(@NonNull V lv, @NonNull List<T> dataItems);
     protected abstract LiveData<List<T>> setViewModel();
 
-    protected abstract void doLoadingTask();
+    protected abstract void doLoadingTask(boolean force);
 
     private void setRefreshing(Boolean aBoolean) {
         refreshLayout.setRefreshing(aBoolean);
@@ -110,7 +110,7 @@ abstract public class BaseSwipeRefreshFragment<T, V extends View> extends Fragme
             }
         });
 
-        doLoadingTask();
+        doLoadingTask(false);
     }
 
     protected final <T extends ViewModel> T newViewModel(Class<T> modelClass) {

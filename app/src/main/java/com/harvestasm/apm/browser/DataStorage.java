@@ -9,11 +9,13 @@ import com.harvestasm.apm.filter.item.FilterItemModel;
 import com.harvestasm.apm.reporter.ApmConnectSourceIndex;
 import com.harvestasm.apm.reporter.ApmDataSourceIndex;
 import com.harvestasm.apm.reporter.ApmSourceGroup;
+import com.harvestasm.apm.repository.ApmRepository;
 import com.harvestasm.apm.repository.model.ApmSourceConnect;
 import com.harvestasm.apm.repository.model.ApmSourceData;
 import com.harvestasm.apm.repository.model.search.ApmBaseUnit;
 import com.harvestasm.apm.repository.model.search.ApmConnectSearchResponse;
 import com.harvestasm.apm.repository.model.search.ApmDataSearchResponse;
+import com.harvestasm.apm.utils.ApmRepositoryHelper;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -176,6 +178,7 @@ public class DataStorage {
         filterOptionMap.put(label, set);
     }
 
+    // todo: filterOptionMap只作查询选中标志， 可先的列表需要全集。
     public Collection<? extends FilterCategoryModel> queryFilterList() {
         List<FilterCategoryModel> list = new ArrayList<>();
         for (String category : filterOptionMap.keySet()) {
@@ -218,6 +221,7 @@ public class DataStorage {
             } else {
                 set.add(name);
             }
+            filterOptionMap.put(category, set);
         }
     }
 
@@ -252,5 +256,14 @@ public class DataStorage {
             }
         }
         return filterIds;
+    }
+
+    private final ApmRepository repository = new ApmRepository();
+    public void doLoadTask(ApmRepositoryHelper.CallBack callBack, ApmRepositoryHelper.RefreshInterface refreshInterface, boolean force) {
+        if (force || null == connectResponse && null == dataResponse) {
+            ApmRepositoryHelper.doLoadTask(repository, callBack);
+        } else {
+            refreshInterface.onRefresh();
+        }
     }
 }

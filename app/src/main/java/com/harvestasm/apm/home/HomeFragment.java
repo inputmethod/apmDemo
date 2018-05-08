@@ -35,7 +35,7 @@ public class HomeFragment extends BaseSwipeRefreshFragment<HomeItem, RecyclerVie
     }
 
     @Override
-    protected void doLoadingTask() {
+    protected void doLoadingTask(boolean force) {
         homeModel.load(getTypeface());
     }
 

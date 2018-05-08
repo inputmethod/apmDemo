@@ -3,6 +3,7 @@ package com.harvestasm.apm.browser;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -24,21 +25,23 @@ public class BrowserFragment extends BaseSwipeRefreshFragment<ChartItem, ListVie
     private static final String TAG = BrowserFragment.class.getSimpleName();
 
     private BrowserViewModel browserViewModel;
-    private BrowserAdapter cda;
+    private BrowserAdapter browserAdapter;
 
     @Override
     protected @LayoutRes int getCollectionLayoutResourceId() {
         return R.layout.including_listview;
     }
 
-    protected void refreshChangedData(@NonNull ListView lv, @NonNull List<ChartItem> chartItems) {
-        cda = new BrowserAdapter(getContext(), chartItems, browserViewModel);
-        lv.setAdapter(cda);
+    // todo: 每次都重新赋予新的adapter实例, 环保或者ui闪烁是否比更新数据效果要差?
+    protected void refreshChangedData(@NonNull ListView listView, @NonNull List<ChartItem> chartItems) {
+        browserAdapter = new BrowserAdapter(getContext(), chartItems, browserViewModel);
+        listView.setAdapter(browserAdapter);
         setHasOptionsMenu(!chartItems.isEmpty());
     }
 
-    protected void doLoadingTask() {
-        browserViewModel.load(getTypeface());
+    @MainThread
+    protected void doLoadingTask(boolean force) {
+        browserViewModel.load(getTypeface(), force);
     }
 
     @Override
@@ -56,8 +59,8 @@ public class BrowserFragment extends BaseSwipeRefreshFragment<ChartItem, ListVie
             @Override
             public void onChanged(@Nullable Integer integer) {
                 Log.d(TAG, "networking value " + integer);
-                if (null != cda) {
-                    cda.setNetworkState(integer);
+                if (null != browserAdapter) {
+                    browserAdapter.setNetworkState(integer);
                 }
             }
         });

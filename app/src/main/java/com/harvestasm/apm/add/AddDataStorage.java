@@ -11,7 +11,6 @@ import android.util.Log;
 import com.harvestasm.apm.home.HomeDeviceItem;
 import com.harvestasm.apm.repository.ApmRepository;
 import com.harvestasm.apm.repository.model.connect.ApmConnectResponse;
-import com.harvestasm.apm.utils.ApmRepositoryHelper;
 import com.harvestasm.apm.utils.IMEHelper;
 
 import org.apache.http.util.Asserts;
@@ -297,9 +296,5 @@ public class AddDataStorage {
             measurementByApp.put(item, list);
         }
         list.put(optionName, measurement);
-    }
-
-    public void doLoadTask(ApmRepositoryHelper.CallBack callBack) {
-        ApmRepositoryHelper.doLoadTask(repository, callBack);
     }
 }

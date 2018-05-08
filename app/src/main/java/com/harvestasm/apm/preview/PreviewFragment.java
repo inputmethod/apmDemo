@@ -37,7 +37,7 @@ public class PreviewFragment extends BaseSwipeRefreshFragment<ChartItem, ListVie
         setHasOptionsMenu(!chartItems.isEmpty());
     }
 
-    protected void doLoadingTask() {
+    protected void doLoadingTask(boolean force) {
         previewViewModel.load(getTypeface());
     }
 

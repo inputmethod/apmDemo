@@ -3,13 +3,13 @@ package com.harvestasm.apm.browser;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.graphics.Typeface;
+import android.support.annotation.MainThread;
 import android.text.TextUtils;
 
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.harvestasm.apm.add.AddDataStorage;
 import com.harvestasm.apm.repository.model.ApmMeasurementItem;
 import com.harvestasm.apm.repository.model.ApmSourceData;
 import com.harvestasm.apm.repository.model.search.ApmBaseUnit;
@@ -28,12 +28,13 @@ import java.util.Set;
 public class BrowserViewModel extends ViewModel {
     private final static String TAG = BrowserViewModel.class.getSimpleName();
 
-    public final MutableLiveData<List<ChartItem>> items = new MutableLiveData<>();
     public final MutableLiveData<Boolean> refreshState = new MutableLiveData<>();
     public final MutableLiveData<Integer> networkState = new MutableLiveData<>();
 
+    public final MutableLiveData<List<ChartItem>> items = new MutableLiveData<>();
     public final MutableLiveData<ChartItem> clickItem = new MutableLiveData<>();
 
+    // todo: reset需要把items内容clear??
     private void resetForLoading() {
         refreshState.setValue(true);
         networkState.postValue(0);
@@ -47,7 +48,11 @@ public class BrowserViewModel extends ViewModel {
 
     }
 
-    public void load(final Typeface typeface) {
+    // Browser和Filter两个页面切换时，Fragment的onActivityCreated每次都执行，为load加上force
+    // 区分Fragment创建时(false)和下拉刷新时(true)，DataStorage里根据这个布尔变量决定重用当前
+    // 缓存数据还是重新发起新的请求
+    @MainThread
+    public void load(final Typeface typeface, boolean force) {
         resetForLoading();
 
         final ApmRepositoryHelper.CallBack callBack = new ApmRepositoryHelper.CallBack() {
@@ -64,10 +69,19 @@ public class BrowserViewModel extends ViewModel {
             }
         };
 
-        AddDataStorage.get().doLoadTask(callBack);
+        final ApmRepositoryHelper.RefreshInterface refreshInterface = new ApmRepositoryHelper.RefreshInterface() {
+            @Override
+            public void onRefresh() {
+                checkResult(typeface);
+            }
+        };
+
+        DataStorage.get().doLoadTask(callBack, refreshInterface, force);
     }
 
     // todo: 以设备进行过滤或者按设备取数据
+    // todo: 合并计算一个option下相同app的多次值（简单求平均值）
+    // todo: 大计算放到worker thread.
     private void checkResult(final Typeface typeface) {
         Map<String, List<ApmBaseUnit<ApmSourceData>>> dataByOption = DataStorage.get().queryByOption();
         if (dataByOption.isEmpty()) {

@@ -43,4 +43,8 @@ public class ApmRepositoryHelper {
         void onConnectResponse(ApmConnectSearchResponse body);
         void onDataResponse(ApmDataSearchResponse body);
     }
+
+    public interface RefreshInterface {
+        void onRefresh();
+    }
 }

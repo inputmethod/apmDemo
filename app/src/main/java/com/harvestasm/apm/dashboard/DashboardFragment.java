@@ -32,7 +32,7 @@ public class DashboardFragment extends BaseSwipeRefreshFragment<ChartItem, ListV
         lv.setAdapter(cda);
     }
 
-    protected void doLoadingTask() {
+    protected void doLoadingTask(boolean force) {
         viewMultiChartModel.load(getTypeface());
     }
 

@@ -3,12 +3,9 @@ package com.harvestasm.apm.filter;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
-import com.harvestasm.apm.base.pikcer.ItemModelInterface;
 import com.harvestasm.apm.base.pikcer.ActionModelInterface;
+import com.harvestasm.apm.base.pikcer.ItemModelInterface;
 import com.harvestasm.apm.browser.DataStorage;
-import com.harvestasm.apm.repository.model.ApmSourceData;
-import com.harvestasm.apm.repository.model.search.ApmBaseSearchResponse;
-import com.harvestasm.apm.repository.model.search.ApmConnectSearchResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,17 +18,12 @@ public class FilterViewModel extends ViewModel implements ActionModelInterface {
     public final MutableLiveData<Boolean> refreshState = new MutableLiveData<>();
     public final MutableLiveData<Integer> networkState = new MutableLiveData<>();
 
-    private ApmConnectSearchResponse connectResponse = null;
-    private ApmBaseSearchResponse<ApmSourceData> dataResponse = null;
-
     private final List<FilterCategoryModel> list = new ArrayList<>();
 
     private void resetForLoading() {
         refreshState.setValue(true);
         networkState.postValue(0);
 
-        connectResponse = null;
-        dataResponse = null;
         list.clear();
     }
 
@@ -43,7 +35,7 @@ public class FilterViewModel extends ViewModel implements ActionModelInterface {
 
     }
 
-    public void load(final boolean full) {
+    public void load(final boolean force) {
         resetForLoading();
 
         // FilterViewModel在BrowserViewModel完成加载后显示，数据已经加载在DataStorage，直接读

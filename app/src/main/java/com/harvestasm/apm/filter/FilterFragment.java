@@ -40,8 +40,8 @@ public class FilterFragment extends BaseSwipeRefreshFragment<FilterCategoryModel
         setHasOptionsMenu(true);
     }
 
-    protected void doLoadingTask() {
-        filterViewModel.load(true);
+    protected void doLoadingTask(boolean force) {
+        filterViewModel.load(force);
     }
 
     @Override
