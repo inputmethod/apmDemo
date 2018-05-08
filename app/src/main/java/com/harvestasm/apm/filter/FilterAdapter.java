@@ -76,6 +76,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.ViewHolder
             titleTextView.setText(model.getTitle() + " : " + model.getCandidates().size());
 
             FilterItemAdapter itemAdapter = new FilterItemAdapter(model.getTitle(), model.getCandidates(), filterViewModel);
+            itemAdapter.setEditMode(1);
             recyclerView.setAdapter(itemAdapter);
         }
     }

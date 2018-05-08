@@ -130,11 +130,4 @@ public class ImePickerAdapter extends RecyclerView.Adapter<ImePickerAdapter.View
             itemView.setOnClickListener(clickListener);
         }
     }
-
-    public static class MyLiveList extends ApplicationInformation {
-        public boolean isSelect() {
-            // todo: check and uncheck
-            return false;
-        }
-    }
 }

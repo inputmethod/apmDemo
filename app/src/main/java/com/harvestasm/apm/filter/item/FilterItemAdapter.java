@@ -33,7 +33,7 @@ public class FilterItemAdapter extends RecyclerView.Adapter<FilterItemAdapter.Vi
 
     public FilterItemAdapter(@NonNull String category, Set<String> candidates, @NonNull FilterViewModel viewMultiChartModel) {
         this.category = category;
-        candidates.addAll(candidates);
+        optionsList.addAll(candidates);
         this.viewMultiChartModel = viewMultiChartModel;
     }
 
