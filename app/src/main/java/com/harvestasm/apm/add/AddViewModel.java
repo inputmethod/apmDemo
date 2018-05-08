@@ -15,6 +15,6 @@ public class AddViewModel extends ViewModel {
     }
 
     public void loadImeMethods() {
-        AddDataStorage.get().getImeListFeature(2);
+        AddDataStorage.get().getImeListFeature();
     }
 }

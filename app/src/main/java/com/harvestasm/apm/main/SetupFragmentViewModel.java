@@ -48,6 +48,6 @@ public class SetupFragmentViewModel extends ViewModel {
                 }
             }
         });
-        AddDataStorage.get().getDeviceInfoFeature(2);
+        AddDataStorage.get().getDeviceInfoFeature();
     }
 }

@@ -79,7 +79,7 @@ public class ImePickerViewModel extends ViewModel implements ActionModelInterfac
                 }
             }
         });
-        AddDataStorage.get().getImeListFeature(2);
+        AddDataStorage.get().getImeListFeature();
     }
 
     private void loadRemoteList() {

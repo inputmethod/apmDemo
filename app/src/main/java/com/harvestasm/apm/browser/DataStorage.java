@@ -16,6 +16,7 @@ import com.harvestasm.apm.repository.model.search.ApmBaseUnit;
 import com.harvestasm.apm.repository.model.search.ApmConnectSearchResponse;
 import com.harvestasm.apm.repository.model.search.ApmDataSearchResponse;
 import com.harvestasm.apm.utils.ApmRepositoryHelper;
+import com.harvestasm.apm.utils.SimpleFlowableService;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,6 +26,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
+
+import io.reactivex.functions.Consumer;
 
 public class DataStorage {
     private static final String TAG = DataStorage.class.getSimpleName();
@@ -39,6 +43,11 @@ public class DataStorage {
     private List<ApmSourceGroup> deviceGroupList;
 
     public final MutableLiveData<Boolean> currentState = new MutableLiveData<>();
+
+    private final SimpleFlowableService simpleFlowableService = new SimpleFlowableService();
+    public void runWithFlowable(Callable callable, Consumer consumer) {
+        simpleFlowableService.runWithFlowable(callable, consumer);
+    }
 
     // 从原始response数据里构建出数据相关的联的设备列表，应用版本列表，数据选项列表，和各次上报时间列表。
 
@@ -78,6 +87,8 @@ public class DataStorage {
         if (null == dataSourceIndex || null == connectSourceIndex) {
             Log.i(TAG, "updateData, skip and wait until all connect and data loaded.");
         } else {
+            resetFilterCache();
+
             deviceGroupList = ApmSourceGroup.parseSourceGroup(dataSourceIndex, connectSourceIndex);
 
             AddList(CATEGORY_DEVICE, DataStorage.get().getDeviceList());
@@ -118,6 +129,11 @@ public class DataStorage {
                 Log.v(TAG, "    updateData, " + key);
             }
         }
+    }
+
+    private void resetFilterCache() {
+        filterOptionList.clear();
+        filterOptionList.clear();
     }
 
     @NonNull
@@ -168,6 +184,7 @@ public class DataStorage {
     }
 
     private final Map<String, Set<String>> filterOptionMap = new HashMap<>();
+    private final List<FilterCategoryModel> filterOptionList = new ArrayList<>();
 
     private void AddList(String label, Set<String> candidateList) {
         Set<String> set = filterOptionMap.get(label);
@@ -176,18 +193,23 @@ public class DataStorage {
         }
         set.addAll(candidateList);
         filterOptionMap.put(label, set);
+
+        FilterCategoryModel itemModel = new FilterCategoryModel();
+        itemModel.setTitle(label);
+        itemModel.setCandidates(buildItemModels(label, set));
+        filterOptionList.add(itemModel);
     }
 
-    // todo: filterOptionMap只作查询选中标志， 可先的列表需要全集。
     public Collection<? extends FilterCategoryModel> queryFilterList() {
-        List<FilterCategoryModel> list = new ArrayList<>();
-        for (String category : filterOptionMap.keySet()) {
-            FilterCategoryModel itemModel = new FilterCategoryModel();
-            itemModel.setTitle(category);
-            itemModel.setCandidates(buildItemModels(category, filterOptionMap.get(category)));
-            list.add(itemModel);
-        }
-        return list;
+        return filterOptionList;
+//        List<FilterCategoryModel> list = new ArrayList<>();
+//        for (String category : filterOptionMap.keySet()) {
+//            FilterCategoryModel itemModel = new FilterCategoryModel();
+//            itemModel.setTitle(category);
+//            itemModel.setCandidates(buildItemModels(category, filterOptionMap.get(category)));
+//            list.add(itemModel);
+//        }
+//        return list;
     }
 
     @NonNull

@@ -4,12 +4,17 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.graphics.Typeface;
 import android.support.annotation.MainThread;
+import android.support.annotation.NonNull;
+import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.harvestasm.apm.add.AddDataStorage;
+import com.harvestasm.apm.home.HomeDeviceItem;
 import com.harvestasm.apm.repository.model.ApmMeasurementItem;
 import com.harvestasm.apm.repository.model.ApmSourceData;
 import com.harvestasm.apm.repository.model.search.ApmBaseUnit;
@@ -20,9 +25,13 @@ import com.harvestasm.chart.listviewitems.BarChartItem;
 import com.harvestasm.chart.listviewitems.ChartItem;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
+
+import io.reactivex.functions.Consumer;
 
 // todo: simplest implement without repository to store data item.
 public class BrowserViewModel extends ViewModel {
@@ -79,68 +88,138 @@ public class BrowserViewModel extends ViewModel {
         DataStorage.get().doLoadTask(callBack, refreshInterface, force);
     }
 
+    @MainThread
     // todo: 以设备进行过滤或者按设备取数据
-    // todo: 合并计算一个option下相同app的多次值（简单求平均值）
-    // todo: 大计算放到worker thread.
     private void checkResult(final Typeface typeface) {
-        Map<String, List<ApmBaseUnit<ApmSourceData>>> dataByOption = DataStorage.get().queryByOption();
+        final Map<String, List<ApmBaseUnit<ApmSourceData>>> dataByOption = DataStorage.get().queryByOption();
         if (dataByOption.isEmpty()) {
             return;
         }
 
+        Callable<List<ChartItem>> callable = new Callable<List<ChartItem>>() {
+            @Override
+            public List<ChartItem> call() {
+                Log.e(TAG, "Callable.call thread " + Thread.currentThread().getName());
+                return buildChartItemList(dataByOption,typeface);
+            }
+        };
+
+        Consumer<List<ChartItem>> consumer = new Consumer<List<ChartItem>>() {
+            @Override
+            public void accept(List<ChartItem> chartItemList) {
+                Log.e(TAG, "Consumer.accept thread " + Thread.currentThread().getName());
+                onDataLoaded(chartItemList);
+            }
+        };
+
+        AddDataStorage.get().runWithFlowable(callable, consumer);
+    }
+
+    @WorkerThread
+    @NonNull
+    private List<ChartItem> buildChartItemList(Map<String, List<ApmBaseUnit<ApmSourceData>>> dataByOption, Typeface typeface) {
         final Set<String> optionFilterList = DataStorage.get().getFilterOptions();
         assert(dataByOption.keySet().containsAll(optionFilterList));
 
-        final Set<String> appFilterList = DataStorage.get().getFilterApps();
-
-        final Set<String> deviceIdList = DataStorage.get().getFilterDeviceIds();
-
         List<ChartItem> list = new ArrayList<>();
         for (String key : dataByOption.keySet()) {
-            if (!optionFilterList.contains(key)) {
+            if (optionFilterList.contains(key)) {
+                buildChartItem(list, key, dataByOption.get(key), typeface);
+            } else {
                 // skip as it is filtered out by options.
-                continue;
             }
-
-            List<ApmBaseUnit<ApmSourceData>> dataList = dataByOption.get(key);
-            ArrayList<BarEntry> entries = new ArrayList<>();
-            int index = 0;
-            List<String> appList = new ArrayList<>();
-            for (ApmBaseUnit<ApmSourceData> d : dataList) {
-                ApmSourceData sourceData = d.get_source();
-                String deviceId = sourceData.getDeviceId();
-                if (!deviceIdList.contains(deviceId)) {
-                    // skip as it is filtered out by devices.
-                    continue;
-                }
-                List<String> app = sourceData.getApp();
-                String appText = null == app ? "" : app.toString();
-                if (!appFilterList.contains(appText)) {
-                    // skip as it is filtered out by apps.
-                    continue;
-                }
-
-                appList.add(app.get(0) + "," + app.get(1));
-                for (ApmMeasurementItem item : sourceData.getMeasurement()) {
-                    if (TextUtils.equals(key, item.getName())) {
-                        buildEntry(entries, (float) item.getMax(), index++);
-                    }
-                }
-            }
-
-            String label = TextUtils.join("|", appList);
-            BarChartItem chartItem = generateDataBar(entries, key, label, typeface);
-            list.add(chartItem);
         }
 
         // final result list.
-        onDataLoaded(list);
+        return list;
     }
 
+    @WorkerThread
+    // todo: 合并计算一个option下相同app的多次值（简单求平均值）
+    private void buildChartItem(List<ChartItem> list, String key, List<ApmBaseUnit<ApmSourceData>> dataList, Typeface typeface) {
+        // build measurement map by app.
+        Map<String, List<ApmMeasurementItem>> measurementByApp = new HashMap<>();
+        final Set<String> appFilterList = DataStorage.get().getFilterApps();
+        final Set<String> deviceIdList = DataStorage.get().getFilterDeviceIds();
+        for (ApmBaseUnit<ApmSourceData> d : dataList) {
+            ApmSourceData sourceData = d.get_source();
+            String deviceId = sourceData.getDeviceId();
+            if (deviceIdList.contains(deviceId)) {
+                List<String> app = sourceData.getApp();
+                String appText = null == app ? "" : app.toString();
+                if (appFilterList.contains(appText)) {
+                    for (ApmMeasurementItem item : sourceData.getMeasurement()) {
+                        if (TextUtils.equals(key, item.getName())) {
+                            List<ApmMeasurementItem> itemList = measurementByApp.get(appText);
+                            if (null == itemList) {
+                                itemList = new ArrayList<>();
+                                measurementByApp.put(appText, itemList);
+                            }
+                            itemList.add(item);
+                        }
+                    }
+                } else {
+                    // skip as it is filtered out by apps.
+                }
+            } else {
+                // skip as it is filtered out by devices.
+            }
+        }
+        // build map end
+
+        // build chart item with the built map
+        ArrayList<BarEntry> entries = new ArrayList<>();
+        int index = 0;
+
+        List<String> appList = new ArrayList<>();
+        for (String appText : measurementByApp.keySet()) {
+            HomeDeviceItem.AppItem appItem = new HomeDeviceItem.AppItem();
+            appItem.parseFrom(appText.split(","));
+            appList.add(appItem.getAppName() + "," + appItem.getAppVersionCode());
+            buildEntry(entries, measurementByApp.get(appText), index++);
+        }
+//        for (ApmBaseUnit<ApmSourceData> d : dataList) {
+//            ApmSourceData sourceData = d.get_source();
+//            String deviceId = sourceData.getDeviceId();
+//            if (deviceIdList.contains(deviceId)) {
+//                List<String> app = sourceData.getApp();
+//                String appText = null == app ? "" : app.toString();
+//                if (appFilterList.contains(appText)) {
+//                    appList.add(app.get(0) + "," + app.get(1));
+//                    for (ApmMeasurementItem item : sourceData.getMeasurement()) {
+//                        if (TextUtils.equals(key, item.getName())) {
+//                            buildEntry(entries, (float) item.getMax(), index++);
+//                        }
+//                    }
+//                } else {
+//                    // skip as it is filtered out by apps.
+//                }
+//            } else {
+//                // skip as it is filtered out by devices.
+//            }
+//        }
+
+        String label = TextUtils.join("|", appList);
+        BarChartItem chartItem = generateDataBar(entries, key, label, typeface);
+        list.add(chartItem);
+    }
+
+    @WorkerThread
+    // todo: 简单求平均值拟合图表。
+    private void buildEntry(ArrayList<BarEntry> entries, List<ApmMeasurementItem> itemList, int index) {
+        double total = 0;
+        for (ApmMeasurementItem item : itemList) {
+            total += (item.getMax() + item.getMax()) / 2;
+        }
+        buildEntry(entries, (float) total / itemList.size(), index);
+    }
+
+    @WorkerThread
     private void buildEntry(ArrayList<BarEntry> entries, float value, int index) {
         entries.add(new BarEntry(index, value));
     }
 
+    @WorkerThread
     private BarChartItem generateDataBar(ArrayList<BarEntry> entries, String label,
                                          String title, Typeface typeface) {
         BarDataSet d = new BarDataSet(entries, label);

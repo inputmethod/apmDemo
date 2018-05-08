@@ -12,6 +12,7 @@ import com.harvestasm.apm.home.HomeDeviceItem;
 import com.harvestasm.apm.repository.ApmRepository;
 import com.harvestasm.apm.repository.model.connect.ApmConnectResponse;
 import com.harvestasm.apm.utils.IMEHelper;
+import com.harvestasm.apm.utils.SimpleFlowableService;
 
 import org.apache.http.util.Asserts;
 
@@ -23,11 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
-import io.reactivex.Flowable;
 import io.reactivex.functions.Consumer;
 import typany.apm.agent.android.Agent;
 import typany.apm.agent.android.AgentInitializationException;
@@ -44,13 +41,9 @@ public class AddDataStorage {
     private final Context context;
     private static AddDataStorage _instance;
 
-    // RxJava异步执行Callable的Service对象
-    private final ExecutorService executor = Executors.newFixedThreadPool(2);
-    public  <T> void runWithFlowable(Callable<List<T>> callable, Consumer<List<T>> consumer) {
-        // Flowable.fromFuture() 在非主线程执行Callable对象
-        // Flowable.fromCallable(callable).subscribe(onNext);
-        Future<List<T>> future = executor.submit(callable);
-        Flowable.fromFuture(future).subscribe(consumer);
+    private final SimpleFlowableService simpleFlowableService = new SimpleFlowableService();
+    public void runWithFlowable(Callable callable, Consumer consumer) {
+        simpleFlowableService.runWithFlowable(callable, consumer);
     }
 
     public static final void init(Context context) {
@@ -146,8 +139,7 @@ public class AddDataStorage {
         return item;
     }
 
-    public void getImeListFeature(int nThreads) {
-        ExecutorService executor = Executors.newFixedThreadPool(nThreads);
+    public void getImeListFeature() {
         Callable<List<ApplicationInformation>> callable = new Callable<List<ApplicationInformation>>() {
             @Override
             public List<ApplicationInformation> call() {
@@ -155,33 +147,30 @@ public class AddDataStorage {
             }
         };
 
-        Future<List<ApplicationInformation>> future = executor.submit(callable);
-
-        // Flowable.fromFuture() 在非主线程执行Callable对象
-        // Flowable.fromCallable(callable).subscribe(onNext);
-        Flowable.fromFuture(future).subscribe(new Consumer<List<ApplicationInformation>>() {
+        Consumer consumer = new Consumer<List<ApplicationInformation>>() {
             @Override
             public void accept(List<ApplicationInformation> appItems) {
                 Log.e(TAG, "Consumer.accept in thread " + Thread.currentThread().getName());
                 appListLiveData.setValue(appItems);
             }
-        });
+        };
+
+//        Future<List<ApplicationInformation>> future = executor.submit(callable);
+//
+//        // Flowable.fromFuture() 在非主线程执行Callable对象
+//        // Flowable.fromCallable(callable).subscribe(onNext);
+//        Flowable.fromFuture(future).subscribe(consumer);
+        runWithFlowable(callable, consumer);
     }
 
-    public void getDeviceInfoFeature(int nThreads) {
-        ExecutorService executor = Executors.newFixedThreadPool(nThreads);
+    public void getDeviceInfoFeature() {
         Callable<DeviceInformation> callable = new Callable<DeviceInformation>() {
             @Override
             public DeviceInformation call() {
                 return Agent.getDeviceInformation();
             }
         };
-
-        Future<DeviceInformation> future = executor.submit(callable);
-
-        // Flowable.fromFuture() 在非主线程执行Callable对象
-        // Flowable.fromCallable(callable).subscribe(onNext);
-        Flowable.fromFuture(future).subscribe(new Consumer<DeviceInformation>() {
+        Consumer consumer = new Consumer<DeviceInformation>() {
             @Override
             public void accept(DeviceInformation deviceInformation) {
                 Log.e(TAG, "Consumer.accept in thread " + Thread.currentThread().getName());
@@ -191,7 +180,14 @@ public class AddDataStorage {
 //                hardwareItem.setHwId(deviceInformation.getDeviceId());
                 hardwareLiveData.setValue(deviceInformation);
             }
-        });
+        };
+
+//        Future<DeviceInformation> future = executor.submit(callable);
+//
+//        // Flowable.fromFuture() 在非主线程执行Callable对象
+//        // Flowable.fromCallable(callable).subscribe(onNext);
+//        Flowable.fromFuture(future).subscribe(consumer);
+        runWithFlowable(callable, consumer);
     }
 
     // todo: change without new Thread, call.enque() instead
