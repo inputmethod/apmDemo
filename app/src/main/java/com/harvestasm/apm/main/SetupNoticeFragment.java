@@ -13,11 +13,13 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.harvestasm.apm.imepicker.ImeAppModel;
 import com.harvestasm.apm.imepicker.ImePickerAdapter;
 import com.harvestasm.apm.imepicker.ImePickerViewModel;
 import com.harvestasm.apm.sample.R;
 import com.harvestasm.base.viewholder.SwipeRefreshBaseFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import typany.apm.agent.android.harvest.ApplicationInformation;
@@ -104,18 +106,23 @@ public class SetupNoticeFragment extends SwipeRefreshBaseFragment<DeviceInformat
         imePickerViewModel.items.
                 observe(this, new Observer<List<ApplicationInformation>>() {
             @Override
-            public void onChanged(@Nullable List<ApplicationInformation> applicationInformations) {
-                if (null == applicationInformations) {
+            public void onChanged(@Nullable List<ApplicationInformation> applicationInformationList) {
+                List<ImeAppModel> modelList = new ArrayList<>();
+                if (null == applicationInformationList) {
                     Log.w(TAG, "null data comes.");
                 } else {
-                    Log.d(TAG, "data size " + applicationInformations.size());
-                    if (null == cda) {
-                        cda = new ImePickerAdapter(applicationInformations, imePickerViewModel);
-                        cda.setEditMode(1);
-                        recyclerView.setAdapter(cda);
-                    } else {
-                        cda.notifyAdapter(applicationInformations, false);
+                    Log.d(TAG, "data size " + applicationInformationList.size());
+                    for (ApplicationInformation information : applicationInformationList) {
+                        modelList.add(new ImeAppModel(information));
                     }
+                }
+
+                if (null == cda) {
+                    cda = new ImePickerAdapter(modelList, imePickerViewModel);
+                    cda.setEditMode(1);
+                    recyclerView.setAdapter(cda);
+                } else {
+                    cda.notifyAdapter(modelList, false);
                 }
             }
         });

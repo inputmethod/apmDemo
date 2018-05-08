@@ -3,10 +3,12 @@ package com.harvestasm.apm.imepicker;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModel;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.harvestasm.apm.add.AddDataStorage;
+import com.harvestasm.apm.base.pikcer.ActionModelInterface;
 import com.harvestasm.apm.home.HomeDeviceItem;
 import com.harvestasm.apm.reporter.ApmConnectSourceIndex;
 import com.harvestasm.apm.repository.ApmRepository;
@@ -26,7 +28,7 @@ import java.util.Set;
 import typany.apm.agent.android.harvest.ApplicationInformation;
 
 // todo: simplest implement without repository to store data item.
-public class ImePickerViewModel extends ViewModel {
+public class ImePickerViewModel extends ViewModel implements ActionModelInterface<ImeAppModel> {
     private final static String TAG = ImePickerViewModel.class.getSimpleName();
 
     private final ApmRepository repository = new ApmRepository();
@@ -120,16 +122,26 @@ public class ImePickerViewModel extends ViewModel {
         clickItem.setValue(item);
     }
 
-    public boolean isSelect(ApplicationInformation myLive) {
+    private boolean isSelect(ApplicationInformation myLive) {
         return AddDataStorage.get().selectedImeAppList.contains(myLive);
     }
 
-    public void toggleSelected(ApplicationInformation myLive) {
+    private void toggleSelected(ApplicationInformation myLive) {
         Set<ApplicationInformation> selectedList = AddDataStorage.get().selectedImeAppList;
         if (selectedList.contains(myLive)) {
             selectedList.remove(myLive);
         } else {
             selectedList.add(myLive);
         }
+    }
+
+    @Override
+    public void toggleSelected(@NonNull ImeAppModel itemModel) {
+        toggleSelected(itemModel.getApplicationInformation());
+    }
+
+    @Override
+    public boolean isSelect(@NonNull ImeAppModel itemModel) {
+        return isSelect(itemModel.getApplicationInformation());
     }
 }

@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.harvestasm.apm.filter.item.FilterItemAdapter;
-import com.harvestasm.apm.filter.item.FilterItemModel;
 import com.harvestasm.apm.sample.R;
 
 import java.util.ArrayList;
@@ -20,16 +19,16 @@ import butterknife.ButterKnife;
 
 /** adapter that supports 3 different item types */
 public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.ViewHolder> {
-    private final List<FilterItemModel> itemModelList = new ArrayList<>();
+    private final List<FilterCategoryModel> itemModelList = new ArrayList<>();
     private final FilterViewModel filterViewModel;
 
-    public FilterAdapter(List<FilterItemModel> itemModels, FilterViewModel filterViewModel) {
+    public FilterAdapter(List<FilterCategoryModel> itemModels, FilterViewModel filterViewModel) {
         this.filterViewModel = filterViewModel;
         itemModelList.addAll(itemModels);
     }
 
 
-    public void notifyAdapter(List<FilterItemModel> myLiveList, boolean isAdd) {
+    public void notifyAdapter(List<FilterCategoryModel> myLiveList, boolean isAdd) {
         if (!isAdd) {
             this.itemModelList.clear();
         }
@@ -51,7 +50,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final FilterItemModel myLive = itemModelList.get(holder.getAdapterPosition());
+        final FilterCategoryModel myLive = itemModelList.get(holder.getAdapterPosition());
         holder.bind(myLive, filterViewModel);
     }
 
@@ -72,10 +71,10 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.ViewHolder
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
         }
 
-        public void bind(FilterItemModel model, FilterViewModel filterViewModel) {
+        public void bind(FilterCategoryModel model, FilterViewModel filterViewModel) {
             titleTextView.setText(model.getTitle() + " : " + model.getCandidates().size());
 
-            FilterItemAdapter itemAdapter = new FilterItemAdapter(model.getTitle(), model.getCandidates(), filterViewModel);
+            FilterItemAdapter itemAdapter = new FilterItemAdapter(model.getCandidates(), filterViewModel);
             itemAdapter.setEditMode(1);
             recyclerView.setAdapter(itemAdapter);
         }

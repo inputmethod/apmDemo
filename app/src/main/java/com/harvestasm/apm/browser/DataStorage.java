@@ -4,6 +4,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.harvestasm.apm.filter.FilterCategoryModel;
 import com.harvestasm.apm.filter.item.FilterItemModel;
 import com.harvestasm.apm.reporter.ApmConnectSourceIndex;
 import com.harvestasm.apm.reporter.ApmDataSourceIndex;
@@ -175,15 +176,31 @@ public class DataStorage {
         filterOptionMap.put(label, set);
     }
 
-    public Collection<? extends FilterItemModel> queryFilterList() {
-        List<FilterItemModel> list = new ArrayList<>();
+    public Collection<? extends FilterCategoryModel> queryFilterList() {
+        List<FilterCategoryModel> list = new ArrayList<>();
         for (String category : filterOptionMap.keySet()) {
-            FilterItemModel itemModel = new FilterItemModel();
+            FilterCategoryModel itemModel = new FilterCategoryModel();
             itemModel.setTitle(category);
-            itemModel.setCandidates(filterOptionMap.get(category));
+            itemModel.setCandidates(buildItemModels(category, filterOptionMap.get(category)));
             list.add(itemModel);
         }
         return list;
+    }
+
+    @NonNull
+    private List<FilterItemModel> buildItemModels(String category, Set<String> strings) {
+        if (null == strings || strings.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<FilterItemModel> modelList = new ArrayList<>();
+        for (String s : strings) {
+            FilterItemModel model = new FilterItemModel();
+            model.setCategory(category);
+            model.setName(s);
+            modelList.add(model);
+        }
+        return modelList;
     }
 
     public boolean isSelect(String category, String name) {

@@ -11,7 +11,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.harvestasm.apm.browser.DataStorage;
-import com.harvestasm.apm.filter.item.FilterItemModel;
 import com.harvestasm.apm.sample.R;
 import com.harvestasm.base.viewholder.BaseSwipeRefreshFragment;
 
@@ -20,7 +19,7 @@ import java.util.List;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class FilterFragment extends BaseSwipeRefreshFragment<FilterItemModel, RecyclerView> {
+public class FilterFragment extends BaseSwipeRefreshFragment<FilterCategoryModel, RecyclerView> {
     private static final String TAG = FilterFragment.class.getSimpleName();
 
     private FilterViewModel filterViewModel;
@@ -31,7 +30,7 @@ public class FilterFragment extends BaseSwipeRefreshFragment<FilterItemModel, Re
         return R.layout.including_recyclerview;
     }
 
-    protected void refreshChangedData(RecyclerView lv, List<FilterItemModel> chartItems) {
+    protected void refreshChangedData(RecyclerView lv, List<FilterCategoryModel> chartItems) {
         if (null == filterAdapter) {
             filterAdapter = new FilterAdapter(chartItems, filterViewModel);
             lv.setAdapter(filterAdapter);
@@ -46,7 +45,7 @@ public class FilterFragment extends BaseSwipeRefreshFragment<FilterItemModel, Re
     }
 
     @Override
-    protected LiveData<List<FilterItemModel>> setViewModel() {
+    protected LiveData<List<FilterCategoryModel>> setViewModel() {
         filterViewModel = newViewModel(FilterViewModel.class);
 
         filterViewModel.networkState.observe(this, new Observer<Integer>() {

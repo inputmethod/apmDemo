@@ -3,8 +3,9 @@ package com.harvestasm.apm.filter;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
+import com.harvestasm.apm.base.pikcer.ItemModelInterface;
+import com.harvestasm.apm.base.pikcer.ActionModelInterface;
 import com.harvestasm.apm.browser.DataStorage;
-import com.harvestasm.apm.filter.item.FilterItemModel;
 import com.harvestasm.apm.repository.model.ApmSourceData;
 import com.harvestasm.apm.repository.model.search.ApmBaseSearchResponse;
 import com.harvestasm.apm.repository.model.search.ApmConnectSearchResponse;
@@ -13,17 +14,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 // todo: simplest implement without repository to store data item.
-public class FilterViewModel extends ViewModel {
+public class FilterViewModel extends ViewModel implements ActionModelInterface {
     private final static String TAG = FilterViewModel.class.getSimpleName();
 
-    public final MutableLiveData<List<FilterItemModel>> items = new MutableLiveData<>();
+    public final MutableLiveData<List<FilterCategoryModel>> items = new MutableLiveData<>();
     public final MutableLiveData<Boolean> refreshState = new MutableLiveData<>();
     public final MutableLiveData<Integer> networkState = new MutableLiveData<>();
 
     private ApmConnectSearchResponse connectResponse = null;
     private ApmBaseSearchResponse<ApmSourceData> dataResponse = null;
 
-    private final List<FilterItemModel> list = new ArrayList<>();
+    private final List<FilterCategoryModel> list = new ArrayList<>();
 
     private void resetForLoading() {
         refreshState.setValue(true);
@@ -34,7 +35,7 @@ public class FilterViewModel extends ViewModel {
         list.clear();
     }
 
-    private void onDataLoaded(List<FilterItemModel> list) {
+    private void onDataLoaded(List<FilterCategoryModel> list) {
         items.setValue(list);
 
         refreshState.setValue(false);
@@ -56,11 +57,13 @@ public class FilterViewModel extends ViewModel {
         onDataLoaded(list);
     }
 
-    public boolean isSelect(String category, String name) {
-        return DataStorage.get().isSelect(category, name);
+    @Override
+    public void toggleSelected(ItemModelInterface itemModel) {
+        DataStorage.get().toggleSelected(itemModel.getTitle(), itemModel.getSubTitle());
     }
 
-    public void toggleSelected(String category, String name) {
-        DataStorage.get().toggleSelected(category, name);
+    @Override
+    public boolean isSelect(ItemModelInterface itemModel) {
+        return DataStorage.get().isSelect(itemModel.getTitle(), itemModel.getSubTitle());
     }
 }

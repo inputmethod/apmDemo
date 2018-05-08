@@ -128,7 +128,7 @@ public class ScrollingActivity extends BaseChartActivity implements ItemListDial
 //                if ("com.touchtype.swiftkey".equals(name)) {
 //                    AddDataStorage.get().testConnect(connectInformation);
 //
-//                    String pinYin = HanziToPinyin.getInstance().getPinYin(applicationInformation.getAppName());
+//                    String pinYin = HanziToPinyin.getInstance().getPinYin(applicationInformation.getTitle());
 //                    HarvestData harvestData = new HarvestData(applicationInformation, deviceInformation);
 //                    // todo: build harvest data
 //                    CustomMetricMeasurement metric = CustomMetricProducer.makeMeasurement("Switfkey",

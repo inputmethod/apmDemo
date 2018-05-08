@@ -1,24 +1,34 @@
 package com.harvestasm.apm.filter.item;
 
-import java.util.Set;
+import com.harvestasm.apm.base.pikcer.ItemModelInterface;
 
-public class FilterItemModel {
-    private String title;
-    private Set<String> candidates;
+public class FilterItemModel implements ItemModelInterface {
+    private String category;
+    private String name;
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
     public String getTitle() {
-        return title;
+        return category;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public Set<String> getCandidates() {
-        return candidates;
-    }
-
-    public void setCandidates(Set<String> candidates) {
-        this.candidates = candidates;
+    @Override
+    public String getSubTitle() {
+        return name;
     }
 }
