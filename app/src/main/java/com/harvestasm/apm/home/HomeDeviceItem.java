@@ -15,6 +15,8 @@ import java.util.Set;
 import typany.apm.agent.android.harvest.ApplicationInformation;
 
 public class HomeDeviceItem extends HomeItem {
+    private static final String DELIMITER_COMMA = ",";
+
     private final int dataCount;
     private final int connectCount;
 
@@ -46,11 +48,11 @@ public class HomeDeviceItem extends HomeItem {
         Set<String> osSet = new HashSet<>();
         Set<String> hwSet = new HashSet<>();
         for (ApmBaseUnit<ApmSourceConnect> unit : group.getConnectSource()) {
-            String app = TextUtils.join(",", unit.get_source().getApp());
+            String app = TextUtils.join(DELIMITER_COMMA, unit.get_source().getApp());
             appSet.add(app);
             List<String> deviceText = unit.get_source().getDevice();
-            osSet.add(deviceText.get(0) + "," + deviceText.get(1));
-            hwSet.add(deviceText.get(2) + "," + deviceText.get(5) + "," + deviceText.get(8));
+            osSet.add(deviceText.get(0) + DELIMITER_COMMA + deviceText.get(1));
+            hwSet.add(deviceText.get(2) + DELIMITER_COMMA + deviceText.get(5) + DELIMITER_COMMA + deviceText.get(8));
         }
 
         parseAppItemList(appItemList, appSet);
@@ -62,7 +64,7 @@ public class HomeDeviceItem extends HomeItem {
     public static void parseAppItemList(List<HomeDeviceItem.AppItem> appItemList, Set<String> appSet) {
         for (String app : appSet) {
             HomeDeviceItem.AppItem appItem = new HomeDeviceItem.AppItem();
-            appItem.parseFrom(app.split(","));
+            appItem.parseFrom(app.split(DELIMITER_COMMA));
             // todo: parse and set version code.
             appItemList.add(appItem);
         }
@@ -70,7 +72,7 @@ public class HomeDeviceItem extends HomeItem {
 
     public static void parseApplicationList(List<ApplicationInformation> informationList, Set<String> appSet) {
         for (String app : appSet) {
-            String[] segments = app.split(",");
+            String[] segments = app.split(DELIMITER_COMMA);
             ApplicationInformation appItem = new ApplicationInformation(segments[0], segments[1], segments[2], segments[1]);
             informationList.add(appItem);
         }
@@ -80,7 +82,7 @@ public class HomeDeviceItem extends HomeItem {
         hardwareItemList.clear();
         for (String hw : hwSet) {
             HardwareItem hwItem = new HardwareItem();
-            hwItem.parseFrom(hw.split(","));
+            hwItem.parseFrom(hw.split(DELIMITER_COMMA));
             hardwareItemList.add(hwItem);
         }
     }
@@ -89,7 +91,7 @@ public class HomeDeviceItem extends HomeItem {
         osItemList.clear();
         for (String os : osSet) {
             OsItem osItem = new OsItem();
-            osItem.parseFrom(os.split(","));
+            osItem.parseFrom(os.split(DELIMITER_COMMA));
             osItemList.add(osItem);
         }
     }
@@ -155,7 +157,13 @@ public class HomeDeviceItem extends HomeItem {
         public void parseFrom(String[] segments) {
             setAppName(segments[0]);
             setAppVersion(segments[1]);
-            setAppPackage(segments[2]);
+            if (segments.length > 3) {
+                setAppVersionCode(segments[2]);
+                setAppPackage(segments[3]);
+            } else {
+                setAppVersionCode("NA");
+                setAppPackage(segments[2]);
+            }
         }
 
         @Override
