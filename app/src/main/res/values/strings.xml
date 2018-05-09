@@ -46,4 +46,9 @@
     <string name="frame_switch_kb_setting">键盘到设置页面</string>
     <string name="frame_switch_kb_typing">键盘打字弹泡</string>
     <string name="data_filter">过滤</string>
+
+    <string name="picker_checkbox_description" translatable="false">picker_checkbox_description</string>
+    <string name="picker_avatar_description" translatable="false">picker_avatar_description</string>
+    <string name="picker_title">title stub</string>
+    <string name="picker_sub_title">sub title stub</string>
 </resources>

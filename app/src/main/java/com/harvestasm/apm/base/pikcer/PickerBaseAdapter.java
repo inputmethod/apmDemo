@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.harvestasm.apm.sample.R;
@@ -87,10 +86,10 @@ public class PickerBaseAdapter<T extends ItemModelInterface> extends RecyclerVie
         ImageView mRadioImg;
         @BindView(R.id.tv_title)
         TextView mTvTitle;
-        @BindView(R.id.tv_source)
+        @BindView(R.id.tv_sub_title)
         TextView mTvSource;
-        @BindView(R.id.root_view)
-        RelativeLayout mRootView;
+//        @BindView(R.id.root_view)
+//        RelativeLayout mRootView;
         @BindView(R.id.check_box)
         ImageView mCheckBox;
 
