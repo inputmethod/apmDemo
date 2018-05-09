@@ -3,6 +3,10 @@ package com.harvestasm.apm.main;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -40,7 +44,7 @@ public class SetupNoticeFragment extends SwipeRefreshBaseFragment<DeviceInformat
     private SetupFragmentViewModel fragmentViewModel;
     private SetupActivityViewModel activityViewModel;
 
-    private ImePickerAdapter cda;
+    private ImePickerAdapter imePickerAdapter;
 
     public SetupNoticeFragment() {
     }
@@ -112,17 +116,19 @@ public class SetupNoticeFragment extends SwipeRefreshBaseFragment<DeviceInformat
                     Log.w(TAG, "null data comes.");
                 } else {
                     Log.d(TAG, "data size " + applicationInformationList.size());
+                    Context context = getContext();
                     for (ApplicationInformation information : applicationInformationList) {
-                        modelList.add(new ImeAppModel(information));
+                        Drawable icon = getAppIcon(context, information.getPackageId());
+                        modelList.add(new ImeAppModel(information, icon));
                     }
                 }
 
-                if (null == cda) {
-                    cda = new ImePickerAdapter(modelList, imePickerViewModel);
-                    cda.setEditMode(1);
-                    recyclerView.setAdapter(cda);
+                if (null == imePickerAdapter) {
+                    imePickerAdapter = new ImePickerAdapter(modelList, imePickerViewModel);
+                    imePickerAdapter.setEditMode(1);
+                    recyclerView.setAdapter(imePickerAdapter);
                 } else {
-                    cda.notifyAdapter(modelList, false);
+                    imePickerAdapter.notifyAdapter(modelList, false);
                 }
             }
         });
@@ -162,5 +168,19 @@ public class SetupNoticeFragment extends SwipeRefreshBaseFragment<DeviceInformat
         }
 
         return true;
+    }
+
+    public static @Nullable Drawable getAppIcon(Context context, String pkgName) {
+        try {
+            if (null != pkgName) {
+                PackageManager pm = context.getPackageManager();
+                ApplicationInfo info = pm.getApplicationInfo(pkgName, 0);
+                return info.loadIcon(pm);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }

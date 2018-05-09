@@ -1,13 +1,13 @@
 package com.harvestasm.apm.main;
 
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
-import com.harvestasm.apm.add.AddDataStorage;
 import com.harvestasm.apm.add.ScrollingActivity;
 import com.harvestasm.apm.sample.R;
 import com.harvestasm.chart.BaseChartActivity;
@@ -15,6 +15,7 @@ import com.harvestasm.chart.BaseChartActivity;
 public class SetupActivity extends BaseChartActivity {
     private int containerId;
     private FragmentManager fragmentManager;
+    private SetupActivityViewModel setupActivityViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,15 +24,16 @@ public class SetupActivity extends BaseChartActivity {
 
         this.containerId = R.id.container;
         this.fragmentManager = getSupportFragmentManager();
+        this.setupActivityViewModel = ViewModelProviders.of(this).get(SetupActivityViewModel.class);
 
-        AddDataStorage.get().nextStepState.observe(this, new Observer<Integer>() {
+        setupActivityViewModel.startObserve(this, new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer step) {
                 navigateToHome(step);
             }
         });
-
-        navigateToHome(0);
+//        AddDataStorage.get().nextStepState.observe(this, observer);
+//        navigateToHome(0);
     }
 
 //    @Override

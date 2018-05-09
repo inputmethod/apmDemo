@@ -82,16 +82,17 @@ public class PickerBaseAdapter<T extends ItemModelInterface> extends RecyclerVie
     }
 
     public static class ViewHolder<T extends ItemModelInterface> extends RecyclerView.ViewHolder {
-        @BindView(R.id.radio_img)
-        ImageView mRadioImg;
-        @BindView(R.id.tv_title)
-        TextView mTvTitle;
-        @BindView(R.id.tv_sub_title)
-        TextView mTvSource;
 //        @BindView(R.id.root_view)
 //        RelativeLayout mRootView;
         @BindView(R.id.check_box)
-        ImageView mCheckBox;
+        ImageView checkboxIv;
+        @BindView(R.id.avatar_img)
+        ImageView avatarIv;
+
+        @BindView(R.id.tv_title)
+        TextView titleTv;
+        @BindView(R.id.tv_sub_title)
+        TextView subTitleTv;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -100,17 +101,24 @@ public class PickerBaseAdapter<T extends ItemModelInterface> extends RecyclerVie
         }
 
         public void bind(T item, View.OnClickListener clickListener, int mEditMode, boolean select) {
-            mTvTitle.setText(item.getTitle());
-            mTvSource.setText(item.getSubTitle());
-            if (mEditMode == MYLIVE_MODE_CHECK) {
-                mCheckBox.setVisibility(View.GONE);
+            titleTv.setText(item.getTitle());
+            subTitleTv.setText(item.getSubTitle());
+
+            if (null == item.getIcon()) {
+                avatarIv.setImageResource(R.mipmap.ic_launcher);
             } else {
-                mCheckBox.setVisibility(View.VISIBLE);
+                avatarIv.setImageDrawable(item.getIcon());
+            }
+
+            if (mEditMode == MYLIVE_MODE_CHECK) {
+                checkboxIv.setVisibility(View.GONE);
+            } else {
+                checkboxIv.setVisibility(View.VISIBLE);
 
                 if (select) {
-                    mCheckBox.setImageResource(R.mipmap.ic_checked);
+                    checkboxIv.setImageResource(R.mipmap.ic_checked);
                 } else {
-                    mCheckBox.setImageResource(R.mipmap.ic_uncheck);
+                    checkboxIv.setImageResource(R.mipmap.ic_uncheck);
                 }
             }
             itemView.setOnClickListener(clickListener);

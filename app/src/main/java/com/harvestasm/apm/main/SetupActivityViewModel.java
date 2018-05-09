@@ -1,5 +1,7 @@
 package com.harvestasm.apm.main;
 
+import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModel;
 import android.support.annotation.MainThread;
 
@@ -15,5 +17,10 @@ public class SetupActivityViewModel extends ViewModel {
 
     public void clickOption(int id) {
         AddDataStorage.get().nextStepState.setValue(id);
+    }
+
+    public void startObserve(LifecycleOwner owner, Observer<Integer> observer) {
+        AddDataStorage.get().nextStepState.observe(owner, observer);
+        AddDataStorage.get().nextStepState.setValue(0);
     }
 }

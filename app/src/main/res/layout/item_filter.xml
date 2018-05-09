@@ -11,11 +11,10 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
-        android:layout_toRightOf="@id/radio_img"
         android:ellipsize="end"
         android:lineSpacingExtra="6dp"
-        android:maxLines="2"
-        android:text="小demo.looklook"/>
+        android:maxLines="1"
+        android:text="@string/picker_title"/>
 
     <include layout="@layout/including_recyclerview"
         android:layout_width="match_parent"

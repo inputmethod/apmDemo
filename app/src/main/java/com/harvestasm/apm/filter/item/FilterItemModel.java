@@ -1,5 +1,7 @@
 package com.harvestasm.apm.filter.item;
 
+import android.graphics.drawable.Drawable;
+
 import com.harvestasm.apm.base.pikcer.ItemModelInterface;
 
 public class FilterItemModel implements ItemModelInterface {
@@ -30,5 +32,10 @@ public class FilterItemModel implements ItemModelInterface {
     @Override
     public String getSubTitle() {
         return name;
+    }
+
+    @Override
+    public Drawable getIcon() {
+        return null;
     }
 }
