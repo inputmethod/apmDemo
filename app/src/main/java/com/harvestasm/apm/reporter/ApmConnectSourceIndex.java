@@ -54,8 +54,6 @@ public class ApmConnectSourceIndex extends ApmBaseSourceIndex {
             addToMap(deviceIndexMap, unit, devices.toString());
             addPartToMap(deviceMicsItemListHashMap, unit, deviceMicsItems);
         }
-
-        apmConnect.isTimed_out();
     }
 
     public Set<Integer> getAppLengthSet() {

@@ -24,6 +24,7 @@ import com.harvestasm.chart.listviewitems.BarChartItem;
 import com.harvestasm.chart.listviewitems.ChartItem;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,6 +93,7 @@ public class BrowserViewModel extends ViewModel {
     private void checkResult(final Typeface typeface) {
         final Map<String, List<ApmBaseUnit<ApmSourceData>>> dataByOption = DataStorage.get().queryByOption();
         if (dataByOption.isEmpty()) {
+            onDataLoaded(Collections.<ChartItem>emptyList());
             return;
         }
 

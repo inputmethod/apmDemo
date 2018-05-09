@@ -89,8 +89,6 @@ public class ApmDataSourceIndex extends ApmBaseSourceIndex {
 
             addToMap(sessionIndexMap, unit, ctc.getSession());
         }
-
-        deviceIdIndexMap.size();
     }
 
     public Set<Integer> getTransactionLengthSet() {
