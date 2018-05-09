@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentTransaction;
 import com.harvestasm.apm.add.ScrollingActivity;
 import com.harvestasm.apm.sample.R;
 import com.harvestasm.chart.BaseChartActivity;
+import com.harvestasm.options.OptionFragment;
 
 public class SetupActivity extends BaseChartActivity {
     private int containerId;
@@ -63,7 +64,8 @@ public class SetupActivity extends BaseChartActivity {
         if (0 == id) {
             return new SetupNoticeFragment();
         } else {
-            return new SetupOptionsFragment();
+//            return new SetupOptionsFragment();
+            return new OptionFragment();
         }
     }
 

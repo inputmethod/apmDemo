@@ -13,7 +13,6 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.harvestasm.apm.add.AddDataStorage;
 import com.harvestasm.apm.home.HomeDeviceItem;
 import com.harvestasm.apm.repository.model.ApmMeasurementItem;
 import com.harvestasm.apm.repository.model.ApmSourceData;
@@ -112,7 +111,7 @@ public class BrowserViewModel extends ViewModel {
             }
         };
 
-        AddDataStorage.get().runWithFlowable(callable, consumer);
+        DataStorage.get().runWithFlowable(callable, consumer);
     }
 
     @WorkerThread

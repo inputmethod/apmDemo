@@ -5,6 +5,7 @@ import com.harvestasm.apm.repository.model.ApmSourceConnect;
 import com.harvestasm.apm.repository.model.search.ApmBaseSearchResponse;
 import com.harvestasm.apm.repository.model.search.ApmBaseUnit;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -28,8 +29,11 @@ public class ApmConnectSourceIndex extends ApmBaseSourceIndex {
     }
 
     private void selfInit(ApmBaseSearchResponse<ApmSourceConnect> apmConnect) {
+        ApmBaseSearchResponse.ApmBaseWrapper<ApmSourceConnect> wrapper = null == apmConnect ? null : apmConnect.getHits();
+        List<ApmBaseUnit<ApmSourceConnect>> unitList  = null == wrapper ?
+                Collections.<ApmBaseUnit<ApmSourceConnect>>emptyList() : wrapper.getHits();
 
-        for (ApmBaseUnit<ApmSourceConnect> unit : apmConnect.getHits().getHits()) {
+        for (ApmBaseUnit<ApmSourceConnect> unit : unitList) {
             ApmSourceConnect ctc = unit.get_source();
 
             String deviceId = ctc.getDeviceId();

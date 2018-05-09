@@ -35,7 +35,13 @@ public class AddSubOptionActivity extends BaseChartActivity {
         final String tag = "action" + id;
         Fragment fragment = fragmentManager.findFragmentByTag(tag);
         if (null == fragment) {
-            if (id == R.id.electric_current_average) {
+            if (id == R.id.action_add_memory) {
+                fragment = new AddMemoryFragment();
+            } else if (id == R.id.action_add_key_time) {
+                fragment = new AddKeyTimeFragment();
+            } else if (id == R.id.action_add_keyboard_hide) {
+                fragment = new AddKbHideFragment();
+            } else if (id == R.id.electric_current_average) {
                 fragment = AddSubElectricCurrentFragment.newInstance(false);
             } else if (id == R.id.electric_current_offscreen) {
                 fragment = AddSubElectricCurrentFragment.newInstance(true);
@@ -70,10 +76,13 @@ public class AddSubOptionActivity extends BaseChartActivity {
     }
 
     public static void startByAction(Context context, int id, int textId) {
-        Intent intent = new Intent(context, AddSubOptionActivity.class);
-        intent.putExtra("actionId", id);
-        intent.putExtra("title", context.getString(textId));
-        context.startActivity(intent);
+        startByAction(context, id, context.getString(textId));
     }
 
+    public static void startByAction(Context context, int id, String title) {
+        Intent intent = new Intent(context, AddSubOptionActivity.class);
+        intent.putExtra("actionId", id);
+        intent.putExtra("title", title);
+        context.startActivity(intent);
+    }
 }

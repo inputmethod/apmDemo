@@ -7,6 +7,7 @@ import com.harvestasm.apm.repository.model.ApmTransactionItem;
 import com.harvestasm.apm.repository.model.search.ApmBaseSearchResponse;
 import com.harvestasm.apm.repository.model.search.ApmBaseUnit;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -40,7 +41,11 @@ public class ApmDataSourceIndex extends ApmBaseSourceIndex {
     }
 
     private void selfInit(ApmBaseSearchResponse<ApmSourceData> apmData) {
-        for (ApmBaseUnit<ApmSourceData> unit : apmData.getHits().getHits()) {
+        ApmBaseSearchResponse.ApmBaseWrapper<ApmSourceData> wrapper = null == apmData ? null : apmData.getHits();
+        List<ApmBaseUnit<ApmSourceData>> unitList  = null == wrapper ?
+                Collections.<ApmBaseUnit<ApmSourceData>>emptyList() : wrapper.getHits();
+
+        for (ApmBaseUnit<ApmSourceData> unit : unitList) {
             ApmSourceData ctc = unit.get_source();
 
             List<String> apps = ctc.getApp();
