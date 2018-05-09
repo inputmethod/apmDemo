@@ -6,6 +6,10 @@ import com.harvestasm.apm.repository.ApmRepository;
 import com.harvestasm.apm.repository.model.search.ApmConnectSearchResponse;
 import com.harvestasm.apm.repository.model.search.ApmDataSearchResponse;
 
+import java.util.List;
+import java.util.Set;
+
+import typany.apm.agent.android.harvest.ApplicationInformation;
 import typany.apm.retrofit2.Call;
 import typany.apm.retrofit2.Callback;
 import typany.apm.retrofit2.Response;
@@ -13,6 +17,8 @@ import typany.apm.retrofit2.Response;
 import static android.content.ContentValues.TAG;
 
 public class ApmRepositoryHelper {
+    private static final String DELIMITER_COMMA = ",";
+
     public static void doLoadTask(ApmRepository repository, final CallBack callBack) {
         repository.apmTestConnectSearch().enqueue(new Callback<ApmConnectSearchResponse>() {
             @Override
@@ -46,5 +52,13 @@ public class ApmRepositoryHelper {
 
     public interface RefreshInterface {
         void onRefresh();
+    }
+
+    public static void parseApplicationList(List<ApplicationInformation> informationList, Set<String> appSet) {
+        for (String app : appSet) {
+            String[] segments = app.split(DELIMITER_COMMA);
+            ApplicationInformation appItem = new ApplicationInformation(segments[0], segments[1], segments[2], segments[1]);
+            informationList.add(appItem);
+        }
     }
 }

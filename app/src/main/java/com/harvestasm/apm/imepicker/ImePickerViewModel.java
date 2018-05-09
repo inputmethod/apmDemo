@@ -9,7 +9,6 @@ import android.util.Log;
 
 import com.harvestasm.apm.add.AddDataStorage;
 import com.harvestasm.apm.base.pikcer.ActionModelInterface;
-import com.harvestasm.apm.home.HomeDeviceItem;
 import com.harvestasm.apm.reporter.ApmConnectSourceIndex;
 import com.harvestasm.apm.repository.ApmRepository;
 import com.harvestasm.apm.repository.model.ApmSourceConnect;
@@ -112,7 +111,7 @@ public class ImePickerViewModel extends ViewModel implements ActionModelInterfac
         HashMap<String, List<ApmBaseUnit<ApmSourceConnect>>> connectUnits = connectSourceIndex.getAppIndexMap();
 //        list.add(new BarChartItem(generateDataBar(connectUnits), "App分布", ApplicationInformation.ID.STASTIC_BY_APP, typeface));
 //        list.add(new PieChartItem(generateDataPie(connectUnits), "App分布",  ApplicationInformation.ID.STASTIC_BY_APP, typeface));
-        HomeDeviceItem.parseApplicationList(list, connectUnits.keySet());
+        ApmRepositoryHelper.parseApplicationList(list, connectUnits.keySet());
 
         // final result list.
         onDataLoaded(list);

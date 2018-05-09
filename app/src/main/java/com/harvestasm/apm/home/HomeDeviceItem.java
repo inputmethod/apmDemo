@@ -12,8 +12,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import typany.apm.agent.android.harvest.ApplicationInformation;
-
 public class HomeDeviceItem extends HomeItem {
     private static final String DELIMITER_COMMA = ",";
 
@@ -67,14 +65,6 @@ public class HomeDeviceItem extends HomeItem {
             appItem.parseFrom(app.split(DELIMITER_COMMA));
             // todo: parse and set version code.
             appItemList.add(appItem);
-        }
-    }
-
-    public static void parseApplicationList(List<ApplicationInformation> informationList, Set<String> appSet) {
-        for (String app : appSet) {
-            String[] segments = app.split(DELIMITER_COMMA);
-            ApplicationInformation appItem = new ApplicationInformation(segments[0], segments[1], segments[2], segments[1]);
-            informationList.add(appItem);
         }
     }
 

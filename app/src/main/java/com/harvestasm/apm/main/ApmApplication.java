@@ -1,4 +1,4 @@
-package com.harvestasm.apm.sample;
+package com.harvestasm.apm.main;
 
 import android.app.Application;
 import android.content.Context;
@@ -11,7 +11,7 @@ import com.harvestasm.apm.add.AddDataStorage;
  * Created by yangfeng on 2018/3/8.
  */
 
-public class DemoApplication extends Application {
+public class ApmApplication extends Application {
     public void onCreate() {
         super.onCreate();
 

@@ -2,13 +2,9 @@ package com.harvestasm.apm.add;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.support.annotation.WorkerThread;
 import android.util.Log;
 
-import com.harvestasm.apm.home.HomeDeviceItem;
 import com.harvestasm.apm.repository.ApmRepository;
 import com.harvestasm.apm.repository.model.connect.ApmConnectResponse;
 import com.harvestasm.apm.utils.IMEHelper;
@@ -27,7 +23,6 @@ import java.util.concurrent.Callable;
 
 import io.reactivex.functions.Consumer;
 import typany.apm.agent.android.Agent;
-import typany.apm.agent.android.AgentInitializationException;
 import typany.apm.agent.android.harvest.ApplicationInformation;
 import typany.apm.agent.android.harvest.ConnectInformation;
 import typany.apm.agent.android.harvest.DeviceInformation;
@@ -109,34 +104,6 @@ public class AddDataStorage {
             }
         }
         return informationList;
-    }
-
-    private HomeDeviceItem.AppItem from(String packageName) throws AgentInitializationException {
-        PackageManager packageManager = context.getPackageManager();
-        PackageInfo packageInfo = null;
-
-        try {
-            packageInfo = packageManager.getPackageInfo(packageName, 0);
-        } catch (PackageManager.NameNotFoundException var10) {
-            throw new AgentInitializationException("Could not determine package version: " + var10.getMessage());
-        }
-
-        String appName;
-        try {
-            ApplicationInfo info = packageManager.getApplicationInfo(packageName, 0);
-            appName = info != null ? packageManager.getApplicationLabel(info).toString() : packageName;
-        } catch (PackageManager.NameNotFoundException var8) {
-            appName = packageName;
-        } catch (SecurityException var9) {
-            appName = packageName;
-        }
-
-        HomeDeviceItem.AppItem item = new HomeDeviceItem.AppItem();
-        item.setAppName(appName);
-        item.setAppVersion(packageInfo.versionName);
-        item.setAppPackage(packageName);
-        item.setAppVersionCode(String.valueOf(packageInfo.versionCode));
-        return item;
     }
 
     public void getImeListFeature() {
