@@ -15,12 +15,14 @@ public class SetupActivityViewModel extends ViewModel {
         AddDataStorage.get().nextStepState.setValue(1);
     }
 
-    public void clickOption(int id) {
-        AddDataStorage.get().nextStepState.setValue(id);
+    @MainThread
+    public void showNotice(){
+        AddDataStorage.get().nextStepState.setValue(0);
     }
 
+    @MainThread
     public void startObserve(LifecycleOwner owner, Observer<Integer> observer) {
         AddDataStorage.get().nextStepState.observe(owner, observer);
-        AddDataStorage.get().nextStepState.setValue(0);
+        showNotice();
     }
 }

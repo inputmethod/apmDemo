@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
-import com.harvestasm.apm.add.ScrollingActivity;
 import com.harvestasm.apm.sample.R;
 import com.harvestasm.chart.BaseChartActivity;
 import com.harvestasm.options.OptionFragment;
@@ -70,16 +69,14 @@ public class SetupActivity extends BaseChartActivity {
     }
 
     private void navigateToHome(int step) {
-        if (0 == step || 1 == step) {
-            String tag = "TAG" + step;
-            Fragment fragment = getFragmentWithTag(tag);
-            if (null == fragment) {
-                fragment = createFragmentFor(step);
-            }
-            replaceFragment(fragment, tag);
-        } else {
-            ScrollingActivity.startByAction(this, step);
+        assert (0 == step || 1 == step);
+
+        String tag = "TAG" + step;
+        Fragment fragment = getFragmentWithTag(tag);
+        if (null == fragment) {
+            fragment = createFragmentFor(step);
         }
+        replaceFragment(fragment, tag);
     }
 
     private Fragment getFragmentWithTag(String tag) {

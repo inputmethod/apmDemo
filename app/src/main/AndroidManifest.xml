@@ -49,11 +49,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name="com.harvestasm.apm.add.ScrollingActivity"
-            android:label="@string/action_add_data"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
         <activity android:name="com.harvestasm.apm.add.AddSubOptionActivity"
             android:label="@string/action_add_data"
             android:theme="@style/AppTheme.NoActionBar" />
