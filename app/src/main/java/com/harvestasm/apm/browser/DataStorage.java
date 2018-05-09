@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 
 public class DataStorage {
@@ -45,8 +46,8 @@ public class DataStorage {
     public final MutableLiveData<Boolean> currentState = new MutableLiveData<>();
 
     private final SimpleFlowableService simpleFlowableService = new SimpleFlowableService();
-    public void runWithFlowable(Callable callable, Consumer consumer) {
-        simpleFlowableService.runWithFlowable(callable, consumer);
+    public Disposable runWithFlowable(Callable callable, Consumer consumer) {
+        return simpleFlowableService.runWithFlowable(callable, consumer);
     }
 
     // 从原始response数据里构建出数据相关的联的设备列表，应用版本列表，数据选项列表，和各次上报时间列表。

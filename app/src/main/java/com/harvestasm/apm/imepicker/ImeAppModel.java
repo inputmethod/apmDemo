@@ -16,7 +16,7 @@ public class ImeAppModel implements ItemModelInterface {
         this(information, null);
     }
 
-    public ImeAppModel(@NonNull ApplicationInformation information, Drawable icon) {
+    public ImeAppModel(@NonNull ApplicationInformation information, @Nullable Drawable icon) {
         this.applicationInformation = information;
         this.icon = icon;
     }

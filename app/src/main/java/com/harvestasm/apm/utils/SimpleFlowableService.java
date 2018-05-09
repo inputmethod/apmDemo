@@ -6,6 +6,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import io.reactivex.Flowable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 
 public class SimpleFlowableService {
@@ -13,11 +14,12 @@ public class SimpleFlowableService {
 
     // RxJava异步执行Callable的Service对象
     private final ExecutorService executor;
-    public <T> void runWithFlowable(Callable<T> callable, Consumer<T> consumer) {
+    public <T> Disposable runWithFlowable(Callable<T> callable, Consumer<T> consumer) {
         // Flowable.fromFuture() 在非主线程执行Callable对象
         // Flowable.fromCallable(callable).subscribe(onNext);
         Future<T> future = executor.submit(callable);
-        Flowable.fromFuture(future).subscribe(consumer);
+        Disposable disposable = Flowable.fromFuture(future).subscribe(consumer);
+        return disposable;
     }
 
     public SimpleFlowableService() {

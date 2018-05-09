@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import typany.apm.agent.android.Agent;
 import typany.apm.agent.android.harvest.ApplicationInformation;
@@ -37,8 +38,8 @@ public class AddDataStorage {
     private static AddDataStorage _instance;
 
     private final SimpleFlowableService simpleFlowableService = new SimpleFlowableService();
-    public void runWithFlowable(Callable callable, Consumer consumer) {
-        simpleFlowableService.runWithFlowable(callable, consumer);
+    public Disposable runWithFlowable(Callable callable, Consumer consumer) {
+        return simpleFlowableService.runWithFlowable(callable, consumer);
     }
 
     public static final void init(Context context) {

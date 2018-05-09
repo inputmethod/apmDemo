@@ -3,6 +3,7 @@ package com.harvestasm.apm.filter;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -30,10 +31,10 @@ public class FilterFragment extends BaseSwipeRefreshFragment<FilterCategoryModel
         return R.layout.including_recyclerview;
     }
 
-    protected void refreshChangedData(RecyclerView lv, List<FilterCategoryModel> chartItems) {
+    protected void refreshChangedData(@NonNull RecyclerView recyclerView, @NonNull List<FilterCategoryModel> chartItems) {
         if (null == filterAdapter) {
             filterAdapter = new FilterAdapter(chartItems, filterViewModel);
-            lv.setAdapter(filterAdapter);
+            recyclerView.setAdapter(filterAdapter);
         } else {
             filterAdapter.notifyAdapter(chartItems, false);
         }

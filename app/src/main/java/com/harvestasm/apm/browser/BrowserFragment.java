@@ -70,6 +70,12 @@ public class BrowserFragment extends BaseSwipeRefreshFragment<ChartItem, ListVie
         return browserViewModel.items;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        browserViewModel.dispose();
+    }
+
     private void onClickById(@Nullable ChartItem item) {
         if (null == item) {
             Log.e(TAG, "onClickById skip with null item.");

@@ -2,6 +2,9 @@
 <resources>
     <item type="id" name="electric_current_average" />
     <item type="id" name="electric_current_offscreen" />
+    <item name="action_add_memory" type="id" />
+    <item name="action_add_key_time" type="id" />
+    <item name="action_add_keyboard_hide" type="id" />
     <item name="cpu_idle" type="id" />
     <item name="cpu_medium" type="id" />
     <item name="cpu_long" type="id" />

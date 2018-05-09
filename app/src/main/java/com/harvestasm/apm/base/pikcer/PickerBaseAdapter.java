@@ -61,13 +61,13 @@ public class PickerBaseAdapter<T extends ItemModelInterface> extends RecyclerVie
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         final T item = itemList.get(holder.getAdapterPosition());
         holder.bind(item, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 viewMultiChartModel.toggleSelected(item);
-                notifyItemChanged(position);
+                notifyItemChanged(holder.getAdapterPosition());
             }
         }, mEditMode, viewMultiChartModel.isSelect(item));
     }

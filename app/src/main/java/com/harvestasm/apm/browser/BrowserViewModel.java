@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 
 // todo: simplest implement without repository to store data item.
@@ -42,6 +43,8 @@ public class BrowserViewModel extends ViewModel {
 
     public final MutableLiveData<List<ChartItem>> items = new MutableLiveData<>();
     public final MutableLiveData<ChartItem> clickItem = new MutableLiveData<>();
+
+    private Disposable disposable;
 
     // todo: reset需要把items内容clear??
     private void resetForLoading() {
@@ -113,7 +116,18 @@ public class BrowserViewModel extends ViewModel {
             }
         };
 
-        DataStorage.get().runWithFlowable(callable, consumer);
+        dispose();
+        disposable = DataStorage.get().runWithFlowable(callable, consumer);
+    }
+
+    public void dispose() {
+        dispose(disposable);
+    }
+
+    private static void dispose(Disposable disposable) {
+        if (null != disposable && !disposable.isDisposed()) {
+            disposable.dispose();
+        }
     }
 
     @WorkerThread

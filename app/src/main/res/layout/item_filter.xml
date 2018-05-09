@@ -14,7 +14,8 @@
         android:ellipsize="end"
         android:lineSpacingExtra="6dp"
         android:maxLines="1"
-        android:text="@string/picker_title"/>
+        android:text="@string/picker_title"
+        android:layout_marginStart="10dp" />
 
     <include layout="@layout/including_recyclerview"
         android:layout_width="match_parent"
@@ -22,6 +23,6 @@
         android:layout_below="@id/tv_title"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
-        />
+        android:layout_marginStart="10dp" />
 
 </RelativeLayout>

@@ -2,11 +2,7 @@
     <string name="app_name">Apm报表</string>
     <string name="title_main">Apm数据</string>
 
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
     <string name="action_add_data">添加数据</string>
-    <string name="title_activity_scrolling">ScrollingActivity</string>
 
     <string name="action_ok">确定</string>
     <string name="action_edit">编辑</string>
