@@ -20,7 +20,7 @@ public class ApmRepositoryHelper {
     private static final String DELIMITER_COMMA = ",";
 
     public static void doLoadTask(ApmRepository repository, final CallBack callBack) {
-        repository.apmTestConnectSearch().enqueue(new Callback<ApmConnectSearchResponse>() {
+        repository.mobileConnectSearch().enqueue(new Callback<ApmConnectSearchResponse>() {
             @Override
             public void onResponse(Call<ApmConnectSearchResponse> call, Response<ApmConnectSearchResponse> response) {
                 callBack.onConnectResponse(response.body());
@@ -32,7 +32,7 @@ public class ApmRepositoryHelper {
             }
         });
 
-        repository.apmTestDataSearch().enqueue(new Callback<ApmDataSearchResponse>() {
+        repository.mobileDataSearch().enqueue(new Callback<ApmDataSearchResponse>() {
             @Override
             public void onResponse(Call<ApmDataSearchResponse> call, Response<ApmDataSearchResponse> response) {
                 callBack.onDataResponse(response.body());
