@@ -2,6 +2,7 @@ package com.harvestasm.apm.browser;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.harvestasm.apm.filter.FilterCategoryModel;
@@ -137,14 +138,15 @@ public class DataStorage {
         filterOptionList.clear();
     }
 
-    @NonNull
+    @Nullable
     public Map<String, List<ApmBaseUnit<ApmSourceData>>> queryByOption() {
-        if (null == dataSourceIndex) {
+        if (null == dataResponse) {
             Log.i(TAG, "queryByOption, return empty map while it may not be loaded completely.");
-            return Collections.emptyMap();
+            return null;
         }
 
-        return dataSourceIndex.getMeasureNameIndexMap();
+        return null == dataSourceIndex ? Collections.<String, List<ApmBaseUnit<ApmSourceData>>>emptyMap()
+                : dataSourceIndex.getMeasureNameIndexMap();
     }
 
     public Set<String> getDeviceList() {
@@ -301,6 +303,11 @@ public class DataStorage {
     }
 
     private boolean usedAutoChart;
+
+    public boolean isUsedAutoChart() {
+        return usedAutoChart;
+    }
+
     public void useManualMeasurements() {
         if (usedAutoChart) {
             clearToReload();

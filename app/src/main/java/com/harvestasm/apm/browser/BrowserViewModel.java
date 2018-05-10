@@ -95,7 +95,9 @@ public class BrowserViewModel extends BaseListViewModel<ChartItem> {
     // todo: 以设备进行过滤或者按设备取数据
     private void checkResult(final Typeface typeface) {
         final Map<String, List<ApmBaseUnit<ApmSourceData>>> dataByOption = DataStorage.get().queryByOption();
-        if (dataByOption.isEmpty()) {
+        if (null == dataByOption) {
+            return;
+        } else if (dataByOption.isEmpty()) {
             onDataLoaded(Collections.<ChartItem>emptyList());
             return;
         }

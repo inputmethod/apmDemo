@@ -40,6 +40,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name="com.harvestasm.apm.preview.PreviewActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name="com.harvestasm.apm.filter.FilterActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

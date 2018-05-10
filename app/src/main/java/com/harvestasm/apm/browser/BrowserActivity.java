@@ -13,7 +13,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
 
 import com.harvestasm.apm.base.BaseFragmentActivity;
-import com.harvestasm.apm.filter.FilterListFragment;
+import com.harvestasm.apm.filter.FilterActivity;
 import com.harvestasm.apm.sample.R;
 import com.harvestasm.apm.setup.SetupActivity;
 import com.harvestasm.apm.transaction.TransactionListFragment;
@@ -64,11 +64,10 @@ public class BrowserActivity extends BaseFragmentActivity implements NavigationV
     }
 
     private Fragment newFragment(int id) {
-        if (1 == id) {
-            return new FilterListFragment();
-        } else if (0 == id) {
+        if (activityViewModel.isChartList(id)) {
             return new BrowserListFragment();
         } else {
+            // todo: other fragments.
             return new TransactionListFragment();
         }
     }
@@ -86,7 +85,8 @@ public class BrowserActivity extends BaseFragmentActivity implements NavigationV
         int id = item.getItemId();
 
         if (id == R.id.action_next) {
-            return activityViewModel.toggleNext();
+            FilterActivity.start(this);
+            return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
