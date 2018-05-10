@@ -2,7 +2,6 @@ package com.harvestasm.apm.utils;
 
 import android.util.Log;
 
-import com.harvestasm.apm.repository.ApmRepository;
 import com.harvestasm.apm.repository.model.search.ApmConnectSearchResponse;
 import com.harvestasm.apm.repository.model.search.ApmDataSearchResponse;
 
@@ -19,8 +18,9 @@ import static android.content.ContentValues.TAG;
 public class ApmRepositoryHelper {
     private static final String DELIMITER_COMMA = ",";
 
-    public static void doLoadTask(ApmRepository repository, final CallBack callBack) {
-        repository.mobileConnectSearch().enqueue(new Callback<ApmConnectSearchResponse>() {
+    public static void doLoadTask(Call<ApmConnectSearchResponse> connectCall,
+                                  Call<ApmDataSearchResponse> dataCall, final CallBack callBack) {
+        connectCall.enqueue(new Callback<ApmConnectSearchResponse>() {
             @Override
             public void onResponse(Call<ApmConnectSearchResponse> call, Response<ApmConnectSearchResponse> response) {
                 callBack.onConnectResponse(response.body());
@@ -32,7 +32,7 @@ public class ApmRepositoryHelper {
             }
         });
 
-        repository.mobileDataSearch().enqueue(new Callback<ApmDataSearchResponse>() {
+        dataCall.enqueue(new Callback<ApmDataSearchResponse>() {
             @Override
             public void onResponse(Call<ApmDataSearchResponse> call, Response<ApmDataSearchResponse> response) {
                 callBack.onDataResponse(response.body());

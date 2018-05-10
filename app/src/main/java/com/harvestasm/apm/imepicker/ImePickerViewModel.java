@@ -99,7 +99,7 @@ public class ImePickerViewModel extends BaseListViewModel<ApplicationInformation
             }
         };
 
-        ApmRepositoryHelper.doLoadTask(repository, callBack);
+        ApmRepositoryHelper.doLoadTask(repository.mobileConnectSearch(), repository.mobileDataSearch(), callBack);
     }
 
     private void checkResult() {

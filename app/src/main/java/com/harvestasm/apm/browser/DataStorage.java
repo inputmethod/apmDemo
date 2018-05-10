@@ -274,7 +274,12 @@ public class DataStorage {
 
         Set<String> filterIds = new HashSet<>();
         for (String d : getFilter(CATEGORY_DEVICE)) {
-            for (ApmBaseUnit<ApmSourceConnect> connect : map.get(d)) {
+            List<ApmBaseUnit<ApmSourceConnect>> unitList = map.get(d);
+            if (null == unitList) {
+                // what's happen here?
+                continue;
+            }
+            for (ApmBaseUnit<ApmSourceConnect> connect : unitList) {
                 filterIds.add(connect.get_source().getDeviceId());
             }
         }
@@ -284,9 +289,38 @@ public class DataStorage {
     private final ApmRepository repository = new ApmRepository();
     public void doLoadTask(ApmRepositoryHelper.CallBack callBack, ApmRepositoryHelper.RefreshInterface refreshInterface, boolean force) {
         if (force || null == connectResponse && null == dataResponse) {
-            ApmRepositoryHelper.doLoadTask(repository, callBack);
+            resetFilterCache();
+            if (usedAutoChart) {
+                ApmRepositoryHelper.doLoadTask(repository.mobileConnectSearch(), repository.mobileDataSearch(), callBack);
+            } else {
+                ApmRepositoryHelper.doLoadTask(repository.apmTestConnectSearch(), repository.apmTestDataSearch(), callBack);
+            }
         } else {
             refreshInterface.onRefresh();
         }
+    }
+
+    private boolean usedAutoChart;
+    public void useManualMeasurements() {
+        if (usedAutoChart) {
+            clearToReload();
+        }
+
+        usedAutoChart = false;
+    }
+
+    public void useAutoMeasurements() {
+        if (!usedAutoChart) {
+            clearToReload();
+        }
+        usedAutoChart = true;
+    }
+
+    private void clearToReload() {
+        connectResponse = null;
+        dataResponse = null;
+        resetFilterCache();
+        dataSourceIndex = null;
+        connectSourceIndex = null;
     }
 }

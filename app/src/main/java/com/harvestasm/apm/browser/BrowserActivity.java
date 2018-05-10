@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import com.harvestasm.apm.base.BaseFragmentActivity;
 import com.harvestasm.apm.filter.FilterListFragment;
 import com.harvestasm.apm.sample.R;
+import com.harvestasm.apm.setup.SetupActivity;
 import com.harvestasm.apm.transaction.TransactionListFragment;
 
 public class BrowserActivity extends BaseFragmentActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -98,20 +99,20 @@ public class BrowserActivity extends BaseFragmentActivity implements NavigationV
         int id = item.getItemId();
 
         if (id == R.id.nav_manual_add) {
-            // Handle the camera action
+            // 直接启动数据上报SetupActivity
+            Intent intent = new Intent(getBaseContext(), SetupActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_manual_chart) {
-
+            // 加载BrowserFragment, 获取apmtest/数据
+            activityViewModel.useManualMeasurements();
         } else if (id == R.id.nav_auto_activity) {
-
-//        } else if (id == R.id.nav_manage) {
-//
+            // todo: activity统计数据的显示
         } else if (id == R.id.nav_auto_measurement) {
-
+            // 加载BrowserFragment, 获取mobile/数据
+            activityViewModel.useAutoMeasurements();
         } else if (id == R.id.nav_auto_networking) {
-
+            activityViewModel.navigateBy(id);
         }
-
-        activityViewModel.navigateBy(id);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
