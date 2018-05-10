@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_manual_add"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="手工测试上报" />
+        <item
+            android:id="@+id/nav_manual_chart"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="手工数据报表" />
+    </group>
+
+    <item android:title="自动收集">
+        <menu>
+            <item
+                android:id="@+id/nav_auto_measurement"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Measurement" />
+            <item
+                android:id="@+id/nav_auto_networking"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Networking" />
+            <item
+                android:id="@+id/nav_auto_activity"
+                android:icon="@drawable/ic_menu_slideshow"
+                android:title="Activity" />
+            <!--<item-->
+                <!--android:id="@+id/nav_manage"-->
+                <!--android:icon="@drawable/ic_menu_manage"-->
+                <!--android:title="Tools" />-->
+        </menu>
+    </item>
+
+</menu>
