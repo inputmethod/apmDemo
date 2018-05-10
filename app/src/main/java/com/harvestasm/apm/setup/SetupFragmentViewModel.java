@@ -1,4 +1,4 @@
-package com.harvestasm.apm.main;
+package com.harvestasm.apm.setup;
 
 import android.arch.lifecycle.Observer;
 import android.support.annotation.MainThread;
@@ -31,6 +31,11 @@ public class SetupFragmentViewModel extends BaseViewModel<DeviceInformation> {
 //        refreshState.setValue(false);
 //        networkState.postValue(0);
 //
+//    }
+//
+//    @MainThread
+//    public void showOptions() {
+//        AddDataStorage.get().nextStepState.setValue(1);
 //    }
 
     @MainThread

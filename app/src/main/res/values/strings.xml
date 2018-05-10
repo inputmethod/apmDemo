@@ -48,6 +48,9 @@
     <string name="picker_title">title stub</string>
     <string name="picker_sub_title">sub title stub</string>
 
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
     <string name="nav_header_title">APM</string>
     <string name="nav_header_subtitle">App Performance Monitor</string>
 

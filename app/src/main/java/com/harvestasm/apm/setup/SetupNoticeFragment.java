@@ -1,4 +1,4 @@
-package com.harvestasm.apm.main;
+package com.harvestasm.apm.setup;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
@@ -12,7 +12,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -42,7 +41,6 @@ public class SetupNoticeFragment extends RefreshBaseFragment<DeviceInformation, 
     private RecyclerView recyclerView;
 
     private SetupFragmentViewModel fragmentViewModel;
-    private SetupActivityViewModel activityViewModel;
 
     private ImePickerAdapter imePickerAdapter;
 
@@ -84,8 +82,6 @@ public class SetupNoticeFragment extends RefreshBaseFragment<DeviceInformation, 
 
     @Override
     protected LiveData<DeviceInformation> setViewModel() {
-        activityViewModel = newViewModel(SetupActivityViewModel.class);
-
         fragmentViewModel = newViewModel(SetupFragmentViewModel.class);
 
         fragmentViewModel.networkState.observe(this, new Observer<Integer>() {
@@ -153,22 +149,22 @@ public class SetupNoticeFragment extends RefreshBaseFragment<DeviceInformation, 
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.menu_next, menu);
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        if (id == R.id.action_next) {
-            activityViewModel.showOptions();
-        } else {
-            return super.onOptionsItemSelected(item);
-        }
-
-        return true;
-    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
+//
+//        if (id == R.id.action_next) {
+//            fragmentViewModel.showOptions();
+//        } else {
+//            return super.onOptionsItemSelected(item);
+//        }
+//
+//        return true;
+//    }
 
     public static @Nullable Drawable getAppIcon(Context context, String pkgName) {
         try {

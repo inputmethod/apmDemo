@@ -43,7 +43,7 @@ public class DataStorage {
     private ApmDataSourceIndex dataSourceIndex;
     private List<ApmSourceGroup> deviceGroupList;
 
-    public final MutableLiveData<Boolean> currentState = new MutableLiveData<>();
+    public final MutableLiveData<Integer> currentState = new MutableLiveData<>();
 
     private final SimpleFlowableService simpleFlowableService = new SimpleFlowableService();
     public Disposable runWithFlowable(Callable callable, Consumer consumer) {

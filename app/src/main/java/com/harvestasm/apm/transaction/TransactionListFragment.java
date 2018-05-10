@@ -1,4 +1,4 @@
-package com.harvestasm.apm.browser;
+package com.harvestasm.apm.transaction;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
@@ -20,11 +20,11 @@ import java.util.List;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class BrowserListFragment extends RefreshListFragment<ChartItem, ListView> {
-    private static final String TAG = BrowserListFragment.class.getSimpleName();
+public class TransactionListFragment extends RefreshListFragment<ChartItem, ListView> {
+    private static final String TAG = TransactionListFragment.class.getSimpleName();
 
-    private BrowserViewModel browserViewModel;
-    private BrowserAdapter browserAdapter;
+    private TransactionViewModel transactionViewModel;
+    private TransactionAdapter transactionAdapter;
 
     @Override
     protected @LayoutRes int getCollectionLayoutResourceId() {
@@ -33,46 +33,46 @@ public class BrowserListFragment extends RefreshListFragment<ChartItem, ListView
 
     // todo: 每次都重新赋予新的adapter实例, 环保或者ui闪烁是否比更新数据效果要差?
     protected void refreshChangedData(@NonNull ListView listView, @NonNull List<ChartItem> chartItems) {
-        browserAdapter = new BrowserAdapter(getContext(), chartItems, browserViewModel);
-        listView.setAdapter(browserAdapter);
+        transactionAdapter = new TransactionAdapter(getContext(), chartItems, transactionViewModel);
+        listView.setAdapter(transactionAdapter);
         setHasOptionsMenu(!chartItems.isEmpty());
     }
 
     @MainThread
     protected void doLoadingTask(boolean force) {
-        browserViewModel.load(getTypeface(), force);
+        transactionViewModel.load(getTypeface(), force);
     }
 
     @Override
     protected LiveData<List<ChartItem>> setViewModel() {
-        browserViewModel = newViewModel(BrowserViewModel.class);
+        transactionViewModel = newViewModel(TransactionViewModel.class);
 
-        browserViewModel.clickItem.observe(this, new Observer<ChartItem>() {
+        transactionViewModel.clickItem.observe(this, new Observer<ChartItem>() {
             @Override
             public void onChanged(@Nullable ChartItem item) {
                 onClickById(item);
             }
         });
 
-        browserViewModel.networkState.observe(this, new Observer<Integer>() {
+        transactionViewModel.networkState.observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer integer) {
                 Log.d(TAG, "networking value " + integer);
-                if (null != browserAdapter) {
-                    browserAdapter.setNetworkState(integer);
+                if (null != transactionAdapter) {
+                    transactionAdapter.setNetworkState(integer);
                 }
             }
         });
 
-        startLoading(browserViewModel.refreshState);
+        startLoading(transactionViewModel.refreshState);
 
-        return browserViewModel.items;
+        return transactionViewModel.items;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        browserViewModel.dispose();
+        transactionViewModel.dispose();
     }
 
     private void onClickById(@Nullable ChartItem item) {

@@ -1,9 +1,10 @@
-package com.harvestasm.apm.main;
+package com.harvestasm.apm.setup;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.MenuItem;
 
 import com.harvestasm.apm.sample.R;
 import com.harvestasm.chart.BaseChartActivity;
@@ -39,7 +40,7 @@ public class SetupActivity extends BaseChartActivity {
     }
 
     private void navigateToHome(int step) {
-        assert (0 == step || 1 == step);
+        assert (SetupActivityViewModel.SETUP_NOTICE == step || SetupActivityViewModel.SETUP_PREVIEW == step);
 
         String tag = "TAG" + step;
         Fragment fragment = getFragmentWithTag(tag);
@@ -48,4 +49,19 @@ public class SetupActivity extends BaseChartActivity {
         }
         replaceFragment(fragment, tag);
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == R.id.action_next) {
+            return setupActivityViewModel.toggleNext();
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
 }

@@ -1,4 +1,4 @@
-package com.harvestasm.apm.main;
+package com.harvestasm.apm.setup;
 
 import android.app.Application;
 import android.content.Context;
