@@ -11,10 +11,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.harvestasm.apm.add.AddSubOptionActivity;
+import com.harvestasm.apm.add.AddDataActivity;
 import com.harvestasm.apm.preview.PreviewActivity;
 import com.harvestasm.apm.sample.R;
-import com.harvestasm.base.viewholder.BaseSwipeRefreshFragment;
+import com.harvestasm.base.RefreshListFragment;
 import com.harvestasm.options.item.OptionItemModel;
 
 import java.util.List;
@@ -41,8 +41,8 @@ import java.util.List;
  *     中等规模
  *     长时运行
  */
-public class OptionFragment extends BaseSwipeRefreshFragment<OptionCategoryModel, RecyclerView> {
-    private static final String TAG = OptionFragment.class.getSimpleName();
+public class OptionListFragment extends RefreshListFragment<OptionCategoryModel, RecyclerView> {
+    private static final String TAG = OptionListFragment.class.getSimpleName();
 
     private OptionViewModel optionViewModel;
     private OptionAdapter optionAdapter;
@@ -85,7 +85,7 @@ public class OptionFragment extends BaseSwipeRefreshFragment<OptionCategoryModel
             public void onChanged(@Nullable OptionItemModel optionItemModel) {
                 int viewId = optionItemModel.getId();
                 String title = optionItemModel.getTitle();
-                AddSubOptionActivity.startByAction(getContext(), viewId, title);
+                AddDataActivity.startByAction(getContext(), viewId, title);
             }
         });
 

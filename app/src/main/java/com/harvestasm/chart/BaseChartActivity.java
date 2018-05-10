@@ -2,22 +2,15 @@
 package com.harvestasm.chart;
 
 import android.graphics.Typeface;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 
-import com.harvestasm.apm.sample.R;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import com.harvestasm.apm.base.BaseFragmentActivity;
 
 /**
  * Baseclass of all Activities of the Demo Application.
  * 
  * @author Philipp Jahoda
  */
-public abstract class BaseChartActivity extends AppCompatActivity {
+public abstract class BaseChartActivity extends BaseFragmentActivity {
 
     protected String[] mMonths = new String[] {
             "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"
@@ -33,32 +26,15 @@ public abstract class BaseChartActivity extends AppCompatActivity {
     protected Typeface mTfRegular;
     protected Typeface mTfLight;
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreateComplete() {
+        super.onCreateComplete();
 
         mTfRegular = Typeface.createFromAsset(getAssets(), "OpenSans-Regular.ttf");
         mTfLight = Typeface.createFromAsset(getAssets(), "OpenSans-Light.ttf");
     }
 
-    @Override
-    public void onContentChanged() {
-        super.onContentChanged();
-        ButterKnife.bind(this);
-
-        setSupportActionBar(toolbar);
-    }
-
     protected float getRandom(float range, float startsfrom) {
         return (float) (Math.random() * range) + startsfrom;
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        overridePendingTransition(R.anim.move_left_in_activity, R.anim.move_right_out_activity);
     }
 }

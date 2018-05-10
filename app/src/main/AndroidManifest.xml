@@ -35,7 +35,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.harvestasm.apm.add.AddSubOptionActivity"
+        <activity android:name="com.harvestasm.apm.add.AddDataActivity"
             android:label="@string/action_add_data"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name="com.harvestasm.apm.preview.PreviewActivity"

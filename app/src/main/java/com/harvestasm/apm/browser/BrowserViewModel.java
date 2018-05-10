@@ -1,7 +1,6 @@
 package com.harvestasm.apm.browser;
 
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
 import android.graphics.Typeface;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
@@ -13,6 +12,7 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.harvestasm.apm.base.BaseListViewModel;
 import com.harvestasm.apm.home.HomeDeviceItem;
 import com.harvestasm.apm.repository.model.ApmMeasurementItem;
 import com.harvestasm.apm.repository.model.ApmSourceData;
@@ -35,30 +35,30 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 
 // todo: simplest implement without repository to store data item.
-public class BrowserViewModel extends ViewModel {
+public class BrowserViewModel extends BaseListViewModel<ChartItem> {
     private final static String TAG = BrowserViewModel.class.getSimpleName();
 
-    public final MutableLiveData<Boolean> refreshState = new MutableLiveData<>();
-    public final MutableLiveData<Integer> networkState = new MutableLiveData<>();
+//    public final MutableLiveData<Boolean> refreshState = new MutableLiveData<>();
+//    public final MutableLiveData<Integer> networkState = new MutableLiveData<>();
 
-    public final MutableLiveData<List<ChartItem>> items = new MutableLiveData<>();
+//    public final MutableLiveData<List<ChartItem>> items = new MutableLiveData<>();
     public final MutableLiveData<ChartItem> clickItem = new MutableLiveData<>();
 
     private Disposable disposable;
 
     // todo: reset需要把items内容clear??
-    private void resetForLoading() {
-        refreshState.setValue(true);
-        networkState.postValue(0);
-    }
-
-    private void onDataLoaded(List<ChartItem> list) {
-        items.setValue(list);
-
-        refreshState.setValue(false);
-        networkState.postValue(0);
-
-    }
+//    private void resetForLoading() {
+//        refreshState.setValue(true);
+//        networkState.postValue(0);
+//    }
+//
+//    private void onDataLoaded(List<ChartItem> list) {
+//        items.setValue(list);
+//
+//        refreshState.setValue(false);
+//        networkState.postValue(0);
+//
+//    }
 
     // Browser和Filter两个页面切换时，Fragment的onActivityCreated每次都执行，为load加上force
     // 区分Fragment创建时(false)和下拉刷新时(true)，DataStorage里根据这个布尔变量决定重用当前

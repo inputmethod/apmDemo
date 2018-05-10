@@ -2,12 +2,12 @@ package com.harvestasm.apm.imepicker;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModel;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.harvestasm.apm.add.AddDataStorage;
+import com.harvestasm.apm.base.BaseListViewModel;
 import com.harvestasm.apm.base.pikcer.ActionModelInterface;
 import com.harvestasm.apm.reporter.ApmConnectSourceIndex;
 import com.harvestasm.apm.repository.ApmRepository;
@@ -27,14 +27,15 @@ import java.util.Set;
 import typany.apm.agent.android.harvest.ApplicationInformation;
 
 // todo: simplest implement without repository to store data item.
-public class ImePickerViewModel extends ViewModel implements ActionModelInterface<ImeAppModel> {
+public class ImePickerViewModel extends BaseListViewModel<ApplicationInformation>
+        implements ActionModelInterface<ImeAppModel> {
     private final static String TAG = ImePickerViewModel.class.getSimpleName();
 
     private final ApmRepository repository = new ApmRepository();
 
-    public final MutableLiveData<List<ApplicationInformation>> items = new MutableLiveData<>();
-    public final MutableLiveData<Boolean> refreshState = new MutableLiveData<>();
-    public final MutableLiveData<Integer> networkState = new MutableLiveData<>();
+//    public final MutableLiveData<List<ApplicationInformation>> items = new MutableLiveData<>();
+//    public final MutableLiveData<Boolean> refreshState = new MutableLiveData<>();
+//    public final MutableLiveData<Integer> networkState = new MutableLiveData<>();
 
     public final MutableLiveData<ApplicationInformation> clickItem = new MutableLiveData<>();
 
@@ -43,22 +44,24 @@ public class ImePickerViewModel extends ViewModel implements ActionModelInterfac
 
     private final List<ApplicationInformation> list = new ArrayList<>();
 
-    private void resetForLoading() {
-        refreshState.setValue(true);
-        networkState.postValue(0);
+    @Override
+    protected void resetForLoading() {
+        super.resetForLoading();
+//        refreshState.setValue(true);
+//        networkState.postValue(0);
 
         connectResponse = null;
         dataResponse = null;
         list.clear();
     }
 
-    private void onDataLoaded(List<ApplicationInformation> list) {
-        items.setValue(list);
-
-        refreshState.setValue(false);
-        networkState.postValue(0);
-
-    }
+//    private void onDataLoaded(List<ApplicationInformation> list) {
+//        items.setValue(list);
+//
+//        refreshState.setValue(false);
+//        networkState.postValue(0);
+//
+//    }
 
     public void load(final boolean full) {
         resetForLoading();

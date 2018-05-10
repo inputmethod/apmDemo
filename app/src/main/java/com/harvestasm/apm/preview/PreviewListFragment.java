@@ -12,7 +12,7 @@ import android.view.MenuItem;
 import android.widget.ListView;
 
 import com.harvestasm.apm.sample.R;
-import com.harvestasm.base.viewholder.BaseSwipeRefreshFragment;
+import com.harvestasm.base.RefreshListFragment;
 import com.harvestasm.chart.listviewitems.ChartItem;
 
 import java.util.List;
@@ -20,8 +20,8 @@ import java.util.List;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class PreviewFragment extends BaseSwipeRefreshFragment<ChartItem, ListView> {
-    private static final String TAG = PreviewFragment.class.getSimpleName();
+public class PreviewListFragment extends RefreshListFragment<ChartItem, ListView> {
+    private static final String TAG = PreviewListFragment.class.getSimpleName();
 
     private PreviewViewModel previewViewModel;
     private PreviewAdapter cda;
