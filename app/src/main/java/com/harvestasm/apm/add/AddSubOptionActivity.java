@@ -2,10 +2,7 @@ package com.harvestasm.apm.add;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -15,16 +12,9 @@ import com.harvestasm.chart.BaseChartActivity;
 public class AddSubOptionActivity extends BaseChartActivity {
     private static final String TAG = AddSubOptionActivity.class.getSimpleName();
 
-    private int containerId;
-    private FragmentManager fragmentManager;
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scrolling);
-
-        this.containerId = R.id.container;
-        this.fragmentManager = getSupportFragmentManager();
+    protected void onCreateComplete() {
+        super.onCreateComplete();
 
         String title = getIntent().getStringExtra("title");
         if (!TextUtils.isEmpty(title)) {
@@ -33,7 +23,7 @@ public class AddSubOptionActivity extends BaseChartActivity {
 
         int id = getIntent().getIntExtra("actionId", 0);
         final String tag = "action" + id;
-        Fragment fragment = fragmentManager.findFragmentByTag(tag);
+        Fragment fragment = getFragmentWithTag(tag);
         if (null == fragment) {
             if (id == R.id.action_add_memory) {
                 fragment = new AddMemoryFragment();
@@ -70,9 +60,12 @@ public class AddSubOptionActivity extends BaseChartActivity {
             }
         }
 
-        FragmentTransaction ft = fragmentManager.beginTransaction();
-        ft = ft.replace(containerId, fragment, tag);
-        ft.commitAllowingStateLoss();
+        replaceFragment(fragment, tag);
+    }
+
+    @Override
+    protected int getContentLayoutId() {
+        return R.layout.activity_scrolling;
     }
 
     public static void startByAction(Context context, int id, int textId) {
