@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.harvestasm.apm.base.BaseFragmentActivity;
-import com.harvestasm.apm.filter.FilterFragment;
+import com.harvestasm.apm.filter.FilterListFragment;
 import com.harvestasm.apm.sample.R;
 
 public class BrowserActivity extends BaseFragmentActivity {
@@ -31,7 +31,7 @@ public class BrowserActivity extends BaseFragmentActivity {
     }
 
     private void navigateToHome(boolean filter) {
-        String tag = filter ? FilterFragment.class.getSimpleName() : BrowserFragment.class.getSimpleName();
+        String tag = filter ? FilterListFragment.class.getSimpleName() : BrowserListFragment.class.getSimpleName();
         Fragment fragment = getFragmentWithTag(tag);
         if (null == fragment) {
             fragment = newFragment(filter);
@@ -41,9 +41,9 @@ public class BrowserActivity extends BaseFragmentActivity {
 
     private Fragment newFragment(boolean filter) {
         if (filter) {
-            return new FilterFragment();
+            return new FilterListFragment();
         } else {
-            return new BrowserFragment();
+            return new BrowserListFragment();
         }
     }
 

@@ -17,7 +17,7 @@ public class PreviewActivity extends BaseFragmentActivity {
         String tag = PreviewActivity.class.getSimpleName();
         Fragment fragment = getFragmentWithTag(tag);
         if (null == fragment) {
-            fragment = new PreviewFragment();
+            fragment = new PreviewListFragment();
         }
         replaceFragment(fragment, tag);
     }

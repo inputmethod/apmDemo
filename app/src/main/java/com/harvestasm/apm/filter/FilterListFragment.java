@@ -13,15 +13,15 @@ import android.view.MenuItem;
 
 import com.harvestasm.apm.browser.DataStorage;
 import com.harvestasm.apm.sample.R;
-import com.harvestasm.base.viewholder.BaseSwipeRefreshFragment;
+import com.harvestasm.base.RefreshListFragment;
 
 import java.util.List;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class FilterFragment extends BaseSwipeRefreshFragment<FilterCategoryModel, RecyclerView> {
-    private static final String TAG = FilterFragment.class.getSimpleName();
+public class FilterListFragment extends RefreshListFragment<FilterCategoryModel, RecyclerView> {
+    private static final String TAG = FilterListFragment.class.getSimpleName();
 
     private FilterViewModel filterViewModel;
     private FilterAdapter filterAdapter;

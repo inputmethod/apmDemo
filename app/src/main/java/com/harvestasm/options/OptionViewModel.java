@@ -1,11 +1,11 @@
 package com.harvestasm.options;
 
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
 import android.support.annotation.WorkerThread;
 import android.util.Log;
 
 import com.harvestasm.apm.add.AddDataStorage;
+import com.harvestasm.apm.base.BaseListViewModel;
 import com.harvestasm.apm.base.pikcer.ActionModelInterface;
 import com.harvestasm.apm.base.pikcer.ItemModelInterface;
 import com.harvestasm.apm.sample.R;
@@ -20,31 +20,30 @@ import java.util.concurrent.Callable;
 import io.reactivex.functions.Consumer;
 
 // todo: simplest implement without repository to store data item.
-public class OptionViewModel extends ViewModel implements ActionModelInterface {
+public class OptionViewModel extends BaseListViewModel<OptionCategoryModel> implements ActionModelInterface {
     private final static String TAG = OptionViewModel.class.getSimpleName();
-
-    public final MutableLiveData<List<OptionCategoryModel>> items = new MutableLiveData<>();
-    public final MutableLiveData<Boolean> refreshState = new MutableLiveData<>();
-    public final MutableLiveData<Integer> networkState = new MutableLiveData<>();
 
     private final List<OptionCategoryModel> list = new ArrayList<>();
 
     public final MutableLiveData<OptionItemModel> clickItem = new MutableLiveData<>();
 
-    private void resetForLoading() {
-        refreshState.setValue(true);
-        networkState.postValue(0);
+    @Override
+    protected void resetForLoading() {
+        super.resetForLoading();
+
+//        refreshState.setValue(true);
+//        networkState.postValue(0);
 
         list.clear();
     }
 
-    private void onDataLoaded(List<OptionCategoryModel> list) {
-        items.setValue(list);
-
-        refreshState.setValue(false);
-        networkState.postValue(0);
-
-    }
+//    private void onDataLoaded(List<OptionCategoryModel> list) {
+//        items.setValue(list);
+//
+//        refreshState.setValue(false);
+//        networkState.postValue(0);
+//
+//    }
 
     public void load(final boolean force) {
         resetForLoading();

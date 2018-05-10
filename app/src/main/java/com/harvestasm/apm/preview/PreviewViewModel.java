@@ -1,7 +1,6 @@
 package com.harvestasm.apm.preview;
 
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
 import android.graphics.Typeface;
 import android.util.Log;
 
@@ -16,6 +15,7 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.IPieDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.harvestasm.apm.add.AddDataStorage;
+import com.harvestasm.apm.base.BaseListViewModel;
 import com.harvestasm.chart.listviewitems.BarChartItem;
 import com.harvestasm.chart.listviewitems.ChartItem;
 
@@ -32,27 +32,27 @@ import typany.apm.agent.android.harvest.HarvestData;
 import typany.apm.agent.android.measurement.CustomMetricMeasurement;
 
 // todo: simplest implement without repository to store data item.
-public class PreviewViewModel extends ViewModel {
+public class PreviewViewModel extends BaseListViewModel<ChartItem> {
     private final static String TAG = PreviewViewModel.class.getSimpleName();
 
-    public final MutableLiveData<List<ChartItem>> items = new MutableLiveData<>();
-    public final MutableLiveData<Boolean> refreshState = new MutableLiveData<>();
-    public final MutableLiveData<Integer> networkState = new MutableLiveData<>();
+//    public final MutableLiveData<List<ChartItem>> items = new MutableLiveData<>();
+//    public final MutableLiveData<Boolean> refreshState = new MutableLiveData<>();
+//    public final MutableLiveData<Integer> networkState = new MutableLiveData<>();
 
     public final MutableLiveData<ChartItem> clickItem = new MutableLiveData<>();
 
-    private void resetForLoading() {
-        refreshState.setValue(true);
-        networkState.postValue(0);
-    }
-
-    private void onDataLoaded(List<ChartItem> list) {
-        items.setValue(list);
-
-        refreshState.setValue(false);
-        networkState.postValue(0);
-
-    }
+//    private void resetForLoading() {
+//        refreshState.setValue(true);
+//        networkState.postValue(0);
+//    }
+//
+//    private void onDataLoaded(List<ChartItem> list) {
+//        items.setValue(list);
+//
+//        refreshState.setValue(false);
+//        networkState.postValue(0);
+//
+//    }
 
     public void load(final Typeface typeface) {
         resetForLoading();

@@ -1,8 +1,6 @@
 package com.harvestasm.apm.filter;
 
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
-
+import com.harvestasm.apm.base.BaseListViewModel;
 import com.harvestasm.apm.base.pikcer.ActionModelInterface;
 import com.harvestasm.apm.base.pikcer.ItemModelInterface;
 import com.harvestasm.apm.browser.DataStorage;
@@ -11,29 +9,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 // todo: simplest implement without repository to store data item.
-public class FilterViewModel extends ViewModel implements ActionModelInterface {
+public class FilterViewModel extends BaseListViewModel<FilterCategoryModel> implements ActionModelInterface {
     private final static String TAG = FilterViewModel.class.getSimpleName();
 
-    public final MutableLiveData<List<FilterCategoryModel>> items = new MutableLiveData<>();
-    public final MutableLiveData<Boolean> refreshState = new MutableLiveData<>();
-    public final MutableLiveData<Integer> networkState = new MutableLiveData<>();
+//    public final MutableLiveData<List<FilterCategoryModel>> items = new MutableLiveData<>();
+//    public final MutableLiveData<Boolean> refreshState = new MutableLiveData<>();
+//    public final MutableLiveData<Integer> networkState = new MutableLiveData<>();
 
     private final List<FilterCategoryModel> list = new ArrayList<>();
 
-    private void resetForLoading() {
-        refreshState.setValue(true);
-        networkState.postValue(0);
+    @Override
+    protected void resetForLoading() {
+        super.resetForLoading();
+//        refreshState.setValue(true);
+//        networkState.postValue(0);
 
         list.clear();
     }
 
-    private void onDataLoaded(List<FilterCategoryModel> list) {
-        items.setValue(list);
-
-        refreshState.setValue(false);
-        networkState.postValue(0);
-
-    }
+//    private void onDataLoaded(List<FilterCategoryModel> list) {
+//        items.setValue(list);
+//
+//        refreshState.setValue(false);
+//        networkState.postValue(0);
+//
+//    }
 
     public void load(final boolean force) {
         resetForLoading();

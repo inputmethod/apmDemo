@@ -21,7 +21,7 @@ import com.harvestasm.apm.imepicker.ImeAppModel;
 import com.harvestasm.apm.imepicker.ImePickerAdapter;
 import com.harvestasm.apm.imepicker.ImePickerViewModel;
 import com.harvestasm.apm.sample.R;
-import com.harvestasm.base.viewholder.SwipeRefreshBaseFragment;
+import com.harvestasm.base.RefreshBaseFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,7 @@ import typany.apm.agent.android.harvest.DeviceInformation;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class SetupNoticeFragment extends SwipeRefreshBaseFragment<DeviceInformation, RelativeLayout> {
+public class SetupNoticeFragment extends RefreshBaseFragment<DeviceInformation, RelativeLayout> {
     private static final String TAG = SetupNoticeFragment.class.getSimpleName();
 
     private View noticeTips;
@@ -101,7 +101,7 @@ public class SetupNoticeFragment extends SwipeRefreshBaseFragment<DeviceInformat
     }
 
     @Override
-    protected void doLoadingTask() {
+    protected void doLoadingTask(boolean force) {
         fragmentViewModel.load();
     }
 

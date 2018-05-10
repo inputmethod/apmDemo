@@ -7,7 +7,7 @@ import android.support.v4.app.Fragment;
 
 import com.harvestasm.apm.sample.R;
 import com.harvestasm.chart.BaseChartActivity;
-import com.harvestasm.options.OptionFragment;
+import com.harvestasm.options.OptionListFragment;
 
 public class SetupActivity extends BaseChartActivity {
     private SetupActivityViewModel setupActivityViewModel;
@@ -34,7 +34,7 @@ public class SetupActivity extends BaseChartActivity {
         if (0 == id) {
             return new SetupNoticeFragment();
         } else {
-            return new OptionFragment();
+            return new OptionListFragment();
         }
     }
 

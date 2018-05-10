@@ -1,4 +1,4 @@
-package com.harvestasm.base.viewholder;
+package com.harvestasm.base;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
@@ -25,8 +25,8 @@ import com.harvestasm.apm.sample.R;
  * @param <T> T是数据item的类型
  * @param <V> V是ListView或者RecyclerView之类的用于接收
  */
-abstract public class SwipeRefreshBaseFragment<T, V extends View> extends Fragment {
-    private static final String TAG = SwipeRefreshBaseFragment.class.getSimpleName();
+abstract public class RefreshBaseFragment<T, V extends View> extends Fragment {
+    private static final String TAG = RefreshBaseFragment.class.getSimpleName();
 
     private @NonNull SwipeRefreshLayout refreshLayout;
     private @NonNull V childView;  // list/grid/recycler childView to display a list items
@@ -52,7 +52,7 @@ abstract public class SwipeRefreshBaseFragment<T, V extends View> extends Fragme
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                doLoadingTask();
+                doLoadingTask(true);
             }
         });
 
@@ -74,6 +74,7 @@ abstract public class SwipeRefreshBaseFragment<T, V extends View> extends Fragme
             public void onChanged(@Nullable T dataItem) {
                 if (null == dataItem) {
                     Log.w(TAG, "null data comes.");
+                    refreshWithoutData(childView);
                 } else {
                     Log.d(TAG, "data size " + dataItem);
                     refreshChangedData(childView, dataItem);
@@ -82,10 +83,13 @@ abstract public class SwipeRefreshBaseFragment<T, V extends View> extends Fragme
         });
     }
 
-    protected abstract void refreshChangedData(V lv, T dataItem);
+    protected void refreshWithoutData(@NonNull V childView){
+    }
+
+    protected abstract void refreshChangedData(@NonNull V lv, @NonNull T dataItem);
     protected abstract LiveData<T> setViewModel();
 
-    protected abstract void doLoadingTask();
+    protected abstract void doLoadingTask(boolean force);
 
     protected void setRefreshing(Boolean aBoolean) {
         refreshLayout.setRefreshing(aBoolean);
@@ -100,7 +104,7 @@ abstract public class SwipeRefreshBaseFragment<T, V extends View> extends Fragme
             }
         });
 
-        doLoadingTask();
+        doLoadingTask(false);
     }
 
     protected final <T extends ViewModel> T newViewModel(Class<T> modelClass) {

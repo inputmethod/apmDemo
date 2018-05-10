@@ -9,8 +9,8 @@ import android.util.Log;
 import com.harvestasm.apm.sample.R;
 import com.harvestasm.chart.BaseChartActivity;
 
-public class AddSubOptionActivity extends BaseChartActivity {
-    private static final String TAG = AddSubOptionActivity.class.getSimpleName();
+public class AddDataActivity extends BaseChartActivity {
+    private static final String TAG = AddDataActivity.class.getSimpleName();
 
     @Override
     protected void onCreateComplete() {
@@ -73,7 +73,7 @@ public class AddSubOptionActivity extends BaseChartActivity {
     }
 
     public static void startByAction(Context context, int id, String title) {
-        Intent intent = new Intent(context, AddSubOptionActivity.class);
+        Intent intent = new Intent(context, AddDataActivity.class);
         intent.putExtra("actionId", id);
         intent.putExtra("title", title);
         context.startActivity(intent);
