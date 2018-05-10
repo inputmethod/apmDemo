@@ -6,6 +6,10 @@ import android.arch.lifecycle.ViewModel;
 import android.support.annotation.MainThread;
 
 public class BrowserActivityViewModel extends ViewModel {
+    public static final int CHART_AUTO = 0;
+    public static final int CHART_MANUAL = 1;
+    public static final int FILTER = 2;
+
     @MainThread
     public void startObserve(LifecycleOwner owner, Observer<Integer> observer) {
         DataStorage.get().currentState.observe(owner, observer);
