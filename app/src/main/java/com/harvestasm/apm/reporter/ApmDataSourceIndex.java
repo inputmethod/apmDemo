@@ -84,10 +84,32 @@ public class ApmDataSourceIndex extends ApmBaseSourceIndex {
                     addToMap(activityTypeIndexMap, unit, item.getType());
                     addToMap(activityDisplayNameIndexMap, unit, item.getDisplayName());
                     addToMap(activityVitalsIndexMap, unit, item.getVitals());
+                    parseActivityRootTrace(unit, item.getRootTrace(), true);
                 }
             }
 
             addToMap(sessionIndexMap, unit, ctc.getSession());
+        }
+    }
+
+    private Set<String> paramTypeSet = new HashSet<>();
+    private Set<String> typeSet = new HashSet<>();
+    private Set<Integer> threadIdSet = new HashSet<>();
+    private Set<String> threadNameSet = new HashSet<>();
+    private void parseActivityRootTrace(ApmBaseUnit<ApmSourceData> unit, ApmActivityItem.RootTrace rootTrace, boolean root) {
+        if (null == rootTrace) {
+            return;
+        }
+
+        paramTypeSet.add(rootTrace.getParamType());
+        typeSet.add(rootTrace.getType());
+        threadIdSet.add(rootTrace.getTrdId());
+        threadNameSet.add(rootTrace.getTrdName());
+
+        if (null != rootTrace.getChild()) {
+            for (ApmActivityItem.Child child : rootTrace.getChild()) {
+                parseActivityRootTrace(unit, child, false);
+            }
         }
     }
 

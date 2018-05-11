@@ -149,8 +149,55 @@ public class ApmActivityItem {
         }
     }
 
+    /**
+     "paramType": "NETWORK",时有以下字段，没有"type": "TRACE",字段。 "paramType": "TRACE",有"type"字段没有以下字段
+
+     "carrier": "wifi",
+     "http_method": "POST",
+     "status_code": "200",
+     "wan_type": "wifi",
+     "uri": "https://graph.facebook.com/v2.9/275932369410927/activities",
+     "bytes_sent": "1513",
+     "bytes_received":"100",
+     */
     public static class Child extends RootTrace {
         // currently it is the same to RootTrace node.
+        private String uri;
+        private long bytes_sent;
+        private long bytes_received;
+        private int status_code;
+
+        public String getUri() {
+            return uri;
+        }
+
+        public void setUri(String uri) {
+            this.uri = uri;
+        }
+
+        public long getBytes_sent() {
+            return bytes_sent;
+        }
+
+        public void setBytes_sent(long bytes_sent) {
+            this.bytes_sent = bytes_sent;
+        }
+
+        public long getBytes_received() {
+            return bytes_received;
+        }
+
+        public void setBytes_received(long bytes_received) {
+            this.bytes_received = bytes_received;
+        }
+
+        public int getStatus_code() {
+            return status_code;
+        }
+
+        public void setStatus_code(int status_code) {
+            this.status_code = status_code;
+        }
     }
 
     public static class Vitals {
