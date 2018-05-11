@@ -2,6 +2,7 @@ package com.harvestasm.apm.transaction;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
+import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
@@ -46,6 +47,10 @@ public class TransactionListFragment extends RefreshListFragment<ChartItem, List
     @Override
     protected LiveData<List<ChartItem>> setViewModel() {
         transactionViewModel = newViewModel(TransactionViewModel.class);
+
+        Bundle bundle = getArguments();
+        boolean isTime = null == bundle ? false : bundle.getBoolean("type");
+        transactionViewModel.setType(isTime);
 
         transactionViewModel.clickItem.observe(this, new Observer<ChartItem>() {
             @Override

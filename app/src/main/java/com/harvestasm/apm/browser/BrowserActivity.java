@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -67,8 +68,12 @@ public class BrowserActivity extends BaseFragmentActivity implements NavigationV
         if (activityViewModel.isChartList(id)) {
             return new BrowserListFragment();
         } else {
-            // todo: other fragments.
-            return new TransactionListFragment();
+            boolean isTime = activityViewModel.isNetworkingTime();
+            Fragment fragment = new TransactionListFragment();
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("type", isTime);
+            fragment.setArguments(bundle);
+            return fragment;
         }
     }
 
@@ -112,6 +117,10 @@ public class BrowserActivity extends BaseFragmentActivity implements NavigationV
             activityViewModel.useAutoMeasurements();
         } else if (id == R.id.nav_auto_networking) {
             activityViewModel.showNetworkingData();
+        } else if (id == R.id.nav_auto_transact_time) {
+            activityViewModel.showNetworkingTime();
+        } else {
+            // todo: unexpected item.
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

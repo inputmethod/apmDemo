@@ -55,6 +55,16 @@ public class BrowserViewModel extends BaseChartViewModel {
     }
 
     @WorkerThread
+    // todo: 简单求平均值拟合图表。
+    private final void buildEntry(ArrayList<BarEntry> entries, List<ApmMeasurementItem> itemList, int index) {
+        double total = 0;
+        for (ApmMeasurementItem item : itemList) {
+            total += (item.getMax() + item.getMin()) / 2;
+        }
+        buildEntry(entries, (float) total / itemList.size(), index);
+    }
+
+    @WorkerThread
     private Map<String, List<ApmMeasurementItem>> parseMeasurementByScope(String key, List<ApmBaseUnit<ApmSourceData>> dataList) {
         Map<String, List<ApmMeasurementItem>> measurementByScope = new HashMap<>();
         final Set<String> deviceIdList = DataStorage.get().getFilterDeviceIds();

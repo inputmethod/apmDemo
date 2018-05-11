@@ -34,8 +34,22 @@ public class TransactionViewModel extends BaseChartViewModel {
         Map<String, List<ApmTransactionItem>> transactionByUrl = parseTransactionByUrl(key, dataList);
         int index = 0;
         for (String urlText : transactionByUrl.keySet()) {
-            appList.add(urlText);
-            buildTransactionEntry(entries, transactionByUrl.get(urlText), index++);
+            List<ApmTransactionItem> itemList = transactionByUrl.get(urlText);
+            if (isTimeChart) {
+                appList.add(urlText);
+                buildTransactionEntry(entries, itemList, index++);
+            } else {
+                appList.add("SENT");
+                appList.add("RECEIVED");
+                double sent = 0;
+                double receipt = 0;
+                for (ApmTransactionItem item : itemList) {
+                    sent += item.getBytesSent();
+                    receipt += item.getBytesReceived();
+                }
+                buildEntry(entries, (float) sent / itemList.size(), index++);
+                buildEntry(entries, (float) receipt / itemList.size(), index++);
+            }
         }
 //        if (transactionByUrl.isEmpty()) {
 //            Map<String, List<ApmMeasurementItem>> measurementByScope = parseMeasurementByScope(key, dataList);
@@ -54,9 +68,18 @@ public class TransactionViewModel extends BaseChartViewModel {
 //            }
 //        }
 
+        String unit = isTimeChart ? "[MS]" : "[BYTE]";
         String label = TextUtils.join("|", appList);
-        BarChartItem chartItem = generateDataBar(entries, key, label, typeface);
+        BarChartItem chartItem = generateDataBar(entries, unit + key, label, typeface);
         list.add(chartItem);
+    }
+
+    private final void buildTransactionEntry(ArrayList<BarEntry> entries, List<ApmTransactionItem> itemList, int index) {
+        double total = 0;
+        for (ApmTransactionItem item : itemList) {
+            total += item.getTotalTime();
+        }
+        buildEntry(entries, (float) total / itemList.size(), index);
     }
 
     @WorkerThread
@@ -108,4 +131,8 @@ public class TransactionViewModel extends BaseChartViewModel {
         return DataStorage.get().getTransactionFilterOptions();
     }
 
+    private boolean isTimeChart;
+    public void setType(boolean isTime) {
+        this.isTimeChart = isTime;
+    }
 }

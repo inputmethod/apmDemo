@@ -12,9 +12,7 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.harvestasm.apm.browser.DataStorage;
-import com.harvestasm.apm.repository.model.ApmMeasurementItem;
 import com.harvestasm.apm.repository.model.ApmSourceData;
-import com.harvestasm.apm.repository.model.ApmTransactionItem;
 import com.harvestasm.apm.repository.model.search.ApmBaseUnit;
 import com.harvestasm.apm.repository.model.search.ApmConnectSearchResponse;
 import com.harvestasm.apm.repository.model.search.ApmDataSearchResponse;
@@ -150,25 +148,7 @@ abstract public class BaseChartViewModel extends BaseListViewModel<ChartItem> {
     }
 
     @WorkerThread
-    // todo: 简单求平均值拟合图表。
-    protected final void buildEntry(ArrayList<BarEntry> entries, List<ApmMeasurementItem> itemList, int index) {
-        double total = 0;
-        for (ApmMeasurementItem item : itemList) {
-            total += (item.getMax() + item.getMin()) / 2;
-        }
-        buildEntry(entries, (float) total / itemList.size(), index);
-    }
-
-    protected final void buildTransactionEntry(ArrayList<BarEntry> entries, List<ApmTransactionItem> itemList, int index) {
-        double total = 0;
-        for (ApmTransactionItem item : itemList) {
-            total += item.getTotalTime();
-        }
-        buildEntry(entries, (float) total / itemList.size(), index);
-    }
-
-    @WorkerThread
-    private void buildEntry(ArrayList<BarEntry> entries, float value, int index) {
+    protected void buildEntry(ArrayList<BarEntry> entries, float value, int index) {
         entries.add(new BarEntry(index, value));
     }
 

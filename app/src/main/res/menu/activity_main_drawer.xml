@@ -32,19 +32,19 @@
             <item
                 android:id="@+id/nav_auto_measurement"
                 android:icon="@drawable/ic_menu_share"
-                android:title="Measurement" />
+                android:title="自动数据报表" />
             <item
                 android:id="@+id/nav_auto_networking"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Networking" />
+                android:title="网络传输报表" />
+            <item
+                android:id="@+id/nav_auto_transact_time"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="网络时长报表" />
             <item
                 android:id="@+id/nav_auto_activity"
                 android:icon="@drawable/ic_menu_slideshow"
                 android:title="Activity" />
-            <!--<item-->
-                <!--android:id="@+id/nav_manage"-->
-                <!--android:icon="@drawable/ic_menu_manage"-->
-                <!--android:title="Tools" />-->
         </menu>
     </item>
 

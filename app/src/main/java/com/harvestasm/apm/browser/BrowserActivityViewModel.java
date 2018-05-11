@@ -9,6 +9,7 @@ public class BrowserActivityViewModel extends ViewModel {
     private static final int CHART_AUTO = 0;
     private static final int CHART_MANUAL = 1;
     private static final int CHART_NETWORKING_DATA = 2;
+    private static final int CHART_NETWORKING_TIME = 3;
 
     @MainThread
     public void startObserve(LifecycleOwner owner, Observer<Integer> observer) {
@@ -21,9 +22,18 @@ public class BrowserActivityViewModel extends ViewModel {
         DataStorage.get().currentState.setValue(index);
     }
 
+    public boolean isNetworkingTime() {
+        return DataStorage.get().currentState.getValue().intValue() == CHART_NETWORKING_TIME;
+    }
+
     public void showNetworkingData() {
         DataStorage.get().useAutoMeasurements();
         DataStorage.get().currentState.setValue(CHART_NETWORKING_DATA);
+    }
+
+    public void showNetworkingTime() {
+        DataStorage.get().useAutoMeasurements();
+        DataStorage.get().currentState.setValue(CHART_NETWORKING_TIME);
     }
 
     public void useManualMeasurements() {
