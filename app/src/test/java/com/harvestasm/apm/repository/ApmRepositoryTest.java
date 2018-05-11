@@ -132,6 +132,7 @@ public class ApmRepositoryTest {
         ApmConnectSearchResponse connectResponse = mobileConnectSearch();
         DataStorage.get().setDataResponse(dataResponse);
         DataStorage.get().setConnectResponse(connectResponse);
+        Assert.assertNotNull(DataStorage.get().queryTransaction());
         Assert.assertNotNull(DataStorage.get().queryByOption());
     }
 }

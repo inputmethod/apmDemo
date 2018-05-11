@@ -8,7 +8,7 @@ import android.support.annotation.MainThread;
 public class BrowserActivityViewModel extends ViewModel {
     private static final int CHART_AUTO = 0;
     private static final int CHART_MANUAL = 1;
-    private static final int OTHERS = 2; // todo
+    private static final int CHART_NETWORKING_DATA = 2;
 
     @MainThread
     public void startObserve(LifecycleOwner owner, Observer<Integer> observer) {
@@ -21,8 +21,9 @@ public class BrowserActivityViewModel extends ViewModel {
         DataStorage.get().currentState.setValue(index);
     }
 
-    public void navigateBy(int id) {
-        DataStorage.get().currentState.setValue(OTHERS);
+    public void showNetworkingData() {
+        DataStorage.get().useAutoMeasurements();
+        DataStorage.get().currentState.setValue(CHART_NETWORKING_DATA);
     }
 
     public void useManualMeasurements() {

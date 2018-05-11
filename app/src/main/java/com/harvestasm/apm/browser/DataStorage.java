@@ -85,6 +85,9 @@ public class DataStorage {
     private static final String CATEGORY_TS = "TimeStamp";
     private static final String CATEGORY_OPTION = "Options";
     private static final String CATEGORY_DATA_APP = "DataApps";
+
+    private static final String CATEGORY_TRANSACTION_URL = "URL";
+
     private void updateData() {
         if (null == dataSourceIndex || null == connectSourceIndex) {
             Log.i(TAG, "updateData, skip and wait until all connect and data loaded.");
@@ -93,11 +96,15 @@ public class DataStorage {
 
             deviceGroupList = ApmSourceGroup.parseSourceGroup(dataSourceIndex, connectSourceIndex);
 
-            AddList(CATEGORY_DEVICE, DataStorage.get().getDeviceList());
-            AddList(CATEGORY_APP, DataStorage.get().getAppList());
-            AddList(CATEGORY_TS, DataStorage.get().getTimeStampSet());
-            AddList(CATEGORY_OPTION, DataStorage.get().getOptionSet());
-            AddList(CATEGORY_DATA_APP, DataStorage.get().getDataAppList());
+            // 添加measurement的filters
+            AddList(CATEGORY_DEVICE, getDeviceList());
+            AddList(CATEGORY_APP, getAppList());
+            AddList(CATEGORY_TS, getTimeStampSet());
+            AddList(CATEGORY_OPTION, getOptionSet());
+            AddList(CATEGORY_DATA_APP, getDataAppList());
+
+            // 增加transaction的filters
+            AddList(CATEGORY_TRANSACTION_URL, getTransactionUrlList());
 
             // todo: 统计出所有设备列表，可显示的app及版本列表和可显示数据选项列表
             // 同一台设备x同一app版本上多次数据的过滤，用timestamp??
@@ -134,10 +141,20 @@ public class DataStorage {
     }
 
     private void resetFilterCache() {
-        filterOptionList.clear();
+        filterOptionMap.clear();
         filterOptionList.clear();
     }
 
+    @Nullable
+    public Map<String, List<ApmBaseUnit<ApmSourceData>>> queryTransaction() {
+        if (null == dataResponse) {
+            Log.i(TAG, "queryTransaction, return empty map while it may not be loaded completely.");
+            return null;
+        }
+
+        return null == dataSourceIndex ? Collections.<String, List<ApmBaseUnit<ApmSourceData>>>emptyMap()
+                : dataSourceIndex.getTransactionUrlIndexMap();
+    }
     @Nullable
     public Map<String, List<ApmBaseUnit<ApmSourceData>>> queryByOption() {
         if (null == dataResponse) {
@@ -148,6 +165,7 @@ public class DataStorage {
         return null == dataSourceIndex ? Collections.<String, List<ApmBaseUnit<ApmSourceData>>>emptyMap()
                 : dataSourceIndex.getMeasureNameIndexMap();
     }
+
 
     public Set<String> getDeviceList() {
         if (null == connectSourceIndex) {
@@ -184,6 +202,13 @@ public class DataStorage {
             return Collections.emptySet();
         }
         return dataSourceIndex.getAppIndexMap().keySet();
+    }
+
+    public Set<String> getTransactionUrlList() {
+        if (null == dataSourceIndex) {
+            return Collections.emptySet();
+        }
+        return dataSourceIndex.getTransactionUrlIndexMap().keySet();
     }
 
     private final Map<String, Set<String>> filterOptionMap = new HashMap<>();
@@ -329,5 +354,9 @@ public class DataStorage {
         resetFilterCache();
         dataSourceIndex = null;
         connectSourceIndex = null;
+    }
+
+    public Set<String> getTransactionFilterOptions() {
+        return getFilter(CATEGORY_TRANSACTION_URL);
     }
 }

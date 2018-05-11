@@ -111,7 +111,7 @@ public class BrowserActivity extends BaseFragmentActivity implements NavigationV
             // 加载BrowserFragment, 获取mobile/数据
             activityViewModel.useAutoMeasurements();
         } else if (id == R.id.nav_auto_networking) {
-            activityViewModel.navigateBy(id);
+            activityViewModel.showNetworkingData();
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
