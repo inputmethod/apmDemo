@@ -6,6 +6,7 @@ import com.harvestasm.apm.reporter.ApmDataSourceIndex;
 import com.harvestasm.apm.reporter.ApmSourceGroup;
 import com.harvestasm.apm.reporter.SearchDataParser;
 import com.harvestasm.apm.reporter.SearchResult;
+import com.harvestasm.apm.repository.model.ApmActivityItem;
 import com.harvestasm.apm.repository.model.ApmDeviceMicsItem;
 import com.harvestasm.apm.repository.model.ApmSourceConnect;
 import com.harvestasm.apm.repository.model.ApmSourceData;
@@ -20,6 +21,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import typany.apm.retrofit2.Call;
 import typany.apm.retrofit2.Response;
@@ -134,5 +136,7 @@ public class ApmRepositoryTest {
         DataStorage.get().setConnectResponse(connectResponse);
         Assert.assertNotNull(DataStorage.get().queryTransaction());
         Assert.assertNotNull(DataStorage.get().queryByOption());
+        Map<String, List<ApmActivityItem.VitalUnit>> vitalMap = DataStorage.get().buildApplicationMemoryMap();
+        Assert.assertNotNull(vitalMap);
     }
 }

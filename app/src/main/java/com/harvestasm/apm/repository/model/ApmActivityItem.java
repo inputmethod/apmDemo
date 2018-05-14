@@ -1,6 +1,9 @@
 package com.harvestasm.apm.repository.model;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import typany.apm.com.google.gson.annotations.SerializedName;
 
 /**
  * Created by yangfeng on 2018/3/16.
@@ -65,6 +68,14 @@ public class ApmActivityItem {
     public void setRootTrace(RootTrace rootTrace) {
         this.rootTrace = rootTrace;
     }
+
+//    public List<Vitals> getVitals() {
+//        return vitals;
+//    }
+//
+//    public void setVitals(List<Vitals> vitals) {
+//        this.vitals = vitals;
+//    }
 
     public String getVitals() {
         return vitals;
@@ -200,9 +211,38 @@ public class ApmActivityItem {
         }
     }
 
+    public static class VitalUnit extends ArrayList<Double> {
+    }
+
     public static class Vitals {
-        public String type;
-        List<String> MEMORY; // todo: 内存数值对含义
-        List<String> CPU;    // todo: CPU数值内存对含义
+        private String type;
+        @SerializedName("MEMORY")
+        private List<VitalUnit> memory; // todo: 内存数值对含义
+        @SerializedName("CPU")
+        private List<VitalUnit> cpu;    // todo: CPU数值内存对含义
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public List<VitalUnit> getMemory() {
+            return memory;
+        }
+
+        public void setMemory(List<VitalUnit> memory) {
+            this.memory = memory;
+        }
+
+        public List<VitalUnit> getCpu() {
+            return cpu;
+        }
+
+        public void setCpu(List<VitalUnit> cpu) {
+            this.cpu = cpu;
+        }
     }
 }

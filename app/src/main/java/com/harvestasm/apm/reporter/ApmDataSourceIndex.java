@@ -83,7 +83,7 @@ public class ApmDataSourceIndex extends ApmBaseSourceIndex {
                 for (ApmActivityItem item : ctc.getActivity()) {
                     addToMap(activityTypeIndexMap, unit, item.getType());
                     addToMap(activityDisplayNameIndexMap, unit, item.getDisplayName());
-                    addToMap(activityVitalsIndexMap, unit, item.getVitals());
+                    addToMap(activityVitalsIndexMap, unit, item.getVitals().toString());
                     parseActivityRootTrace(unit, item.getRootTrace(), true);
                 }
             }

@@ -11,6 +11,7 @@ import com.harvestasm.apm.reporter.ApmConnectSourceIndex;
 import com.harvestasm.apm.reporter.ApmDataSourceIndex;
 import com.harvestasm.apm.reporter.ApmSourceGroup;
 import com.harvestasm.apm.repository.ApmRepository;
+import com.harvestasm.apm.repository.model.ApmActivityItem;
 import com.harvestasm.apm.repository.model.ApmSourceConnect;
 import com.harvestasm.apm.repository.model.ApmSourceData;
 import com.harvestasm.apm.repository.model.search.ApmBaseUnit;
@@ -31,6 +32,7 @@ import java.util.concurrent.Callable;
 
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import typany.apm.com.google.gson.Gson;
 
 public class DataStorage {
     private static final String TAG = DataStorage.class.getSimpleName();
@@ -358,5 +360,51 @@ public class DataStorage {
 
     public Set<String> getTransactionFilterOptions() {
         return getFilter(CATEGORY_TRANSACTION_URL);
+    }
+
+
+    @Nullable
+    public Map<String, List<ApmActivityItem.VitalUnit>> buildApplicationMemoryMap() {
+        if (null == dataResponse) {
+            Log.i(TAG, "queryTransaction, return empty map while it may not be loaded completely.");
+            return null;
+        }
+
+        if (null != dataSourceIndex) {
+            Map<String, List<ApmActivityItem.VitalUnit>> result = new HashMap<>();
+            Map<String, List<ApmBaseUnit<ApmSourceData>>> dataMap = dataSourceIndex.getActivityVitalsIndexMap();
+            for (String key : dataMap.keySet()) {
+                for (ApmBaseUnit<ApmSourceData> unit : dataMap.get(key)) {
+                    ApmSourceData sourceData = unit.get_source();
+                    if (null != sourceData) {
+                        List<ApmActivityItem> activityList = sourceData.getActivity();
+                        if (null != activityList) {
+                            for (ApmActivityItem item : activityList) {
+                                String mapKey = item.getDisplayName();
+                                String str = item.getVitals();
+                                ApmActivityItem.Vitals[] vitals = new Gson().fromJson(str, ApmActivityItem.Vitals[].class);
+//                                List<ApmActivityItem.Vitals> vitals = item.getVitals();
+                                if (null != vitals) {
+                                    for (ApmActivityItem.Vitals v : vitals) {
+                                        List<ApmActivityItem.VitalUnit> memory = v.getMemory();
+                                        if (null != memory && memory.size() == 2) {
+                                            List<ApmActivityItem.VitalUnit> unitList = result.get(mapKey);
+                                            if (null == unitList) {
+                                                unitList = new ArrayList<>();
+                                            }
+                                            unitList.addAll(memory);
+                                            result.put(mapKey, unitList);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        return Collections.emptyMap();
     }
 }
