@@ -13,6 +13,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
 
+import com.harvestasm.apm.activity.ActivityListFragment;
 import com.harvestasm.apm.base.BaseFragmentActivity;
 import com.harvestasm.apm.filter.FilterActivity;
 import com.harvestasm.apm.sample.R;
@@ -67,6 +68,8 @@ public class BrowserActivity extends BaseFragmentActivity implements NavigationV
     private Fragment newFragment(int id) {
         if (activityViewModel.isChartList(id)) {
             return new BrowserListFragment();
+        } else if (activityViewModel.isActivityData(id)) {
+            return new ActivityListFragment();
         } else {
             boolean isTime = activityViewModel.isNetworkingTime();
             Fragment fragment = new TransactionListFragment();
@@ -111,7 +114,7 @@ public class BrowserActivity extends BaseFragmentActivity implements NavigationV
             // 加载BrowserFragment, 获取apmtest/数据
             activityViewModel.useManualMeasurements();
         } else if (id == R.id.nav_auto_activity) {
-            // todo: activity统计数据的显示
+            activityViewModel.showActivityData();
         } else if (id == R.id.nav_auto_measurement) {
             // 加载BrowserFragment, 获取mobile/数据
             activityViewModel.useAutoMeasurements();
@@ -120,7 +123,7 @@ public class BrowserActivity extends BaseFragmentActivity implements NavigationV
         } else if (id == R.id.nav_auto_transact_time) {
             activityViewModel.showNetworkingTime();
         } else {
-            // todo: unexpected item.
+            // unexpected item.
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

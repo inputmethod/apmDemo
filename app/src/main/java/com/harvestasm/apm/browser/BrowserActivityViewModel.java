@@ -10,6 +10,7 @@ public class BrowserActivityViewModel extends ViewModel {
     private static final int CHART_MANUAL = 1;
     private static final int CHART_NETWORKING_DATA = 2;
     private static final int CHART_NETWORKING_TIME = 3;
+    private static final int CHART_ACTIVITY_DATA = 4;
 
     @MainThread
     public void startObserve(LifecycleOwner owner, Observer<Integer> observer) {
@@ -48,5 +49,14 @@ public class BrowserActivityViewModel extends ViewModel {
 
     public boolean isChartList(int id) {
         return CHART_AUTO == id || CHART_MANUAL == id;
+    }
+
+    public void showActivityData() {
+        DataStorage.get().useAutoMeasurements();
+        DataStorage.get().currentState.setValue(CHART_ACTIVITY_DATA);
+    }
+
+    public boolean isActivityData(int id) {
+        return CHART_ACTIVITY_DATA == id;
     }
 }
