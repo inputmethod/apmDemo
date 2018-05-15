@@ -122,6 +122,7 @@ public class TransactionViewModel extends BaseChartViewModel {
         }
     }
 
+    @Override
     protected Map<String, List<ApmBaseUnit<ApmSourceData>>> queryOptions() {
         return DataStorage.get().queryTransaction();
     }

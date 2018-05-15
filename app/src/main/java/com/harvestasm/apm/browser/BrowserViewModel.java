@@ -134,10 +134,12 @@ public class BrowserViewModel extends BaseChartViewModel {
         }
     }
 
+    @Override
     protected Map<String, List<ApmBaseUnit<ApmSourceData>>> queryOptions() {
         return DataStorage.get().queryByOption();
     }
 
+    @Override
     protected Set<String> getOptionFilter() {
         return DataStorage.get().getFilterOptions();
     }

@@ -157,6 +157,7 @@ public class DataStorage {
         return null == dataSourceIndex ? Collections.<String, List<ApmBaseUnit<ApmSourceData>>>emptyMap()
                 : dataSourceIndex.getTransactionUrlIndexMap();
     }
+
     @Nullable
     public Map<String, List<ApmBaseUnit<ApmSourceData>>> queryByOption() {
         if (null == dataResponse) {
@@ -391,9 +392,9 @@ public class DataStorage {
                                             List<ApmActivityItem.VitalUnit> unitList = result.get(mapKey);
                                             if (null == unitList) {
                                                 unitList = new ArrayList<>();
+                                                result.put(mapKey, unitList);
                                             }
                                             unitList.addAll(memory);
-                                            result.put(mapKey, unitList);
                                         }
                                     }
                                 }
@@ -406,5 +407,21 @@ public class DataStorage {
         }
 
         return Collections.emptyMap();
+    }
+
+    @Nullable
+    public Map<String, List<ApmBaseUnit<ApmSourceData>>> queryActivityVitals() {
+        if (null == dataResponse) {
+            Log.i(TAG, "queryActivityVitals, return empty map while it may not be loaded completely.");
+            return null;
+        }
+
+        return null == dataSourceIndex ? Collections.<String, List<ApmBaseUnit<ApmSourceData>>>emptyMap()
+                : dataSourceIndex.getActivityVitalsIndexMap();
+    }
+
+    // todo: Activity vital数据报表的过滤选项
+    public Set<String> getActivityFilterOptions() {
+        return Collections.emptySet();
     }
 }

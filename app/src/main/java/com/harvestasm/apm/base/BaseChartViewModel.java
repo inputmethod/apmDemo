@@ -137,7 +137,7 @@ abstract public class BaseChartViewModel extends BaseListViewModel<ChartItem> {
 
         List<ChartItem> list = new ArrayList<>();
         for (String key : dataByOption.keySet()) {
-            if (optionFilterList.contains(key)) {
+            if (optionFilterList.isEmpty() || optionFilterList.contains(key)) {
                 buildChartItem(list, key, dataByOption.get(key), typeface);
             } else {
                 // skip as it is filtered out by options.
