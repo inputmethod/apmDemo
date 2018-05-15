@@ -44,7 +44,11 @@
             <item
                 android:id="@+id/nav_auto_activity"
                 android:icon="@drawable/ic_menu_slideshow"
-                android:title="Activity" />
+                android:title="Activity内存消耗" />
+            <item
+                android:id="@+id/nav_auto_activity_cpu"
+                android:icon="@drawable/ic_menu_slideshow"
+                android:title="Activity CPU负载" />
         </menu>
     </item>
 

@@ -70,7 +70,7 @@ public class TransactionViewModel extends BaseChartViewModel {
 
         String unit = isTimeChart ? "[MS]" : "[BYTE]";
         String label = TextUtils.join("|", appList);
-        BarChartItem chartItem = generateDataBar(entries, unit + key, label, typeface);
+        BarChartItem chartItem = generateDataBar(entries, label, unit + key, typeface);
         list.add(chartItem);
     }
 
@@ -133,11 +133,7 @@ public class TransactionViewModel extends BaseChartViewModel {
     }
 
     private boolean isTimeChart;
-//    public void setType(boolean isTime) {
-//        this.isTimeChart = isTime;
-//    }
-
-
+    @Override
     public void parseArguments(Bundle bundle) {
         isTimeChart = null == bundle ? false : bundle.getBoolean("type");
     }

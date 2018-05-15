@@ -1,6 +1,7 @@
 package com.harvestasm.apm.browser;
 
 import android.graphics.Typeface;
+import android.os.Bundle;
 import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
 
@@ -81,15 +82,15 @@ public class ActivityViewModel extends BaseChartViewModel {
                     ApmActivityItem.Vitals[] vitals = new Gson().fromJson(str, ApmActivityItem.Vitals[].class);
                     if (null != vitals) {
                         for (ApmActivityItem.Vitals v : vitals) {
-                            List<ApmActivityItem.VitalUnit> memory = v.getMemory();
-                            if (null != memory && !memory.isEmpty()) {
+                            List<ApmActivityItem.VitalUnit> vitalItems = isMemoryChart ? v.getMemory() : v.getCpu();
+                            if (null != vitalItems && !vitalItems.isEmpty()) {
                                 String mapKey = item.getDisplayName();
                                 List<ApmActivityItem.VitalUnit> unitList = memoryByVitals.get(mapKey);
                                 if (null == unitList) {
                                     unitList = new ArrayList<>();
                                     memoryByVitals.put(mapKey, unitList);
                                 }
-                                unitList.addAll(memory);
+                                unitList.addAll(vitalItems);
                             }
                         }
                     }
@@ -108,5 +109,11 @@ public class ActivityViewModel extends BaseChartViewModel {
     @Override
     protected Set<String> getOptionFilter() {
         return DataStorage.get().getActivityFilterOptions();
+    }
+
+    private boolean isMemoryChart;
+    @Override
+    public void parseArguments(Bundle bundle) {
+        isMemoryChart = null == bundle ? false : bundle.getBoolean("type");
     }
 }

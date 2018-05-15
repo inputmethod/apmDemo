@@ -11,7 +11,8 @@ public class BrowserActivityViewModel extends ViewModel {
     private static final int CHART_MANUAL = 1;
     private static final int CHART_NETWORKING_DATA = 2;
     private static final int CHART_NETWORKING_TIME = 3;
-    private static final int CHART_ACTIVITY_DATA = 4;
+    private static final int CHART_ACTIVITY_MEMORY = 4;
+    private static final int CHART_ACTIVITY_CPU = 5;
 
     @MainThread
     public void startObserve(LifecycleOwner owner, Observer<Integer> observer) {
@@ -22,10 +23,6 @@ public class BrowserActivityViewModel extends ViewModel {
     public void showChartList() {
         int index = DataStorage.get().isUsedAutoChart() ? CHART_AUTO : CHART_MANUAL;
         DataStorage.get().currentState.setValue(index);
-    }
-
-    public boolean isNetworkingTime() {
-        return DataStorage.get().currentState.getValue().intValue() == CHART_NETWORKING_TIME;
     }
 
     public void showNetworkingData() {
@@ -52,21 +49,31 @@ public class BrowserActivityViewModel extends ViewModel {
         return CHART_AUTO == id || CHART_MANUAL == id;
     }
 
-    public void showActivityData() {
+    public void showActivityMemory() {
         DataStorage.get().useAutoMeasurements();
-        DataStorage.get().currentState.setValue(CHART_ACTIVITY_DATA);
+        DataStorage.get().currentState.setValue(CHART_ACTIVITY_MEMORY);
+    }
+
+    public void showActivityCpu() {
+        DataStorage.get().useAutoMeasurements();
+        DataStorage.get().currentState.setValue(CHART_ACTIVITY_CPU);
     }
 
     public boolean isActivityData(int id) {
-        return CHART_ACTIVITY_DATA == id;
+        return CHART_ACTIVITY_MEMORY == id ||CHART_ACTIVITY_CPU == id;
+    }
+
+    private Bundle generateTypeBundle(boolean value) {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("type", value);
+        return bundle;
     }
 
     public Bundle parseArguments(int id) {
         if (isStatisticChartList(id)) {
-            boolean isTime = isNetworkingTime();
-            Bundle bundle = new Bundle();
-            bundle.putBoolean("type", isTime);
-            return bundle;
+            return generateTypeBundle(CHART_NETWORKING_TIME == id);
+        } else if (isActivityData(id)){
+            return generateTypeBundle(CHART_ACTIVITY_MEMORY == id);
         } else {
             return null;
         }

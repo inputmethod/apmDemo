@@ -113,7 +113,9 @@ public class BrowserActivity extends BaseFragmentActivity implements NavigationV
             // 加载BrowserFragment, 获取apmtest/数据
             activityViewModel.useManualMeasurements();
         } else if (id == R.id.nav_auto_activity) {
-            activityViewModel.showActivityData();
+            activityViewModel.showActivityMemory();
+        } else if (id == R.id.nav_auto_activity_cpu) {
+            activityViewModel.showActivityCpu();
         } else if (id == R.id.nav_auto_measurement) {
             // 加载BrowserFragment, 获取mobile/数据
             activityViewModel.useAutoMeasurements();
@@ -125,6 +127,7 @@ public class BrowserActivity extends BaseFragmentActivity implements NavigationV
             // unexpected item.
         }
 
+        setTitle(item.getTitle());
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
