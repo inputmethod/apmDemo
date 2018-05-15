@@ -1,6 +1,7 @@
 package com.harvestasm.apm.add;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -24,6 +25,8 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.harvestasm.apm.sample.R;
+import com.harvestasm.chart.custom.MyAxisValueFormatter;
+import com.harvestasm.chart.custom.MyValueFormatter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,6 +118,114 @@ public class AddSubCpuFragment extends AddCharDataFragment {
         titleView.setText(getActivity().getTitle());
         mChart.setOnChartValueSelectedListener(this);
 
+//        initAsNormalBarChart();
+        initAsStackedBarChart();
+    }
+
+    private void initAsStackedBarChart() {
+        mChart.getDescription().setEnabled(false);
+
+        // if more than 60 entries are displayed in the chart, no values will be
+        // drawn
+        mChart.setMaxVisibleValueCount(40);
+
+        // scaling can now only be done on x- and y-axis separately
+        mChart.setPinchZoom(false);
+
+        mChart.setDrawGridBackground(false);
+        mChart.setDrawBarShadow(false);
+
+        mChart.setDrawValueAboveBar(false);
+        mChart.setHighlightFullBarEnabled(false);
+
+        // change the position of the y-labels
+        YAxis leftAxis = mChart.getAxisLeft();
+        leftAxis.setValueFormatter(new MyAxisValueFormatter());
+        leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+        mChart.getAxisRight().setEnabled(false);
+
+        XAxis xLabels = mChart.getXAxis();
+        xLabels.setPosition(XAxis.XAxisPosition.TOP);
+
+        // mChart.setDrawXLabels(false);
+        // mChart.setDrawYLabels(false);
+
+        // setting data
+//        mSeekBarX.setProgress(12);
+//        mSeekBarY.setProgress(100);
+//        onProgressChanged(12, 100);
+
+        Legend l = mChart.getLegend();
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        l.setDrawInside(false);
+        l.setFormSize(8f);
+        l.setFormToTextSpace(4f);
+        l.setXEntrySpace(6f);
+
+        // mChart.setDrawLegend(false);
+    }
+    private static float getFloatValue(EditText editText) {
+        String text = editText.getText().toString();
+        return TextUtils.isEmpty(text) ? 0f : Float.parseFloat(text);
+    }
+    protected void onProgressChanged() {
+        int xProgress = editTextList.size();
+        ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
+
+        for (int i = 0; i < xProgress; i++) {
+            float val1 = getFloatValue(editTextList.get(i));
+            float val2 = getFloatValue(otherEditTextList.get(i));
+
+            yVals1.add(new BarEntry(
+                    i,
+                    new float[]{val1, val2 - val1},
+                    getResources().getDrawable(R.drawable.ic_home_black_24dp)));
+        }
+
+        BarDataSet set1;
+
+        if (mChart.getData() != null &&
+                mChart.getData().getDataSetCount() > 0) {
+            set1 = (BarDataSet) mChart.getData().getDataSetByIndex(0);
+            set1.setValues(yVals1);
+            mChart.getData().notifyDataChanged();
+            mChart.notifyDataSetChanged();
+        } else {
+            set1 = new BarDataSet(yVals1, "CPU数据");
+            set1.setDrawIcons(false);
+            set1.setColors(getColors());
+            set1.setStackLabels(new String[]{"平均", "最大"});
+
+            ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
+            dataSets.add(set1);
+
+            BarData data = new BarData(dataSets);
+            data.setValueFormatter(new MyValueFormatter());
+            data.setValueTextColor(Color.WHITE);
+
+            mChart.setData(data);
+        }
+
+        mChart.setFitBars(true);
+        mChart.invalidate();
+    }
+
+    private int[] getColors() {
+        int stacksize = 2;
+
+        // have as many colors as stack-values per entry
+        int[] colors = new int[stacksize];
+
+        for (int i = 0; i < colors.length; i++) {
+            colors[i] = ColorTemplate.MATERIAL_COLORS[i];
+        }
+
+        return colors;
+    }
+
+    private void initAsNormalBarChart() {
         mChart.setDrawBarShadow(false);
         mChart.setDrawValueAboveBar(true);
 
@@ -217,20 +328,22 @@ public class AddSubCpuFragment extends AddCharDataFragment {
     }
 
     private void refreshBarChart() {
-        int count = editTextList.size();
+        onProgressChanged();
 
-        ArrayList<BarEntry> yVals1 = new ArrayList<>();
-        for (int i = 0; i < count; i++) {
-            String text = editTextList.get(i).getText().toString();
-            float val = TextUtils.isEmpty(text) ? 0f : Float.parseFloat(text);
-
-            if (val < 25) {
-                yVals1.add(new BarEntry(i + 1f, val, getResources().getDrawable(R.drawable.ic_home_black_24dp)));
-            } else {
-                yVals1.add(new BarEntry(i + 1f, val));
-            }
-        }
-        fillDataSet(yVals1);
+//        int count = editTextList.size();
+//
+//        ArrayList<BarEntry> yVals1 = new ArrayList<>();
+//        for (int i = 0; i < count; i++) {
+//            String text = editTextList.get(i).getText().toString();
+//            float val = TextUtils.isEmpty(text) ? 0f : Float.parseFloat(text);
+//
+//            if (val < 25) {
+//                yVals1.add(new BarEntry(i + 1f, val, getResources().getDrawable(R.drawable.ic_home_black_24dp)));
+//            } else {
+//                yVals1.add(new BarEntry(i + 1f, val));
+//            }
+//        }
+//        fillDataSet(yVals1);
     }
 
     private void fillDataSet(ArrayList<BarEntry> yVals1) {
