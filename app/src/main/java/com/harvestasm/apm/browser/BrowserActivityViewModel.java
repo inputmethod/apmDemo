@@ -71,11 +71,11 @@ public class BrowserActivityViewModel extends ViewModel {
 
     public Bundle parseArguments(int id) {
         if (isStatisticChartList(id)) {
-            return generateTypeBundle(CHART_NETWORKING_TIME == id);
+            return null;
         } else if (isActivityData(id)){
             return generateTypeBundle(CHART_ACTIVITY_MEMORY == id);
         } else {
-            return null;
+            return generateTypeBundle(CHART_NETWORKING_TIME == id);
         }
     }
 }
