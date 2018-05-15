@@ -13,12 +13,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
 
-import com.harvestasm.apm.activity.ActivityListFragment;
+import com.harvestasm.apm.base.BaseChartListFragment;
 import com.harvestasm.apm.base.BaseFragmentActivity;
 import com.harvestasm.apm.filter.FilterActivity;
 import com.harvestasm.apm.sample.R;
 import com.harvestasm.apm.setup.SetupActivity;
-import com.harvestasm.apm.transaction.TransactionListFragment;
 
 public class BrowserActivity extends BaseFragmentActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = BrowserActivity.class.getSimpleName();
@@ -68,11 +67,11 @@ public class BrowserActivity extends BaseFragmentActivity implements NavigationV
     private Fragment newFragment(int id) {
         final Fragment fragment;
         if (activityViewModel.isStatisticChartList(id)) {
-            fragment = new BrowserListFragment();
+            fragment = new BaseChartListFragment.Browser();
         } else if (activityViewModel.isActivityData(id)) {
-            fragment = new ActivityListFragment();
+            fragment = new BaseChartListFragment.Activity();
         } else {
-            fragment = new TransactionListFragment();
+            fragment = new BaseChartListFragment.Transaction();
         }
 
         Bundle bundle = activityViewModel.parseArguments(id);

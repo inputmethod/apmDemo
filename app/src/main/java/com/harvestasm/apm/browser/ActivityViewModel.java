@@ -1,13 +1,11 @@
-package com.harvestasm.apm.transaction;
+package com.harvestasm.apm.browser;
 
 import android.graphics.Typeface;
-import android.os.Bundle;
 import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
 
 import com.github.mikephil.charting.data.BarEntry;
 import com.harvestasm.apm.base.BaseChartViewModel;
-import com.harvestasm.apm.browser.DataStorage;
 import com.harvestasm.apm.repository.model.ApmSourceData;
 import com.harvestasm.apm.repository.model.ApmTransactionItem;
 import com.harvestasm.apm.repository.model.search.ApmBaseUnit;
@@ -21,8 +19,8 @@ import java.util.Map;
 import java.util.Set;
 
 // todo: simplest implement without repository to store data item.
-public class TransactionViewModel extends BaseChartViewModel {
-    private final static String TAG = TransactionViewModel.class.getSimpleName();
+public class ActivityViewModel extends BaseChartViewModel {
+    private final static String TAG = ActivityViewModel.class.getSimpleName();
 
     @Override
     @WorkerThread
@@ -133,12 +131,7 @@ public class TransactionViewModel extends BaseChartViewModel {
     }
 
     private boolean isTimeChart;
-//    public void setType(boolean isTime) {
-//        this.isTimeChart = isTime;
-//    }
-
-
-    public void parseArguments(Bundle bundle) {
-        isTimeChart = null == bundle ? false : bundle.getBoolean("type");
+    public void setType(boolean isTime) {
+        this.isTimeChart = isTime;
     }
 }

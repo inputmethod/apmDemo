@@ -11,7 +11,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.widget.ListView;
 
+import com.harvestasm.apm.browser.ActivityViewModel;
+import com.harvestasm.apm.browser.BrowserViewModel;
 import com.harvestasm.apm.sample.R;
+import com.harvestasm.apm.browser.TransactionViewModel;
 import com.harvestasm.base.RefreshListFragment;
 import com.harvestasm.chart.listviewitems.ChartItem;
 
@@ -27,7 +30,8 @@ abstract public class BaseChartListFragment<T extends BaseChartViewModel> extend
     private BaseChartAdapter<T> adapter;
 
     @Override
-    protected @LayoutRes int getCollectionLayoutResourceId() {
+    protected @LayoutRes
+    int getCollectionLayoutResourceId() {
         return R.layout.including_listview;
     }
 
@@ -73,7 +77,10 @@ abstract public class BaseChartListFragment<T extends BaseChartViewModel> extend
 
     // todo: 用反射取得T.class: https://blog.csdn.net/gengv/article/details/5178055
     // Class < T >  entityClass  =  (Class < T > ) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[ 0 ];
-    protected abstract Class<T> getViewModelClassName();
+    abstract protected Class<T> getViewModelClassName(); /*{
+        Class<T> entityClass = (Class<T>)((ParameterizedType)getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+        return entityClass;
+    }*/
 
     @Override
     public void onDestroy() {
@@ -101,5 +108,25 @@ abstract public class BaseChartListFragment<T extends BaseChartViewModel> extend
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.menu_next, menu);
         menu.findItem(R.id.action_next).setTitle(R.string.data_filter);
+    }
+
+    // todo: split implement classes from base.
+    public static class Browser extends BaseChartListFragment<BrowserViewModel> {
+        @Override
+        protected Class<BrowserViewModel> getViewModelClassName() {
+            return BrowserViewModel.class;
+        }
+    }
+    public static class Activity extends BaseChartListFragment<ActivityViewModel> {
+        @Override
+        protected Class<ActivityViewModel> getViewModelClassName() {
+            return ActivityViewModel.class;
+        }
+    }
+    public static class Transaction extends BaseChartListFragment<TransactionViewModel> {
+        @Override
+        protected Class<TransactionViewModel> getViewModelClassName() {
+            return TransactionViewModel.class;
+        }
     }
 }
