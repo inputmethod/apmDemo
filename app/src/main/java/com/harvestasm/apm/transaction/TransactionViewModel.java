@@ -1,6 +1,7 @@
 package com.harvestasm.apm.transaction;
 
 import android.graphics.Typeface;
+import android.os.Bundle;
 import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
 
@@ -132,7 +133,12 @@ public class TransactionViewModel extends BaseChartViewModel {
     }
 
     private boolean isTimeChart;
-    public void setType(boolean isTime) {
-        this.isTimeChart = isTime;
+//    public void setType(boolean isTime) {
+//        this.isTimeChart = isTime;
+//    }
+
+
+    public void parseArguments(Bundle bundle) {
+        isTimeChart = null == bundle ? false : bundle.getBoolean("type");
     }
 }

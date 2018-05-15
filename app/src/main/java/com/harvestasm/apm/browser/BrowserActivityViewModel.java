@@ -3,6 +3,7 @@ package com.harvestasm.apm.browser;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModel;
+import android.os.Bundle;
 import android.support.annotation.MainThread;
 
 public class BrowserActivityViewModel extends ViewModel {
@@ -47,7 +48,7 @@ public class BrowserActivityViewModel extends ViewModel {
         showChartList();
     }
 
-    public boolean isChartList(int id) {
+    public boolean isStatisticChartList(int id) {
         return CHART_AUTO == id || CHART_MANUAL == id;
     }
 
@@ -58,5 +59,16 @@ public class BrowserActivityViewModel extends ViewModel {
 
     public boolean isActivityData(int id) {
         return CHART_ACTIVITY_DATA == id;
+    }
+
+    public Bundle parseArguments(int id) {
+        if (isStatisticChartList(id)) {
+            boolean isTime = isNetworkingTime();
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("type", isTime);
+            return bundle;
+        } else {
+            return null;
+        }
     }
 }

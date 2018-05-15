@@ -66,18 +66,18 @@ public class BrowserActivity extends BaseFragmentActivity implements NavigationV
     }
 
     private Fragment newFragment(int id) {
-        if (activityViewModel.isChartList(id)) {
-            return new BrowserListFragment();
+        final Fragment fragment;
+        if (activityViewModel.isStatisticChartList(id)) {
+            fragment = new BrowserListFragment();
         } else if (activityViewModel.isActivityData(id)) {
-            return new ActivityListFragment();
+            fragment = new ActivityListFragment();
         } else {
-            boolean isTime = activityViewModel.isNetworkingTime();
-            Fragment fragment = new TransactionListFragment();
-            Bundle bundle = new Bundle();
-            bundle.putBoolean("type", isTime);
-            fragment.setArguments(bundle);
-            return fragment;
+            fragment = new TransactionListFragment();
         }
+
+        Bundle bundle = activityViewModel.parseArguments(id);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     public static void start(Context context) {
