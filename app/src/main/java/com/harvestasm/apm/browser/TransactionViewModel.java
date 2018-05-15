@@ -29,18 +29,14 @@ public class TransactionViewModel extends BaseChartViewModel {
     protected void buildChartItem(List<ChartItem> list, String key, List<ApmBaseUnit<ApmSourceData>> dataList, Typeface typeface) {
         // build chart item with the built map
         ArrayList<BarEntry> entries = new ArrayList<>();
-        List<String> appList = new ArrayList<>();
 
         Map<String, List<ApmTransactionItem>> transactionByUrl = parseTransactionByUrl(key, dataList);
         int index = 0;
         for (String urlText : transactionByUrl.keySet()) {
             List<ApmTransactionItem> itemList = transactionByUrl.get(urlText);
             if (isTimeChart) {
-                appList.add(urlText);
                 buildTransactionEntry(entries, itemList, index++);
             } else {
-                appList.add("SENT");
-                appList.add("RECEIVED");
                 double sent = 0;
                 double receipt = 0;
                 for (ApmTransactionItem item : itemList) {
@@ -69,8 +65,8 @@ public class TransactionViewModel extends BaseChartViewModel {
 //        }
 
         String unit = isTimeChart ? "[MS]" : "[BYTE]";
-        String label = TextUtils.join("|", appList);
-        BarChartItem chartItem = generateDataBar(entries, label, unit + key, typeface);
+        String label = "SENT|RECEIVED";
+        BarChartItem chartItem = generateDataBar(entries, label + unit, key, typeface);
         list.add(chartItem);
     }
 
