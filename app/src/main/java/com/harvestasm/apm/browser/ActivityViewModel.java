@@ -4,13 +4,13 @@ import android.graphics.Typeface;
 import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
 
-import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
 import com.harvestasm.apm.base.BaseChartViewModel;
 import com.harvestasm.apm.repository.model.ApmActivityItem;
 import com.harvestasm.apm.repository.model.ApmSourceData;
 import com.harvestasm.apm.repository.model.search.ApmBaseUnit;
-import com.harvestasm.chart.listviewitems.BarChartItem;
 import com.harvestasm.chart.listviewitems.ChartItem;
+import com.harvestasm.chart.listviewitems.LineChartItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +29,7 @@ public class ActivityViewModel extends BaseChartViewModel {
     // todo: 合并计算一个option下相同app的多次值（简单求平均值）
     protected void buildChartItem(List<ChartItem> list, String key, List<ApmBaseUnit<ApmSourceData>> dataList, Typeface typeface) {
         // build chart item with the built map
-        ArrayList<BarEntry> entries = new ArrayList<>();
+        ArrayList<Entry> entries = new ArrayList<>();
         List<String> appList = new ArrayList<>();
 
         Map<String, List<ApmActivityItem.VitalUnit>> memoryByVitals = parseMemoryByVitals(key, dataList);
@@ -38,20 +38,16 @@ public class ActivityViewModel extends BaseChartViewModel {
             List<ApmActivityItem.VitalUnit> itemList = memoryByVitals.get(urlText);
 
             appList.add(urlText);
-            buildMemoryEntry(entries, itemList, index++);
+            for (ApmActivityItem.VitalUnit item : itemList) {
+                entries.add(new Entry(index++, item.get(1).floatValue()));
+            }
         }
 
-        String label = TextUtils.join("|", appList);
-        BarChartItem chartItem = generateDataBar(entries, key, label, typeface);
-        list.add(chartItem);
-    }
-
-    private final void buildMemoryEntry(ArrayList<BarEntry> entries, List<ApmActivityItem.VitalUnit> itemList, int index) {
-        double total = 0;
-        for (ApmActivityItem.VitalUnit item : itemList) {
-            total += item.get(1);
+        if (!entries.isEmpty()) {
+            String label = TextUtils.join("|", appList);
+            LineChartItem chartItem = generateDataLine(entries, label, key, typeface);
+            list.add(chartItem);
         }
-        buildEntry(entries, (float) total / itemList.size(), index);
     }
 
     @WorkerThread
@@ -86,7 +82,7 @@ public class ActivityViewModel extends BaseChartViewModel {
                     if (null != vitals) {
                         for (ApmActivityItem.Vitals v : vitals) {
                             List<ApmActivityItem.VitalUnit> memory = v.getMemory();
-                            if (null != memory && memory.size() == 2) {
+                            if (null != memory && !memory.isEmpty()) {
                                 String mapKey = item.getDisplayName();
                                 List<ApmActivityItem.VitalUnit> unitList = memoryByVitals.get(mapKey);
                                 if (null == unitList) {

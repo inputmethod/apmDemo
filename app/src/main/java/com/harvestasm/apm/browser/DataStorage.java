@@ -388,7 +388,7 @@ public class DataStorage {
                                 if (null != vitals) {
                                     for (ApmActivityItem.Vitals v : vitals) {
                                         List<ApmActivityItem.VitalUnit> memory = v.getMemory();
-                                        if (null != memory && memory.size() == 2) {
+                                        if (null != memory && !memory.isEmpty()) {
                                             List<ApmActivityItem.VitalUnit> unitList = result.get(mapKey);
                                             if (null == unitList) {
                                                 unitList = new ArrayList<>();

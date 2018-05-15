@@ -1,6 +1,7 @@
 package com.harvestasm.apm.base;
 
 import android.arch.lifecycle.MutableLiveData;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.MainThread;
@@ -11,6 +12,9 @@ import android.util.Log;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.harvestasm.apm.browser.DataStorage;
 import com.harvestasm.apm.repository.model.ApmSourceData;
@@ -20,6 +24,7 @@ import com.harvestasm.apm.repository.model.search.ApmDataSearchResponse;
 import com.harvestasm.apm.utils.ApmRepositoryHelper;
 import com.harvestasm.chart.listviewitems.BarChartItem;
 import com.harvestasm.chart.listviewitems.ChartItem;
+import com.harvestasm.chart.listviewitems.LineChartItem;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -162,6 +167,20 @@ abstract public class BaseChartViewModel extends BaseListViewModel<ChartItem> {
         BarData cd = new BarData(d);
         cd.setBarWidth(0.9f);
         return new BarChartItem(cd, title, ChartItem.ID.STASTIC_PREVIEW, typeface);
+    }
+
+    @WorkerThread
+    protected final LineChartItem generateDataLine(ArrayList<Entry> entries, String label,
+                                                  String title, Typeface typeface) {
+        LineDataSet d = new LineDataSet(entries, label);
+        d.setColors(ColorTemplate.VORDIPLOM_COLORS);
+        d.setLineWidth(2.5f);
+        d.setCircleRadius(4.5f);
+        d.setHighLightColor(Color.rgb(244, 117, 117));
+//        d.setDrawValues(false);
+
+        LineData cd = new LineData(d);
+        return new LineChartItem(cd, title, ChartItem.ID.STASTIC_PREVIEW, typeface);
     }
 
     public final void performClick(ChartItem item) {
