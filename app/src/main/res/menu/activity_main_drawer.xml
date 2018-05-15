@@ -19,11 +19,11 @@
             <item
                 android:id="@+id/nav_manual_add"
                 android:icon="@drawable/ic_menu_camera"
-                android:title="手工测试上报" />
+                android:title="@string/nav_manual_add" />
             <item
                 android:id="@+id/nav_manual_chart"
                 android:icon="@drawable/ic_menu_gallery"
-                android:title="手工数据报表" />
+                android:title="@string/nav_manual_chart" />
         </menu>
     </item>
 

@@ -27,7 +27,7 @@
 
         <activity
             android:name="com.harvestasm.apm.setup.SetupActivity"
-            android:label="@string/title_main"
+            android:label="@string/nav_manual_add"
             android:theme="@style/AppTheme.NoActionBar">
             <!--<intent-filter>-->
                 <!--<action android:name="android.intent.action.MAIN" />-->
@@ -36,11 +36,13 @@
         </activity>
 
         <activity android:name="com.harvestasm.apm.add.AddDataActivity"
-            android:label="@string/action_add_data"
+            android:label="@string/nav_manual_chart"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name="com.harvestasm.apm.preview.PreviewActivity"
+            android:label="@string/action_preview"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name="com.harvestasm.apm.filter.FilterActivity"
+            android:label="@string/action_filter"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 

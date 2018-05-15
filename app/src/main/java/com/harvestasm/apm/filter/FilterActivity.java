@@ -13,7 +13,7 @@ public class FilterActivity extends BaseFragmentActivity {
     protected void onCreateComplete() {
         super.onCreateComplete();
 
-        setTitle(R.string.data_filter);
+        setTitle(R.string.action_filter);
 
         String tag = FilterActivity.class.getSimpleName();
         Fragment fragment = getFragmentWithTag(tag);

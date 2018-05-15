@@ -107,7 +107,7 @@ abstract public class BaseChartListFragment<T extends BaseChartViewModel> extend
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.menu_next, menu);
-        menu.findItem(R.id.action_next).setTitle(R.string.data_filter);
+        menu.findItem(R.id.action_next).setTitle(R.string.action_filter);
     }
 
     // todo: split implement classes from base.
