@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.widget.ListView;
 
+import com.harvestasm.apm.base.BaseChartAdapter;
 import com.harvestasm.apm.sample.R;
 import com.harvestasm.base.RefreshListFragment;
 import com.harvestasm.chart.listviewitems.ChartItem;
@@ -24,7 +25,7 @@ public class BrowserListFragment extends RefreshListFragment<ChartItem, ListView
     private static final String TAG = BrowserListFragment.class.getSimpleName();
 
     private BrowserViewModel browserViewModel;
-    private BrowserAdapter browserAdapter;
+    private BaseChartAdapter<BrowserViewModel> browserAdapter;
 
     @Override
     protected @LayoutRes int getCollectionLayoutResourceId() {
@@ -33,7 +34,7 @@ public class BrowserListFragment extends RefreshListFragment<ChartItem, ListView
 
     // todo: 每次都重新赋予新的adapter实例, 环保或者ui闪烁是否比更新数据效果要差?
     protected void refreshChangedData(@NonNull ListView listView, @NonNull List<ChartItem> chartItems) {
-        browserAdapter = new BrowserAdapter(getContext(), chartItems, browserViewModel);
+        browserAdapter = new BaseChartAdapter<>(getContext(), chartItems, browserViewModel);
         listView.setAdapter(browserAdapter);
         setHasOptionsMenu(!chartItems.isEmpty());
     }

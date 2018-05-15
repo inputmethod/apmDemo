@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.widget.ListView;
 
+import com.harvestasm.apm.base.BaseChartAdapter;
 import com.harvestasm.apm.sample.R;
 import com.harvestasm.base.RefreshListFragment;
 import com.harvestasm.chart.listviewitems.ChartItem;
@@ -25,7 +26,7 @@ public class TransactionListFragment extends RefreshListFragment<ChartItem, List
     private static final String TAG = TransactionListFragment.class.getSimpleName();
 
     private TransactionViewModel transactionViewModel;
-    private TransactionAdapter transactionAdapter;
+    private BaseChartAdapter<TransactionViewModel> transactionAdapter;
 
     @Override
     protected @LayoutRes int getCollectionLayoutResourceId() {
@@ -34,7 +35,7 @@ public class TransactionListFragment extends RefreshListFragment<ChartItem, List
 
     // todo: 每次都重新赋予新的adapter实例, 环保或者ui闪烁是否比更新数据效果要差?
     protected void refreshChangedData(@NonNull ListView listView, @NonNull List<ChartItem> chartItems) {
-        transactionAdapter = new TransactionAdapter(getContext(), chartItems, transactionViewModel);
+        transactionAdapter = new BaseChartAdapter<>(getContext(), chartItems, transactionViewModel);
         listView.setAdapter(transactionAdapter);
         setHasOptionsMenu(!chartItems.isEmpty());
     }
