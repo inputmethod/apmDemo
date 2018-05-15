@@ -53,7 +53,7 @@
 
     <string name="nav_header_desc">Navigation header</string>
 
-    <string name="nav_manual_add">手工测试上报</string>
+    <string name="nav_manual_add">手工数据收集</string>
     <string name="nav_manual_chart">手工数据报表</string>
 
 </resources>
