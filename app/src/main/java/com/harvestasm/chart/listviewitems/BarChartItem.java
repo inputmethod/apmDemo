@@ -6,13 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.ChartData;
 import com.harvestasm.apm.sample.R;
-import com.harvestasm.chart.custom.MyAxisValueFormatter;
 
 public class BarChartItem extends ChartItem {
     
@@ -55,73 +53,73 @@ public class BarChartItem extends ChartItem {
 
         public void bind(BarChartItem item) {
             super.bind(item);
-//            chart.setOnChartValueSelectedListener(this);
-
-            chart.getDescription().setEnabled(false);
-
-            // if more than 60 entries are displayed in the chart, no values will be
-            // drawn
-            chart.setMaxVisibleValueCount(40);
-
-            // scaling can now only be done on x- and y-axis separately
-            chart.setPinchZoom(false);
-
-            chart.setDrawGridBackground(false);
-            chart.setDrawBarShadow(false);
-
-            chart.setDrawValueAboveBar(false);
-            chart.setHighlightFullBarEnabled(false);
-
-            // change the position of the y-labels
-            YAxis leftAxis = chart.getAxisLeft();
-            leftAxis.setValueFormatter(new MyAxisValueFormatter());
-            leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
-            chart.getAxisRight().setEnabled(false);
-
-            XAxis xLabels = chart.getXAxis();
-            xLabels.setPosition(XAxis.XAxisPosition.TOP);
-
-            // chart.setDrawXLabels(false);
-            // chart.setDrawYLabels(false);
-
-            // setting data
-//        mSeekBarX.setProgress(12);
-//        mSeekBarY.setProgress(100);
-//        onProgressChanged(12, 100);
-
-            Legend l = chart.getLegend();
-            l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
-            l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-            l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
-            l.setDrawInside(false);
-            l.setFormSize(8f);
-            l.setFormToTextSpace(4f);
-            l.setXEntrySpace(6f);
-
-            // chart.setDrawLegend(false);
-
-//            // apply styling
+////            chart.setOnChartValueSelectedListener(this);
+//
 //            chart.getDescription().setEnabled(false);
+//
+//            // if more than 60 entries are displayed in the chart, no values will be
+//            // drawn
+//            chart.setMaxVisibleValueCount(40);
+//
+//            // scaling can now only be done on x- and y-axis separately
+//            chart.setPinchZoom(false);
+//
 //            chart.setDrawGridBackground(false);
 //            chart.setDrawBarShadow(false);
 //
-//            XAxis xAxis = chart.getXAxis();
-//            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-//            xAxis.setTypeface(item.mTf);
-//            xAxis.setDrawGridLines(false);
-//            xAxis.setDrawAxisLine(true);
+//            chart.setDrawValueAboveBar(false);
+//            chart.setHighlightFullBarEnabled(false);
 //
+//            // change the position of the y-labels
 //            YAxis leftAxis = chart.getAxisLeft();
-//            leftAxis.setTypeface(item.mTf);
-//            leftAxis.setLabelCount(5, false);
-//            leftAxis.setSpaceTop(20f);
+//            leftAxis.setValueFormatter(new MyAxisValueFormatter());
 //            leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+//            chart.getAxisRight().setEnabled(false);
 //
-//            YAxis rightAxis = chart.getAxisRight();
-//            rightAxis.setTypeface(item.mTf);
-//            rightAxis.setLabelCount(5, false);
-//            rightAxis.setSpaceTop(20f);
-//            rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+//            XAxis xLabels = chart.getXAxis();
+//            xLabels.setPosition(XAxis.XAxisPosition.TOP);
+//
+//            // chart.setDrawXLabels(false);
+//            // chart.setDrawYLabels(false);
+//
+//            // setting data
+////        mSeekBarX.setProgress(12);
+////        mSeekBarY.setProgress(100);
+////        onProgressChanged(12, 100);
+//
+//            Legend l = chart.getLegend();
+//            l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+//            l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+//            l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+//            l.setDrawInside(false);
+//            l.setFormSize(8f);
+//            l.setFormToTextSpace(4f);
+//            l.setXEntrySpace(6f);
+//
+//            // chart.setDrawLegend(false);
+
+            // apply styling
+            chart.getDescription().setEnabled(false);
+            chart.setDrawGridBackground(false);
+            chart.setDrawBarShadow(false);
+
+            XAxis xAxis = chart.getXAxis();
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+            xAxis.setTypeface(item.mTf);
+            xAxis.setDrawGridLines(false);
+            xAxis.setDrawAxisLine(true);
+
+            YAxis leftAxis = chart.getAxisLeft();
+            leftAxis.setTypeface(item.mTf);
+            leftAxis.setLabelCount(5, false);
+            leftAxis.setSpaceTop(20f);
+            leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+
+            YAxis rightAxis = chart.getAxisRight();
+            rightAxis.setTypeface(item.mTf);
+            rightAxis.setLabelCount(5, false);
+            rightAxis.setSpaceTop(20f);
+            rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
 
             item.mChartData.setValueTypeface(item.mTf);
 
