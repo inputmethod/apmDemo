@@ -76,7 +76,7 @@ public class AddKeyTimeFragment extends AddCharDataFragment {
                                  Map<ApplicationInformation, CustomMetricMeasurement> dataMap) {
         View v = inflater.inflate(R.layout.fragment_add_entry, null, false);
         setEntityTitle(v, R.id.entry_key, item);
-        setEntityValue(v, R.id.entry_value, dataMap, item, editTextList, watcher);
+        editTextList.add(initEntityValue(v, R.id.entry_value, dataMap, item, watcher));
         return v;
     }
 

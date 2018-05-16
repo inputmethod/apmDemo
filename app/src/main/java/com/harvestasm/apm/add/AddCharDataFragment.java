@@ -126,15 +126,15 @@ abstract public class AddCharDataFragment extends BaseAddFragment implements OnC
     }
 
 
-    protected void setEntityValue(View v, int valueId, Map<ApplicationInformation, CustomMetricMeasurement> dataMap,
-                                  ApplicationInformation item, List<EditText> editTextList, TextWatcher watcher) {
+    protected EditText initEntityValue(View v, int valueId, Map<ApplicationInformation, CustomMetricMeasurement> dataMap,
+                                       ApplicationInformation item, TextWatcher watcher) {
         int inputType = InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL | InputType.TYPE_NUMBER_FLAG_DECIMAL;
         EditText editText = v.findViewById(valueId);
         editText.setInputType(inputType);
         editText.setTag(item);
         peakEditText(editText, item, dataMap);
-        editTextList.add(editText);
         editText.addTextChangedListener(watcher);
+        return editText;
     }
 
     private static void peakEditText(@NonNull EditText editText, @NonNull ApplicationInformation information,
@@ -164,5 +164,10 @@ abstract public class AddCharDataFragment extends BaseAddFragment implements OnC
         }
 
         return false;
+    }
+
+    protected static float getFloatValue(EditText editText) {
+        String text = editText.getText().toString();
+        return TextUtils.isEmpty(text) ? 0f : Float.parseFloat(text);
     }
 }
