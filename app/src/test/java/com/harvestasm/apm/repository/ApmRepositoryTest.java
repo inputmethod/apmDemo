@@ -10,6 +10,7 @@ import com.harvestasm.apm.repository.model.ApmActivityItem;
 import com.harvestasm.apm.repository.model.ApmDeviceMicsItem;
 import com.harvestasm.apm.repository.model.ApmSourceConnect;
 import com.harvestasm.apm.repository.model.ApmSourceData;
+import com.harvestasm.apm.repository.model.connect.ApmConnectResponse;
 import com.harvestasm.apm.repository.model.search.ApmBaseSearchResponse;
 import com.harvestasm.apm.repository.model.search.ApmCommonSearchResponse;
 import com.harvestasm.apm.repository.model.search.ApmConnectSearchResponse;
@@ -20,9 +21,19 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
+import typany.apm.agent.android.Agent;
+import typany.apm.agent.android.harvest.ApplicationInformation;
+import typany.apm.agent.android.harvest.DeviceInformation;
+import typany.apm.agent.android.harvest.HarvestData;
+import typany.apm.agent.android.tracing.ActivityTrace;
+import typany.apm.agent.android.tracing.Sample;
+import typany.apm.agent.android.tracing.Trace;
+import typany.apm.agent.android.tracing.TraceMachine;
 import typany.apm.retrofit2.Call;
 import typany.apm.retrofit2.Response;
 
@@ -138,5 +149,50 @@ public class ApmRepositoryTest {
         Assert.assertNotNull(DataStorage.get().queryByOption());
         Map<String, List<ApmActivityItem.VitalUnit>> vitalMap = DataStorage.get().buildApplicationMemoryMap();
         Assert.assertNotNull(vitalMap);
+    }
+
+    @Test
+    public void testActivityTraceData() throws Exception {
+        // important: 要在ActivityTrace创建前准备好所有vital数据，否则时间戳滞后，在
+        // ActivityTrace.asELKJson()执行时会被忽略掉
+        Map<Sample.SampleType, Collection<Sample>> vitals = generateVitals();
+
+        final DeviceInformation deviceInformation = Agent.getDeviceInformation();
+        ApplicationInformation app = new ApplicationInformation("testName", "testVersion", "testId", "1024");
+
+        HarvestData harvestData = new HarvestData(app, deviceInformation);
+
+        Trace rootTrace = new Trace();
+        rootTrace.displayName = TraceMachine.formatActivityDisplayName("Memory/Used");
+        rootTrace.metricName = TraceMachine.formatActivityMetricName(rootTrace.displayName);
+        rootTrace.metricBackgroundName = TraceMachine.formatActivityBackgroundMetricName(rootTrace.displayName);
+        rootTrace.entryTimestamp = System.currentTimeMillis();
+
+        ActivityTrace activityTrace = new ActivityTrace(rootTrace);
+        activityTrace.setVitals(vitals);
+
+        harvestData.getActivityTraces().add(activityTrace);
+
+        ApmConnectResponse response = repository.apmTestData(harvestData.toJson());
+        Assert.assertNotNull(response);
+    }
+
+    private Map<Sample.SampleType, Collection<Sample>> generateVitals() {
+        EnumMap<Sample.SampleType, Collection<Sample>> samples = new EnumMap(Sample.SampleType.class);
+        List<Sample> memorySamples = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            Sample sample = new Sample(Sample.SampleType.MEMORY);
+            sample.setSampleValue(Math.random() * 1000 * i);
+            memorySamples.add(sample);
+        }
+        samples.put(Sample.SampleType.MEMORY, memorySamples);
+
+        List<Sample> cpuSamples = new ArrayList<>();for (int i = 0; i < 10; i++) {
+            Sample sample = new Sample(Sample.SampleType.CPU);
+            sample.setSampleValue(Math.random() * 128 * i);
+            cpuSamples.add(sample);
+        }
+        samples.put(Sample.SampleType.CPU, cpuSamples);
+        return samples;
     }
 }

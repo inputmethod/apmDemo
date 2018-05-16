@@ -222,6 +222,11 @@ public class AddDataStorage {
                 CustomMetricMeasurement measurement = m.get(s);
                 harvestData.getMetrics().addMetric(measurement.getCustomMetric());
             }
+//            Map<String, ActivityTrace> at = activityByApp.get(app);
+//            for (String s : at.keySet()) {
+//                ActivityTrace trace = at.get(s);
+//                harvestData.getActivityTraces().add(trace);
+//            }
             dataList.add(harvestData);
         }
         return dataList;
