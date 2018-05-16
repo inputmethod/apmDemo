@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 import android.util.Log;
 
-import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -130,11 +129,6 @@ abstract public class BaseChartViewModel extends BaseListViewModel<ChartItem> {
 
         // final result list.
         return list;
-    }
-
-    @WorkerThread
-    protected void buildEntry(ArrayList<BarEntry> entries, float value, int index) {
-        entries.add(new BarEntry(index, value));
     }
 
     @WorkerThread

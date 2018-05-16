@@ -1,7 +1,6 @@
 package com.harvestasm.apm.add;
 
 import android.annotation.SuppressLint;
-import android.graphics.Color;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,11 +15,9 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.harvestasm.apm.sample.R;
-import com.harvestasm.chart.custom.MyValueFormatter;
+import com.harvestasm.chart.ChartItemHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,16 +100,13 @@ public class AddSubCpuFragment extends AddAbstractBarChartFragment {
 
     protected void refreshChart() {
         int xProgress = editTextListGroup.size();
-        ArrayList<BarEntry> yVals = new ArrayList<BarEntry>();
 
+        List<BarEntry> yVals = new ArrayList<BarEntry>();
         for (int i = 0; i < xProgress; i++) {
             float val1 = getFloatValue(editTextListGroup.get(i).get(0));
             float val2 = getFloatValue(editTextListGroup.get(i).get(1));
 
-            yVals.add(new BarEntry(
-                    i,
-                    new float[]{val1, val2 - val1},
-                    getResources().getDrawable(R.drawable.ic_home_black_24dp)));
+            ChartItemHelper.buildEntry(yVals, val2, val1, 1, i);
         }
 
         BarDataSet set1;
@@ -124,36 +118,24 @@ public class AddSubCpuFragment extends AddAbstractBarChartFragment {
             mChart.getData().notifyDataChanged();
             mChart.notifyDataSetChanged();
         } else {
-            set1 = new BarDataSet(yVals, "CPU数据");
-            set1.setDrawIcons(false);
-            set1.setColors(getColors());
-            set1.setStackLabels(new String[]{"平均", "最大"});
+//            set1 = new BarDataSet(yVals, parseOptionName());
+//            set1.setDrawIcons(false);
+//            set1.setColors(ChartItemHelper.getColors());
+//            set1.setStackLabels(new String[]{"平均", "最大"});
+//
+//            ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
+//            dataSets.add(set1);
+//
+//            BarData data = new BarData(dataSets);
+//            data.setValueFormatter(new MyValueFormatter());
+//            data.setValueTextColor(Color.WHITE);
 
-            ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
-            dataSets.add(set1);
-
-            BarData data = new BarData(dataSets);
-            data.setValueFormatter(new MyValueFormatter());
-            data.setValueTextColor(Color.WHITE);
-
+            BarData data = ChartItemHelper.generateStackedBarData(yVals, parseOptionName());
             mChart.setData(data);
         }
 
         mChart.setFitBars(true);
         mChart.invalidate();
-    }
-
-    private int[] getColors() {
-        int stacksize = 2;
-
-        // have as many colors as stack-values per entry
-        int[] colors = new int[stacksize];
-
-        for (int i = 0; i < colors.length; i++) {
-            colors[i] = ColorTemplate.MATERIAL_COLORS[i];
-        }
-
-        return colors;
     }
 
     @Override

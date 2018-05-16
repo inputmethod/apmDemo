@@ -7,6 +7,7 @@ import android.util.Log;
 import com.github.mikephil.charting.data.BarEntry;
 import com.harvestasm.apm.add.AddDataStorage;
 import com.harvestasm.apm.base.BaseListViewModel;
+import com.harvestasm.chart.ChartItemHelper;
 import com.harvestasm.chart.listviewitems.ChartItem;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import typany.apm.agent.android.harvest.ApplicationInformation;
 import typany.apm.agent.android.harvest.ConnectInformation;
 import typany.apm.agent.android.harvest.HarvestData;
 import typany.apm.agent.android.measurement.CustomMetricMeasurement;
+import typany.apm.agent.android.metric.Metric;
 
 // todo: simplest implement without repository to store data item.
 public class PreviewViewModel extends BaseListViewModel<ChartItem> {
@@ -93,10 +95,6 @@ public class PreviewViewModel extends BaseListViewModel<ChartItem> {
         AddDataStorage.get().runWithFlowable(callable, consumer);
     }
 
-    private void buildEntry(ArrayList<BarEntry> entries, float value, int index) {
-        entries.add(new BarEntry(index, value));
-    }
-
     // 缓存的数据视图
     private List<ChartItem> getDisplayChartItemList(Typeface typeface) {
         List<ChartItem> list = new ArrayList<>();
@@ -122,13 +120,15 @@ public class PreviewViewModel extends BaseListViewModel<ChartItem> {
         for (int i = 0; i < appList.size(); i++) {
             ApplicationInformation information = appList.get(i);
             CustomMetricMeasurement measurement = measurementMap.get(information);
-            buildEntry(entries, (float) measurement.getCustomMetric().getMax(), i);
+            Metric metric = measurement.getCustomMetric();
+            ChartItemHelper.buildEntry(entries, (float) metric.getMax(),
+                    (float) metric.getMax(), metric.getCount(), i);
             labelBuilder.append(information.getAppName())
                     .append(information.getAppVersion())
                     .append("|");
         }
 
-        return generateDataBar(entries, option, labelBuilder.toString(), typeface);
+        return ChartItemHelper.generateDataBar(entries, option, labelBuilder.toString(), typeface);
     }
 
     public void performClick(ChartItem item) {

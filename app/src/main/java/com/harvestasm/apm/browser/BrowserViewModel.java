@@ -10,6 +10,7 @@ import com.harvestasm.apm.home.HomeDeviceItem;
 import com.harvestasm.apm.repository.model.ApmMeasurementItem;
 import com.harvestasm.apm.repository.model.ApmSourceData;
 import com.harvestasm.apm.repository.model.search.ApmBaseUnit;
+import com.harvestasm.chart.ChartItemHelper;
 import com.harvestasm.chart.listviewitems.ChartItem;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class BrowserViewModel extends BaseChartViewModel {
     // todo: 合并计算一个option下相同app的多次值（简单求平均值）
     protected void buildChartItem(List<ChartItem> list, String key, List<ApmBaseUnit<ApmSourceData>> dataList, Typeface typeface) {
         // build chart item with the built map
-        ArrayList<BarEntry> entries = new ArrayList<>();
+        List<BarEntry> entries = new ArrayList<>();
         List<String> appList = new ArrayList<>();
 
         Map<String, List<ApmMeasurementItem>> measurementByApp = parseMeasurementByApp(key, dataList);
@@ -49,17 +50,20 @@ public class BrowserViewModel extends BaseChartViewModel {
         }
 
         String label = TextUtils.join("|", appList);
-        list.add(generateDataBar(entries, key, label, typeface));
+        list.add(ChartItemHelper.generateDataBar(entries, key, label, typeface));
     }
 
     @WorkerThread
     // todo: 简单求平均值拟合图表。
-    private final void buildEntry(ArrayList<BarEntry> entries, List<ApmMeasurementItem> itemList, int index) {
-        double total = 0;
+    private final void buildEntry(List<BarEntry> entries, List<ApmMeasurementItem> itemList, int index) {
+        double max = 0;
+        double min = 0;
         for (ApmMeasurementItem item : itemList) {
-            total += (item.getMax() + item.getMin()) / 2;
+            max += item.getMax();
+            min += item.getMin();
         }
-        buildEntry(entries, (float) total / itemList.size(), index);
+
+        ChartItemHelper.buildEntry(entries, max, min, itemList.size(), index);
     }
 
     @WorkerThread

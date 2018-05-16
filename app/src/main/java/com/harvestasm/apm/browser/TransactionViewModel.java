@@ -10,6 +10,7 @@ import com.harvestasm.apm.base.BaseChartViewModel;
 import com.harvestasm.apm.repository.model.ApmSourceData;
 import com.harvestasm.apm.repository.model.ApmTransactionItem;
 import com.harvestasm.apm.repository.model.search.ApmBaseUnit;
+import com.harvestasm.chart.ChartItemHelper;
 import com.harvestasm.chart.listviewitems.ChartItem;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class TransactionViewModel extends BaseChartViewModel {
     // todo: 合并计算一个option下相同app的多次值（简单求平均值）
     protected void buildChartItem(List<ChartItem> list, String key, List<ApmBaseUnit<ApmSourceData>> dataList, Typeface typeface) {
         // build chart item with the built map
-        ArrayList<BarEntry> entries = new ArrayList<>();
+        List<BarEntry> entries = new ArrayList<>();
 
         Map<String, List<ApmTransactionItem>> transactionByUrl = parseTransactionByUrl(key, dataList);
         int index = 0;
@@ -42,8 +43,8 @@ public class TransactionViewModel extends BaseChartViewModel {
                     sent += item.getBytesSent();
                     receipt += item.getBytesReceived();
                 }
-                buildEntry(entries, (float) sent / itemList.size(), index++);
-                buildEntry(entries, (float) receipt / itemList.size(), index++);
+                ChartItemHelper.buildEntry(entries, (float) sent / itemList.size(), index++);
+                ChartItemHelper.buildEntry(entries, (float) receipt / itemList.size(), index++);
             }
         }
 //        if (transactionByUrl.isEmpty()) {
@@ -65,15 +66,15 @@ public class TransactionViewModel extends BaseChartViewModel {
 
         String unit = isTimeChart ? "[MS]" : "[BYTE]";
         String label = "SENT|RECEIVED";
-        list.add(generateDataBar(entries, label + unit, key, typeface));
+        list.add(ChartItemHelper.generateDataBar(entries, label + unit, key, typeface));
     }
 
-    private final void buildTransactionEntry(ArrayList<BarEntry> entries, List<ApmTransactionItem> itemList, int index) {
+    private final void buildTransactionEntry(List<BarEntry> entries, List<ApmTransactionItem> itemList, int index) {
         double total = 0;
         for (ApmTransactionItem item : itemList) {
             total += item.getTotalTime();
         }
-        buildEntry(entries, (float) total / itemList.size(), index);
+        ChartItemHelper.buildEntry(entries, (float) total / itemList.size(), index);
     }
 
     @WorkerThread
