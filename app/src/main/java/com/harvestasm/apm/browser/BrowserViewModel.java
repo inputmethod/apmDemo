@@ -10,7 +10,6 @@ import com.harvestasm.apm.home.HomeDeviceItem;
 import com.harvestasm.apm.repository.model.ApmMeasurementItem;
 import com.harvestasm.apm.repository.model.ApmSourceData;
 import com.harvestasm.apm.repository.model.search.ApmBaseUnit;
-import com.harvestasm.chart.listviewitems.BarChartItem;
 import com.harvestasm.chart.listviewitems.ChartItem;
 
 import java.util.ArrayList;
@@ -50,8 +49,7 @@ public class BrowserViewModel extends BaseChartViewModel {
         }
 
         String label = TextUtils.join("|", appList);
-        BarChartItem chartItem = generateDataBar(entries, key, label, typeface);
-        list.add(chartItem);
+        list.add(generateDataBar(entries, key, label, typeface));
     }
 
     @WorkerThread

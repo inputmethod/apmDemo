@@ -9,11 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 
-import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -24,27 +20,19 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.harvestasm.apm.sample.R;
-import com.harvestasm.chart.custom.MyAxisValueFormatter;
 import com.harvestasm.chart.custom.MyValueFormatter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.BindView;
 import typany.apm.agent.android.harvest.ApplicationInformation;
 import typany.apm.agent.android.measurement.CustomMetricMeasurement;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class AddSubCpuFragment extends AddCharDataFragment {
-    @BindView(R.id.title)
-    TextView titleView;
-
-    @BindView(R.id.chart)
-    BarChart mChart;
-
+public class AddSubCpuFragment extends AddAbstractBarChartFragment {
     private final List<List<EditText>> editTextListGroup = new ArrayList<>();
 
     private int type; // 0 - cpu idle, 1 - cpu medium, 2 - cpu long
@@ -75,7 +63,7 @@ public class AddSubCpuFragment extends AddCharDataFragment {
 
     @Override
     protected void checkMenuState() {
-        refreshBarChart();
+        refreshChart();
 
         for (List<EditText> editTextList : editTextListGroup) {
             if (hasEmptyValue(editTextList)) {
@@ -113,62 +101,7 @@ public class AddSubCpuFragment extends AddCharDataFragment {
         return R.layout.fragment_vertical_linear_container;
     }
 
-
-    @Override
-    protected void initChart() {
-//        mChart = (BarChart) findViewById(R.id.chart1);
-        titleView.setText(getActivity().getTitle());
-        mChart.setOnChartValueSelectedListener(this);
-
-        initAsStackedBarChart();
-    }
-
-    private void initAsStackedBarChart() {
-        mChart.getDescription().setEnabled(false);
-
-        // if more than 60 entries are displayed in the chart, no values will be
-        // drawn
-        mChart.setMaxVisibleValueCount(40);
-
-        // scaling can now only be done on x- and y-axis separately
-        mChart.setPinchZoom(false);
-
-        mChart.setDrawGridBackground(false);
-        mChart.setDrawBarShadow(false);
-
-        mChart.setDrawValueAboveBar(false);
-        mChart.setHighlightFullBarEnabled(false);
-
-        // change the position of the y-labels
-        YAxis leftAxis = mChart.getAxisLeft();
-        leftAxis.setValueFormatter(new MyAxisValueFormatter());
-        leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
-        mChart.getAxisRight().setEnabled(false);
-
-        XAxis xLabels = mChart.getXAxis();
-        xLabels.setPosition(XAxis.XAxisPosition.TOP);
-
-        // mChart.setDrawXLabels(false);
-        // mChart.setDrawYLabels(false);
-
-        // setting data
-//        mSeekBarX.setProgress(12);
-//        mSeekBarY.setProgress(100);
-//        onProgressChanged(12, 100);
-
-        Legend l = mChart.getLegend();
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
-        l.setDrawInside(false);
-        l.setFormSize(8f);
-        l.setFormToTextSpace(4f);
-        l.setXEntrySpace(6f);
-
-        // mChart.setDrawLegend(false);
-    }
-
-    protected void refreshBarChart() {
+    protected void refreshChart() {
         int xProgress = editTextListGroup.size();
         ArrayList<BarEntry> yVals = new ArrayList<BarEntry>();
 

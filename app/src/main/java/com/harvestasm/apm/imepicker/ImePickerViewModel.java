@@ -112,8 +112,6 @@ public class ImePickerViewModel extends BaseListViewModel<ApplicationInformation
 
         // parse apps
         HashMap<String, List<ApmBaseUnit<ApmSourceConnect>>> connectUnits = connectSourceIndex.getAppIndexMap();
-//        list.add(new BarChartItem(generateDataBar(connectUnits), "App分布", ApplicationInformation.ID.STASTIC_BY_APP, typeface));
-//        list.add(new PieChartItem(generateDataPie(connectUnits), "App分布",  ApplicationInformation.ID.STASTIC_BY_APP, typeface));
         ApmRepositoryHelper.parseApplicationList(list, connectUnits.keySet());
 
         // final result list.

@@ -4,19 +4,9 @@ import android.arch.lifecycle.MutableLiveData;
 import android.graphics.Typeface;
 import android.util.Log;
 
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.ChartData;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-import com.github.mikephil.charting.interfaces.datasets.IPieDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.harvestasm.apm.add.AddDataStorage;
 import com.harvestasm.apm.base.BaseListViewModel;
-import com.harvestasm.chart.listviewitems.BarChartItem;
 import com.harvestasm.chart.listviewitems.ChartItem;
 
 import java.util.ArrayList;
@@ -35,50 +25,17 @@ import typany.apm.agent.android.measurement.CustomMetricMeasurement;
 public class PreviewViewModel extends BaseListViewModel<ChartItem> {
     private final static String TAG = PreviewViewModel.class.getSimpleName();
 
-//    public final MutableLiveData<List<ChartItem>> items = new MutableLiveData<>();
-//    public final MutableLiveData<Boolean> refreshState = new MutableLiveData<>();
-//    public final MutableLiveData<Integer> networkState = new MutableLiveData<>();
-
     public final MutableLiveData<ChartItem> clickItem = new MutableLiveData<>();
-
-//    private void resetForLoading() {
-//        refreshState.setValue(true);
-//        networkState.postValue(0);
-//    }
-//
-//    private void onDataLoaded(List<ChartItem> list) {
-//        items.setValue(list);
-//
-//        refreshState.setValue(false);
-//        networkState.postValue(0);
-//
-//    }
 
     public void load(final Typeface typeface) {
         resetForLoading();
 
         checkResult(typeface);
-//        final ApmRepositoryHelper.CallBack callBack = new ApmRepositoryHelper.CallBack() {
-//            @Override
-//            public void onConnectResponse(ApmConnectSearchResponse responseBody) {
-//                connectResponse = responseBody;
-//                checkResult(typeface);
-//            }
-//
-//            @Override
-//            public void onDataResponse(ApmDataSearchResponse responseBody) {
-//                dataResponse = responseBody;
-//                checkResult(typeface);
-//            }
-//        };
-//
-//        ApmRepositoryHelper.doLoadTask(repository, callBack);
     }
 
 
     // todo: 设置上传中状态，上传保存，清除上传状态，处理上传成功或失败结果
     public void pushCache() {
-//        AddDataStorage.get().pushCache();
         // upload connection
         final Callable<List<ConnectInformation>> callable = new Callable<List<ConnectInformation>>() {
             @Override
@@ -118,7 +75,6 @@ public class PreviewViewModel extends BaseListViewModel<ChartItem> {
 
     private void checkResult(final Typeface typeface) {
         // SEETO: rxjava
-//        AddDataStorage.get().getDeviceInfoFeature(2);
         Callable<List<ChartItem>> callable = new Callable<List<ChartItem>>() {
             @Override
             public List<ChartItem> call() {
@@ -135,35 +91,6 @@ public class PreviewViewModel extends BaseListViewModel<ChartItem> {
         };
 
         AddDataStorage.get().runWithFlowable(callable, consumer);
-        
-        
-//        if (null == connectResponse || null == dataResponse) {
-//            Log.i(TAG, "checkResult, skip and wait until all data loaded.");
-//            return;
-//        }
-//
-//        ApmConnectSourceIndex connectSourceIndex = new ApmConnectSourceIndex(connectResponse);
-//        ApmDataSourceIndex dataSourceIndex = new ApmDataSourceIndex(dataResponse);
-//        List<ApmSourceGroup> deviceGroupList = ApmSourceGroup.parseSourceGroup(dataSourceIndex, connectSourceIndex);
-//
-//        List<ChartItem> list = new ArrayList<>();
-//
-//        // parse apps
-//        HashMap<String, List<ApmBaseUnit<ApmSourceConnect>>> connectUnits = connectSourceIndex.getAppIndexMap();
-//
-//        ArrayList<BarEntry> entries = new ArrayList<>();
-//
-//        ArrayList<String> keySet = new ArrayList<>(connectUnits.keySet());
-//        for (int i = 0; i < keySet.size(); i++) {
-//            buildEntry(entries, connectUnits.get(keySet.get(i)).size(), i);
-//        }
-//
-//        BarChartItem item = generateDataBar(entries, "版本", "App分布", typeface);
-//
-//        list.add(item);
-//
-//        // final result list.
-//        onDataLoaded(list);
     }
 
     private void buildEntry(ArrayList<BarEntry> entries, float value, int index) {
@@ -201,48 +128,10 @@ public class PreviewViewModel extends BaseListViewModel<ChartItem> {
                     .append("|");
         }
 
-        BarChartItem item = generateDataBar(entries, option, labelBuilder.toString(), typeface);
-        return item;
-    }
-
-    private BarChartItem generateDataBar(ArrayList<BarEntry> entries, String label,
-                                         String title, Typeface typeface) {
-        BarDataSet d = new BarDataSet(entries, label);
-        d.setColors(ColorTemplate.VORDIPLOM_COLORS);
-        d.setHighLightAlpha(255);
-        BarData cd = new BarData(d);
-        cd.setBarWidth(0.9f);
-        return new BarChartItem(cd, title, ChartItem.ID.STASTIC_PREVIEW, typeface);
+        return generateDataBar(entries, option, labelBuilder.toString(), typeface);
     }
 
     public void performClick(ChartItem item) {
         clickItem.setValue(item);
-    }
-
-    public void parsePieChartItem(ChartItem item) {
-        ChartData data = item.getChartData();
-        if (data instanceof PieData) {
-            PieData lineData = (PieData) data;
-            List<IPieDataSet> list = lineData.getDataSets();
-            Log.v(TAG, "parseLineChartItem, data set size " + list.size());
-        }
-    }
-
-    public void parseBarChartItem(ChartItem item) {
-        ChartData data = item.getChartData();
-        if (data instanceof BarData) {
-            BarData lineData = (BarData) data;
-            List<IBarDataSet> list = lineData.getDataSets();
-            Log.v(TAG, "parseLineChartItem, data set size " + list.size());
-        }
-    }
-
-    public void parseLineChartItem(ChartItem item) {
-        ChartData data = item.getChartData();
-        if (data instanceof LineData) {
-            LineData lineData = (LineData) data;
-            List<ILineDataSet> list = lineData.getDataSets();
-            Log.v(TAG, "parseLineChartItem, data set size " + list.size());
-        }
     }
 }

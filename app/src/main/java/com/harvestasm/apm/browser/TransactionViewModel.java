@@ -10,7 +10,6 @@ import com.harvestasm.apm.base.BaseChartViewModel;
 import com.harvestasm.apm.repository.model.ApmSourceData;
 import com.harvestasm.apm.repository.model.ApmTransactionItem;
 import com.harvestasm.apm.repository.model.search.ApmBaseUnit;
-import com.harvestasm.chart.listviewitems.BarChartItem;
 import com.harvestasm.chart.listviewitems.ChartItem;
 
 import java.util.ArrayList;
@@ -66,8 +65,7 @@ public class TransactionViewModel extends BaseChartViewModel {
 
         String unit = isTimeChart ? "[MS]" : "[BYTE]";
         String label = "SENT|RECEIVED";
-        BarChartItem chartItem = generateDataBar(entries, label + unit, key, typeface);
-        list.add(chartItem);
+        list.add(generateDataBar(entries, label + unit, key, typeface));
     }
 
     private final void buildTransactionEntry(ArrayList<BarEntry> entries, List<ApmTransactionItem> itemList, int index) {

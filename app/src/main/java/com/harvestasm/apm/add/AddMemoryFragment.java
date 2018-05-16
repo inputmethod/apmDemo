@@ -128,7 +128,7 @@ public class AddMemoryFragment extends AddCharDataFragment {
 
     @Override
     protected void checkMenuState() {
-        refreshBarChart();
+        refreshChart();
 
         for (List<EditText> editTextList : editTextListGroup) {
             if (hasEmptyValue(editTextList)) {
@@ -189,7 +189,7 @@ public class AddMemoryFragment extends AddCharDataFragment {
         }
         return entryListGroup;
     }
-    private void refreshBarChart() {
+    private void refreshChart() {
 //        List<List<Entry>> entryListGroup = generateSampleData();
 
         List<List<Entry>> entryListGroup = new ArrayList<>();

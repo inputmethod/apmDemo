@@ -9,8 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 import android.util.Log;
 
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
@@ -22,7 +20,6 @@ import com.harvestasm.apm.repository.model.search.ApmBaseUnit;
 import com.harvestasm.apm.repository.model.search.ApmConnectSearchResponse;
 import com.harvestasm.apm.repository.model.search.ApmDataSearchResponse;
 import com.harvestasm.apm.utils.ApmRepositoryHelper;
-import com.harvestasm.chart.listviewitems.BarChartItem;
 import com.harvestasm.chart.listviewitems.ChartItem;
 import com.harvestasm.chart.listviewitems.LineChartItem;
 
@@ -40,27 +37,9 @@ import io.reactivex.functions.Consumer;
 abstract public class BaseChartViewModel extends BaseListViewModel<ChartItem> {
     private final static String TAG = BaseChartViewModel.class.getSimpleName();
 
-//    public final MutableLiveData<Boolean> refreshState = new MutableLiveData<>();
-//    public final MutableLiveData<Integer> networkState = new MutableLiveData<>();
-
-//    public final MutableLiveData<List<ChartItem>> items = new MutableLiveData<>();
     public final MutableLiveData<ChartItem> clickItem = new MutableLiveData<>();
 
     private Disposable disposable;
-
-    // todo: reset需要把items内容clear??
-//    private void resetForLoading() {
-//        refreshState.setValue(true);
-//        networkState.postValue(0);
-//    }
-//
-//    private void onDataLoaded(List<ChartItem> list) {
-//        items.setValue(list);
-//
-//        refreshState.setValue(false);
-//        networkState.postValue(0);
-//
-//    }
 
     // Browser和Filter两个页面切换时，Fragment的onActivityCreated每次都执行，为load加上force
     // 区分Fragment创建时(false)和下拉刷新时(true)，DataStorage里根据这个布尔变量决定重用当前
@@ -156,17 +135,6 @@ abstract public class BaseChartViewModel extends BaseListViewModel<ChartItem> {
     @WorkerThread
     protected void buildEntry(ArrayList<BarEntry> entries, float value, int index) {
         entries.add(new BarEntry(index, value));
-    }
-
-    @WorkerThread
-    protected final BarChartItem generateDataBar(ArrayList<BarEntry> entries, String label,
-                                         String title, Typeface typeface) {
-        BarDataSet d = new BarDataSet(entries, label);
-        d.setColors(ColorTemplate.VORDIPLOM_COLORS);
-        d.setHighLightAlpha(255);
-        BarData cd = new BarData(d);
-        cd.setBarWidth(0.9f);
-        return new BarChartItem(cd, title, ChartItem.ID.STASTIC_PREVIEW, typeface);
     }
 
     @WorkerThread
