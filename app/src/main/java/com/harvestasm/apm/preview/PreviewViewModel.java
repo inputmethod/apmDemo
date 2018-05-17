@@ -2,16 +2,21 @@ package com.harvestasm.apm.preview;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.graphics.Typeface;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
 import com.harvestasm.apm.add.AddDataStorage;
 import com.harvestasm.apm.base.BaseListViewModel;
+import com.harvestasm.apm.repository.model.ApmActivityItem;
 import com.harvestasm.chart.ChartItemHelper;
 import com.harvestasm.chart.listviewitems.ChartItem;
+import com.harvestasm.chart.listviewitems.LineChartItem;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -22,6 +27,7 @@ import typany.apm.agent.android.harvest.ConnectInformation;
 import typany.apm.agent.android.harvest.HarvestData;
 import typany.apm.agent.android.measurement.CustomMetricMeasurement;
 import typany.apm.agent.android.metric.Metric;
+import typany.apm.agent.android.tracing.ActivityTrace;
 
 // todo: simplest implement without repository to store data item.
 public class PreviewViewModel extends BaseListViewModel<ChartItem> {
@@ -34,7 +40,6 @@ public class PreviewViewModel extends BaseListViewModel<ChartItem> {
 
         checkResult(typeface);
     }
-
 
     // todo: 设置上传中状态，上传保存，清除上传状态，处理上传成功或失败结果
     public void pushCache() {
@@ -108,7 +113,63 @@ public class PreviewViewModel extends BaseListViewModel<ChartItem> {
             list.add(generateDataBar(measurementMap, appList, option, typeface));
         }
 
+        // todo: 显示内存图缓存
+        Map<String, Map<ApplicationInformation, ActivityTrace>> activityTraceByOption =
+                AddDataStorage.get().getActivityTraceByOption();
+        assert(activityTraceByOption.size() == 1); // 只会有1个元素且key是内存使用报表
+        optionList = new ArrayList<>(activityTraceByOption.keySet());
+        Collections.sort(optionList);
+        for (String option : optionList) {
+            Map<ApplicationInformation, ActivityTrace> sampleMap = activityTraceByOption.get(option);
+            ChartItem item = generateDataLine(sampleMap, appList, option, typeface);
+            if (null == item) {
+                Log.w(TAG, "getDisplayChartItemList, skip null memory line chart: " + option);
+            } else {
+                list.add(item);
+            }
+        }
+
         return list;
+    }
+
+    // 已经选中的应用appList, option为内存使用的标识，各种应用的内存数据在sampleMap里。
+    private ChartItem generateDataLine(Map<ApplicationInformation, ActivityTrace> sampleMap,
+                                       List<ApplicationInformation> selectedApps, String option, Typeface typeface) {
+        // build chart item with the built map
+        List<Entry> entries = new ArrayList<>();
+        List<String> appList = new ArrayList<>();
+
+        Map<String, List<ApmActivityItem.VitalUnit>> memoryByVitals = buildMemoryByVitals(sampleMap, selectedApps);
+        int index = 0;
+        for (String urlText : memoryByVitals.keySet()) {
+            List<ApmActivityItem.VitalUnit> itemList = memoryByVitals.get(urlText);
+
+            appList.add(urlText);
+            for (ApmActivityItem.VitalUnit item : itemList) {
+                entries.add(new Entry(index++, item.get(1).floatValue()));
+            }
+        }
+
+        if (!entries.isEmpty()) {
+            String label = TextUtils.join("|", appList);
+            LineChartItem chartItem = ChartItemHelper.generateDataLine(entries, label, option, typeface);
+            return chartItem;
+        }
+
+        return null;
+    }
+
+    private Map<String, List<ApmActivityItem.VitalUnit>> buildMemoryByVitals(Map<ApplicationInformation, ActivityTrace> sampleMap,
+                                                                             List<ApplicationInformation> selectedApps) {
+        Map<String, List<ApmActivityItem.VitalUnit>> memoryByVitals = new HashMap<>();
+        if (null != selectedApps && null != sampleMap && selectedApps.size() == sampleMap.size()) {
+            for (ApplicationInformation item : selectedApps) {
+                ActivityTrace activityTrace = sampleMap.get(item);
+                String str = activityTrace.asELKJson().getAsJsonObject().get("vitals").toString();
+                ChartItemHelper.parseVitalUnitList(memoryByVitals, str, item.getAppName(), true);
+            }
+        }
+        return memoryByVitals;
     }
 
     private ChartItem generateDataBar(Map<ApplicationInformation, CustomMetricMeasurement> measurementMap,

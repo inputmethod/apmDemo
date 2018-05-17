@@ -7,14 +7,22 @@ import android.support.annotation.WorkerThread;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.harvestasm.apm.repository.model.ApmActivityItem;
 import com.harvestasm.chart.custom.MyValueFormatter;
 import com.harvestasm.chart.listviewitems.BarChartItem;
 import com.harvestasm.chart.listviewitems.ChartItem;
+import com.harvestasm.chart.listviewitems.LineChartItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import typany.apm.com.google.gson.Gson;
 
 public class ChartItemHelper {
     @WorkerThread
@@ -83,4 +91,37 @@ public class ChartItemHelper {
         data.setValueTextColor(Color.WHITE);
         return data;
     }
+
+    @WorkerThread
+    public static final LineChartItem generateDataLine(List<Entry> entries, String label,
+                                                       String title, Typeface typeface) {
+        LineDataSet d = new LineDataSet(entries, label);
+        d.setColors(ColorTemplate.VORDIPLOM_COLORS);
+        d.setLineWidth(2.5f);
+        d.setCircleRadius(4.5f);
+        d.setHighLightColor(Color.rgb(244, 117, 117));
+//        d.setDrawValues(false);
+
+        LineData cd = new LineData(d);
+        return new LineChartItem(cd, title, ChartItem.ID.STASTIC_PREVIEW, typeface);
+    }
+
+    public static void parseVitalUnitList(Map<String, List<ApmActivityItem.VitalUnit>> memoryByVitals,
+                                          String str, String mapKey, boolean isMemoryChart) {
+        ApmActivityItem.Vitals[] vitals = new Gson().fromJson(str, ApmActivityItem.Vitals[].class);
+        if (null != vitals) {
+            for (ApmActivityItem.Vitals v : vitals) {
+                List<ApmActivityItem.VitalUnit> vitalItems = isMemoryChart ? v.getMemory() : v.getCpu();
+                if (null != vitalItems && !vitalItems.isEmpty()) {
+                    List<ApmActivityItem.VitalUnit> unitList = memoryByVitals.get(mapKey);
+                    if (null == unitList) {
+                        unitList = new ArrayList<>();
+                        memoryByVitals.put(mapKey, unitList);
+                    }
+                    unitList.addAll(vitalItems);
+                }
+            }
+        }
+    }
+
 }

@@ -13,7 +13,9 @@ import com.harvestasm.apm.utils.SimpleFlowableService;
 import org.apache.http.util.Asserts;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -29,6 +31,10 @@ import typany.apm.agent.android.harvest.ConnectInformation;
 import typany.apm.agent.android.harvest.DeviceInformation;
 import typany.apm.agent.android.harvest.HarvestData;
 import typany.apm.agent.android.measurement.CustomMetricMeasurement;
+import typany.apm.agent.android.tracing.ActivityTrace;
+import typany.apm.agent.android.tracing.Sample;
+import typany.apm.agent.android.tracing.Trace;
+import typany.apm.agent.android.tracing.TraceMachine;
 import typany.apm.agent.android.util.IMEApplicationHelper;
 
 public class AddDataStorage {
@@ -215,6 +221,7 @@ public class AddDataStorage {
 
         final DeviceInformation deviceInformation = Agent.getDeviceInformation();
         List<HarvestData> dataList = new ArrayList<>();
+
         for (ApplicationInformation app : measurementByApp.keySet()) {
             HarvestData harvestData = new HarvestData(app, deviceInformation);
             Map<String, CustomMetricMeasurement> m = measurementByApp.get(app);
@@ -222,13 +229,19 @@ public class AddDataStorage {
                 CustomMetricMeasurement measurement = m.get(s);
                 harvestData.getMetrics().addMetric(measurement.getCustomMetric());
             }
-//            Map<String, ActivityTrace> at = activityByApp.get(app);
-//            for (String s : at.keySet()) {
-//                ActivityTrace trace = at.get(s);
-//                harvestData.getActivityTraces().add(trace);
-//            }
             dataList.add(harvestData);
         }
+
+        for (ApplicationInformation app : activityTraceByApp.keySet()) {
+            HarvestData harvestData = new HarvestData(app, deviceInformation);
+            Map<String, ActivityTrace> m = activityTraceByApp.get(app);
+            for (String s : m.keySet()) {
+                ActivityTrace activityTrace = m.get(s);
+                harvestData.getActivityTraces().add(activityTrace);
+            }
+            dataList.add(harvestData);
+        }
+
         return dataList;
     }
 
@@ -236,8 +249,8 @@ public class AddDataStorage {
         new Thread(runnable, threadName).start();
     }
 
-    private final Map<ApplicationInformation, Map<String, CustomMetricMeasurement>> measurementByApp = new HashMap<>();
     private final Map<String, Map<ApplicationInformation, CustomMetricMeasurement>> measurementByOption = new HashMap<>();
+    private final Map<ApplicationInformation, Map<String, CustomMetricMeasurement>> measurementByApp = new HashMap<>();
 
     public Map<String, Map<ApplicationInformation, CustomMetricMeasurement>> getMeasurementByOption() {
         return measurementByOption;
@@ -251,19 +264,49 @@ public class AddDataStorage {
     // measure_option -> measure per app list，在展示图表时用，其中measure_option为字符串，取measurement里
     // 的category/name格式
     public void addCache(String optionName, ApplicationInformation item, CustomMetricMeasurement measurement) {
-        Map<ApplicationInformation, CustomMetricMeasurement> mapList = measurementByOption.get(optionName);
+        fillCache(optionName, item, measurement, measurementByOption, measurementByApp);
+    }
+
+    private static <T> void fillCache(String optionName, ApplicationInformation item, T measurement,
+                           Map<String, Map<ApplicationInformation, T>> mapByApp,
+                           Map<ApplicationInformation, Map<String, T>> mapByOption) {
+        Map<ApplicationInformation, T> mapList = mapByApp.get(optionName);
         if (null == mapList) {
             mapList = new HashMap<>();
-            measurementByOption.put(optionName, mapList);
+            mapByApp.put(optionName, mapList);
         }
-
         mapList.put(item, measurement);
 
-        Map<String, CustomMetricMeasurement> list = measurementByApp.get(item);
+        Map<String, T> list = mapByOption.get(item);
         if (null == list) {
             list = new HashMap<>();
-            measurementByApp.put(item, list);
+            mapByOption.put(item, list);
         }
         list.put(optionName, measurement);
+    }
+
+    // 内存和cpu使用情况与measurement对应也有两个索引app-> samples list有数据上报用，option-> samples per app list展示图表时用
+
+    private final Map<String, Map<ApplicationInformation, ActivityTrace>> activityTraceByOption = new HashMap<>();
+    private final Map<ApplicationInformation, Map<String, ActivityTrace>> activityTraceByApp = new HashMap<>();
+
+    public Map<String, Map<ApplicationInformation, ActivityTrace>> getActivityTraceByOption() {
+        return activityTraceByOption;
+    }
+
+    public Map<ApplicationInformation, Map<String, ActivityTrace>> getActivityTraceByApp() {
+        return activityTraceByApp;
+    }
+
+    public void addCache(String optionName, ApplicationInformation item, EnumMap<Sample.SampleType, Collection<Sample>> samples) {
+        Trace rootTrace = new Trace();
+        rootTrace.displayName = TraceMachine.formatActivityDisplayName(optionName);
+        rootTrace.metricName = TraceMachine.formatActivityMetricName(rootTrace.displayName);
+        rootTrace.metricBackgroundName = TraceMachine.formatActivityBackgroundMetricName(rootTrace.displayName);
+        rootTrace.entryTimestamp = System.currentTimeMillis();
+        ActivityTrace activityTrace = new ActivityTrace(rootTrace);
+        activityTrace.setVitals(samples);
+
+        fillCache(optionName, item, activityTrace, activityTraceByOption, activityTraceByApp);
     }
 }

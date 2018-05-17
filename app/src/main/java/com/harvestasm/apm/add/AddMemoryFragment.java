@@ -19,12 +19,15 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.harvestasm.apm.sample.R;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
 import typany.apm.agent.android.harvest.ApplicationInformation;
 import typany.apm.agent.android.measurement.CustomMetricMeasurement;
+import typany.apm.agent.android.tracing.Sample;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -296,10 +299,39 @@ public class AddMemoryFragment extends AddCharDataFragment {
 
     @Override
     protected void performNextTask() {
-        // todo: save typed-in data and save to cache.
-        String option = parseOptionName();
-//        for (EditText editText : editTextList) {
-//            addDataItem(option, editText);
-//        }
+        if (editTextListGroup.isEmpty()) {
+            return;
+        }
+
+        for (List<EditText> editTextList : editTextListGroup) {
+            ApplicationInformation item = (ApplicationInformation) editTextList.get(0).getTag();
+            if (null == item) {
+                continue;
+            }
+
+            String option = parseOptionName();
+//            double value = Double.parseDouble(editText.getText().toString());
+//            CustomMetricMeasurement measurement = CustomMetricProducer.makeMeasurement(getName(),
+//                    getCategory(), 1, value, 0, getCountUnit(), getValueUnit());
+//            measurement.setScope("manual");
+//            AddDataStorage.get().addCache(option, item, measurement);
+
+            EnumMap<Sample.SampleType, Collection<Sample>> samples = new EnumMap(Sample.SampleType.class);
+            List<Sample> memorySamples = new ArrayList<>();
+            for (EditText editText : editTextList) {
+                Sample sample = new Sample(Sample.SampleType.MEMORY);
+                sample.setSampleValue(getFloatValue(editText));
+                memorySamples.add(sample);
+            }
+            samples.put(Sample.SampleType.MEMORY, memorySamples);
+
+//            List<Sample> cpuSamples = new ArrayList<>();for (int i = 0; i < 10; i++) {
+//                Sample sample = new Sample(Sample.SampleType.CPU);
+//                sample.setSampleValue(Math.random() * 128 * i);
+//                cpuSamples.add(sample);
+//            }
+//            samples.put(Sample.SampleType.CPU, cpuSamples);
+            AddDataStorage.get().addCache(option, item, samples);
+        }
     }
 }

@@ -142,9 +142,9 @@ public class AddSubCpuFragment extends AddAbstractBarChartFragment {
     protected void performNextTask() {
         String option = parseOptionName();
 
-        for (int i = 0; i < editTextListGroup.size(); i++) {
-            EditText editText = editTextListGroup.get(i).get(0);
-            EditText otherEditText = editTextListGroup.get(i).get(1);
+        for (List<EditText> editTextList : editTextListGroup) {
+            EditText editText = editTextList.get(0);
+            EditText otherEditText = editTextList.get(1);
             addDataItem(option, editText, otherEditText);
         }
     }
