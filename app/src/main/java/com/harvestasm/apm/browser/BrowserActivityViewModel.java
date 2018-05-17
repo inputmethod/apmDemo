@@ -49,6 +49,11 @@ public class BrowserActivityViewModel extends ViewModel {
         return CHART_AUTO == id || CHART_MANUAL == id;
     }
 
+    public void showActivityManualMemory() {
+        DataStorage.get().useManualMeasurements();
+        DataStorage.get().currentState.setValue(CHART_ACTIVITY_MEMORY);
+    }
+
     public void showActivityMemory() {
         DataStorage.get().useAutoMeasurements();
         DataStorage.get().currentState.setValue(CHART_ACTIVITY_MEMORY);

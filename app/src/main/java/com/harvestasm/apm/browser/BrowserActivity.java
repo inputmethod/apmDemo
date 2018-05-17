@@ -112,6 +112,8 @@ public class BrowserActivity extends BaseFragmentActivity implements NavigationV
         } else if (id == R.id.nav_manual_chart) {
             // 加载BrowserFragment, 获取apmtest/数据
             activityViewModel.useManualMeasurements();
+        } else if (id == R.id.nav_manual_memory) {
+            activityViewModel.showActivityManualMemory();
         } else if (id == R.id.nav_auto_activity) {
             activityViewModel.showActivityMemory();
         } else if (id == R.id.nav_auto_activity_cpu) {

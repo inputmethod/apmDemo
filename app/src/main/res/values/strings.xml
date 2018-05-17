@@ -55,5 +55,6 @@
 
     <string name="nav_manual_add">手工数据收集</string>
     <string name="nav_manual_chart">手工数据报表</string>
+    <string name="nav_manual_memory">手工内存消耗</string>
 
 </resources>
