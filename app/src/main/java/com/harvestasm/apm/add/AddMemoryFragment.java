@@ -28,8 +28,6 @@ import butterknife.BindView;
 import typany.apm.agent.android.harvest.ApplicationInformation;
 import typany.apm.agent.android.measurement.CustomMetricMeasurement;
 import typany.apm.agent.android.tracing.Sample;
-import typany.apm.agent.android.tracing.Trace;
-import typany.apm.agent.android.tracing.TraceMachine;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -153,8 +151,8 @@ public class AddMemoryFragment extends AddCharDataFragment {
         setEntityTitle(v, R.id.entry_key, item);
         List<EditText> rowEditTexts = new ArrayList<>();
         setEntityValueGroup(rowEditTexts, v, R.id.topRow, dataMap, item, watcher);
-        setEntityValueGroup(rowEditTexts, v, R.id.middleRow, dataMap, item, watcher);
-        setEntityValueGroup(rowEditTexts, v, R.id.bottomRow, dataMap, item, watcher);
+//        setEntityValueGroup(rowEditTexts, v, R.id.middleRow, dataMap, item, watcher);
+//        setEntityValueGroup(rowEditTexts, v, R.id.bottomRow, dataMap, item, watcher);
         editTextListGroup.add(rowEditTexts);
         return v;
     }
@@ -306,11 +304,11 @@ public class AddMemoryFragment extends AddCharDataFragment {
         }
 
         String option = parseOptionName();
-        Trace rootTrace = new Trace();
-        rootTrace.displayName = TraceMachine.formatActivityDisplayName(option);
-        rootTrace.metricName = TraceMachine.formatActivityMetricName(rootTrace.displayName);
-        rootTrace.metricBackgroundName = TraceMachine.formatActivityBackgroundMetricName(rootTrace.displayName);
-        rootTrace.entryTimestamp = System.currentTimeMillis();
+//        Trace rootTrace = new Trace();
+//        rootTrace.displayName = TraceMachine.formatActivityDisplayName(option);
+//        rootTrace.metricName = TraceMachine.formatActivityMetricName(rootTrace.displayName);
+//        rootTrace.metricBackgroundName = TraceMachine.formatActivityBackgroundMetricName(rootTrace.displayName);
+//        rootTrace.entryTimestamp = System.currentTimeMillis();
 
         for (List<EditText> editTextList : editTextListGroup) {
             ApplicationInformation item = (ApplicationInformation) editTextList.get(0).getTag();
@@ -333,7 +331,7 @@ public class AddMemoryFragment extends AddCharDataFragment {
 //                cpuSamples.add(sample);
 //            }
 //            samples.put(Sample.SampleType.CPU, cpuSamples);
-            AddDataStorage.get().addCache(rootTrace, option, item, samples);
+            AddDataStorage.get().addCache(option, item, samples);
         }
     }
 }

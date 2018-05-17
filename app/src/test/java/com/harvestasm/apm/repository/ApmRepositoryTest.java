@@ -34,6 +34,8 @@ import typany.apm.agent.android.tracing.ActivityTrace;
 import typany.apm.agent.android.tracing.Sample;
 import typany.apm.agent.android.tracing.Trace;
 import typany.apm.agent.android.tracing.TraceMachine;
+import typany.apm.com.google.gson.Gson;
+import typany.apm.com.google.gson.JsonElement;
 import typany.apm.retrofit2.Call;
 import typany.apm.retrofit2.Response;
 
@@ -151,27 +153,31 @@ public class ApmRepositoryTest {
         Assert.assertNotNull(vitalMap);
     }
 
-    @Test
-    public void testActivityTraceData() throws Exception {
-        // important: 要在ActivityTrace创建前准备好所有vital数据，否则时间戳滞后，在
-        // ActivityTrace.asELKJson()执行时会被忽略掉
-        Map<Sample.SampleType, Collection<Sample>> vitals = generateVitals();
-
-        final DeviceInformation deviceInformation = Agent.getDeviceInformation();
-        ApplicationInformation app = new ApplicationInformation("testName", "testVersion", "testId", "1024");
-
-        HarvestData harvestData = new HarvestData(app, deviceInformation);
-
+    private Trace getRootTrace(String name) {
         Trace rootTrace = new Trace();
-        rootTrace.displayName = TraceMachine.formatActivityDisplayName("Memory/Used");
+        rootTrace.displayName = TraceMachine.formatActivityDisplayName(name);
         rootTrace.metricName = TraceMachine.formatActivityMetricName(rootTrace.displayName);
         rootTrace.metricBackgroundName = TraceMachine.formatActivityBackgroundMetricName(rootTrace.displayName);
         rootTrace.entryTimestamp = System.currentTimeMillis();
 
+        return rootTrace;
+    }
+    private ActivityTrace getActivityTrace(String name) {
+        // important: 要在ActivityTrace创建前准备好所有vital数据，否则时间戳滞后，在
+        // ActivityTrace.asELKJson()执行时会被忽略掉
+        Map<Sample.SampleType, Collection<Sample>> vitals = generateVitals();
+        Trace rootTrace = getRootTrace(name);
         ActivityTrace activityTrace = new ActivityTrace(rootTrace);
         activityTrace.setVitals(vitals);
+        return activityTrace;
+    }
+    @Test
+    public void testActivityTraceData() throws Exception {
 
-        harvestData.getActivityTraces().add(activityTrace);
+        final DeviceInformation deviceInformation = Agent.getDeviceInformation();
+        ApplicationInformation app = new ApplicationInformation("testName", "testVersion", "testId", "1024");
+        HarvestData harvestData = new HarvestData(app, deviceInformation);
+        harvestData.getActivityTraces().add(getActivityTrace("Memory/Used"));
 
         ApmConnectResponse response = repository.apmTestData(harvestData.toJson());
         Assert.assertNotNull(response);
@@ -194,5 +200,13 @@ public class ApmRepositoryTest {
         }
         samples.put(Sample.SampleType.CPU, cpuSamples);
         return samples;
+    }
+
+    @Test
+    public void testActivityTrace() throws Exception {
+        ActivityTrace activityTrace = getActivityTrace("Memory/Used");
+        JsonElement str = activityTrace.asELKJson().getAsJsonObject().get("vitals");
+        ApmActivityItem.Vitals[] vitals = new Gson().fromJson(str, ApmActivityItem.Vitals[].class);
+        Assert.assertNotNull(vitals);
     }
 }

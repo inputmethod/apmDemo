@@ -16,11 +16,11 @@
     <include layout="@layout/including_add_list_data_entry"
         android:id="@+id/topRow"/>
 
-    <include layout="@layout/including_add_list_data_entry"
-        android:id="@+id/middleRow" />
+    <!--<include layout="@layout/including_add_list_data_entry"-->
+        <!--android:id="@+id/middleRow" />-->
 
-    <include layout="@layout/including_add_list_data_entry"
-        android:id="@+id/bottomRow" />
+    <!--<include layout="@layout/including_add_list_data_entry"-->
+        <!--android:id="@+id/bottomRow" />-->
 
 
 </LinearLayout>
