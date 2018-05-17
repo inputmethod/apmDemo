@@ -12,7 +12,8 @@ public class BrowserActivityViewModel extends ViewModel {
     private static final int CHART_NETWORKING_DATA = 2;
     private static final int CHART_NETWORKING_TIME = 3;
     private static final int CHART_ACTIVITY_MEMORY = 4;
-    private static final int CHART_ACTIVITY_CPU = 5;
+    private static final int CHART_ACTIVITY_MANUAL_MEMORY = 5;
+    private static final int CHART_ACTIVITY_CPU = 6;
 
     @MainThread
     public void startObserve(LifecycleOwner owner, Observer<Integer> observer) {
@@ -51,7 +52,7 @@ public class BrowserActivityViewModel extends ViewModel {
 
     public void showActivityManualMemory() {
         DataStorage.get().useManualMeasurements();
-        DataStorage.get().currentState.setValue(CHART_ACTIVITY_MEMORY);
+        DataStorage.get().currentState.setValue(CHART_ACTIVITY_MANUAL_MEMORY);
     }
 
     public void showActivityMemory() {
@@ -65,7 +66,7 @@ public class BrowserActivityViewModel extends ViewModel {
     }
 
     public boolean isActivityData(int id) {
-        return CHART_ACTIVITY_MEMORY == id ||CHART_ACTIVITY_CPU == id;
+        return CHART_ACTIVITY_MANUAL_MEMORY == id || CHART_ACTIVITY_MEMORY == id ||CHART_ACTIVITY_CPU == id;
     }
 
     private Bundle generateTypeBundle(boolean value) {
@@ -78,7 +79,7 @@ public class BrowserActivityViewModel extends ViewModel {
         if (isStatisticChartList(id)) {
             return null;
         } else if (isActivityData(id)){
-            return generateTypeBundle(CHART_ACTIVITY_MEMORY == id);
+            return generateTypeBundle(CHART_ACTIVITY_CPU != id);
         } else {
             return generateTypeBundle(CHART_NETWORKING_TIME == id);
         }
