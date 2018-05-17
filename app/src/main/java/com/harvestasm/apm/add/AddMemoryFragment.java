@@ -28,6 +28,8 @@ import butterknife.BindView;
 import typany.apm.agent.android.harvest.ApplicationInformation;
 import typany.apm.agent.android.measurement.CustomMetricMeasurement;
 import typany.apm.agent.android.tracing.Sample;
+import typany.apm.agent.android.tracing.Trace;
+import typany.apm.agent.android.tracing.TraceMachine;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -303,18 +305,18 @@ public class AddMemoryFragment extends AddCharDataFragment {
             return;
         }
 
+        String option = parseOptionName();
+        Trace rootTrace = new Trace();
+        rootTrace.displayName = TraceMachine.formatActivityDisplayName(option);
+        rootTrace.metricName = TraceMachine.formatActivityMetricName(rootTrace.displayName);
+        rootTrace.metricBackgroundName = TraceMachine.formatActivityBackgroundMetricName(rootTrace.displayName);
+        rootTrace.entryTimestamp = System.currentTimeMillis();
+
         for (List<EditText> editTextList : editTextListGroup) {
             ApplicationInformation item = (ApplicationInformation) editTextList.get(0).getTag();
             if (null == item) {
                 continue;
             }
-
-            String option = parseOptionName();
-//            double value = Double.parseDouble(editText.getText().toString());
-//            CustomMetricMeasurement measurement = CustomMetricProducer.makeMeasurement(getName(),
-//                    getCategory(), 1, value, 0, getCountUnit(), getValueUnit());
-//            measurement.setScope("manual");
-//            AddDataStorage.get().addCache(option, item, measurement);
 
             EnumMap<Sample.SampleType, Collection<Sample>> samples = new EnumMap(Sample.SampleType.class);
             List<Sample> memorySamples = new ArrayList<>();
@@ -331,7 +333,7 @@ public class AddMemoryFragment extends AddCharDataFragment {
 //                cpuSamples.add(sample);
 //            }
 //            samples.put(Sample.SampleType.CPU, cpuSamples);
-            AddDataStorage.get().addCache(option, item, samples);
+            AddDataStorage.get().addCache(rootTrace, option, item, samples);
         }
     }
 }

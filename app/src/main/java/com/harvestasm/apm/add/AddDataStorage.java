@@ -34,7 +34,6 @@ import typany.apm.agent.android.measurement.CustomMetricMeasurement;
 import typany.apm.agent.android.tracing.ActivityTrace;
 import typany.apm.agent.android.tracing.Sample;
 import typany.apm.agent.android.tracing.Trace;
-import typany.apm.agent.android.tracing.TraceMachine;
 import typany.apm.agent.android.util.IMEApplicationHelper;
 
 public class AddDataStorage {
@@ -298,12 +297,7 @@ public class AddDataStorage {
         return activityTraceByApp;
     }
 
-    public void addCache(String optionName, ApplicationInformation item, EnumMap<Sample.SampleType, Collection<Sample>> samples) {
-        Trace rootTrace = new Trace();
-        rootTrace.displayName = TraceMachine.formatActivityDisplayName(optionName);
-        rootTrace.metricName = TraceMachine.formatActivityMetricName(rootTrace.displayName);
-        rootTrace.metricBackgroundName = TraceMachine.formatActivityBackgroundMetricName(rootTrace.displayName);
-        rootTrace.entryTimestamp = System.currentTimeMillis();
+    public void addCache(Trace rootTrace, String optionName, ApplicationInformation item, EnumMap<Sample.SampleType, Collection<Sample>> samples) {
         ActivityTrace activityTrace = new ActivityTrace(rootTrace);
         activityTrace.setVitals(samples);
 
