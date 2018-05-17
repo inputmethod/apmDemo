@@ -213,7 +213,7 @@ public class AddDataStorage {
 
 
     public List<HarvestData> getCachedData() {
-        if (selectedImeAppList.isEmpty() || measurementByApp.isEmpty()) {
+        if (selectedImeAppList.isEmpty() || (measurementByApp.isEmpty() && activityTraceByApp.isEmpty())) {
             return Collections.emptyList();
         }
 
@@ -308,6 +308,7 @@ public class AddDataStorage {
 
         ActivityTrace activityTrace = new ActivityTrace(rootTrace);
         activityTrace.setVitals(samples);
+        activityTrace.complete();
 
         fillCache(optionName, item, activityTrace, activityTraceByOption, activityTraceByApp);
     }

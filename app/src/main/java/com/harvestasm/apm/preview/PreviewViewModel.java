@@ -165,8 +165,12 @@ public class PreviewViewModel extends BaseListViewModel<ChartItem> {
         if (null != selectedApps && null != sampleMap && selectedApps.size() == sampleMap.size()) {
             for (ApplicationInformation item : selectedApps) {
                 ActivityTrace activityTrace = sampleMap.get(item);
-                String str = activityTrace.asELKJson().getAsJsonObject().get("vitals").toString();
-                ChartItemHelper.parseVitalUnitList(memoryByVitals, str, item.getAppName(), true);
+                try {
+                    String str = activityTrace.toJson().get("vitals").toString();
+                    ChartItemHelper.parseVitalUnitList(memoryByVitals, str, item.getAppName(), true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
         return memoryByVitals;

@@ -35,7 +35,6 @@ import typany.apm.agent.android.tracing.Sample;
 import typany.apm.agent.android.tracing.Trace;
 import typany.apm.agent.android.tracing.TraceMachine;
 import typany.apm.com.google.gson.Gson;
-import typany.apm.com.google.gson.JsonElement;
 import typany.apm.retrofit2.Call;
 import typany.apm.retrofit2.Response;
 
@@ -205,8 +204,14 @@ public class ApmRepositoryTest {
     @Test
     public void testActivityTrace() throws Exception {
         ActivityTrace activityTrace = getActivityTrace("Memory/Used");
-        JsonElement str = activityTrace.asELKJson().getAsJsonObject().get("vitals");
+        activityTrace.complete();
+        String str = activityTrace.toJson().get("vitals").toString();
+////        JsonElement str = activityTrace.asELKJson().getAsJsonObject().get("vitals");
+////        ApmActivityItem.Vitals[] vitals = new Gson().fromJson(str, ApmActivityItem.Vitals[].class);
+//        String str = "[{\"type\":\"VITALS\",\"MEMORY\":[[1515062527741,45.8212890625],[1515062527875,70.939453125],[1515062528050,83.4404296875],[1515062528191,130.4921875],[1515062528330,136.986328125],[1515062528471,138.1953125],[1515062528612,138.7724609375],[1515062528754,138.5224609375],[1515062528894,138.5419921875],[1515062529039,139.1240234375],[1515062529181,139.18359375]],\"CPU\":[[1515062527878,19.26605504587156],[1515062528052,25.0],[1515062528192,28.57142857142857],[1515062528331,18.01801801801802],[1515062528473,22.52252252252252],[1515062528615,21.62162162162162],[1515062528756,20.353982300884958],[1515062528897,19.298245614035086],[1515062529041,17.391304347826086],[1515062529184,12.280701754385964]]}]";
+//        str = "[{\"type\":\"VITALS\",\"MEMORY\":[[1526540780902,0.0],[1526540780903,283.66388974187305],[1526540780903,387.1427649667383],[1526540780903,1497.7222409187086],[1526540780903,829.263839783903],[1526540780903,808.8674033822856],[1526540780903,4495.223791069189],[1526540780903,4805.91526239648],[1526540780903,4849.050274140423],[1526540780903,7489.380865000494]],\"CPU\":[[1526540780903,0.0],[1526540780903,18.34057176632632],[1526540780903,169.5144520021004],[1526540780903,215.99535561877758],[1526540780903,386.67183529250536],[1526540780903,21.944683987540614],[1526540780903,206.8597741358682],[1526540780903,681.4700334560091],[1526540780903,1021.8115762364029],[1526540780903,843.9004193205933]]}]";
         ApmActivityItem.Vitals[] vitals = new Gson().fromJson(str, ApmActivityItem.Vitals[].class);
+
         Assert.assertNotNull(vitals);
     }
 }
