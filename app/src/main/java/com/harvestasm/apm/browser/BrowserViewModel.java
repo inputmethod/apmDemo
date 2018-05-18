@@ -36,7 +36,7 @@ public class BrowserViewModel extends BaseChartViewModel {
             Map<String, List<ApmMeasurementItem>> measurementByScope = parseMeasurementByScope(key, dataList);
             int index = 0;
             for (String scope : measurementByScope.keySet()) {
-                appList.add(scope);
+                appList.add(ChartItemHelper.trimDisplayText(scope));
                 buildEntry(entries, measurementByScope.get(scope), index++);
             }
         } else {

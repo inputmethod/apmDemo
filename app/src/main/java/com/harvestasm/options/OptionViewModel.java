@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.harvestasm.apm.add.AddDataStorage;
 import com.harvestasm.apm.base.BaseListViewModel;
+import com.harvestasm.apm.base.DataConstants;
 import com.harvestasm.apm.base.pikcer.ActionModelInterface;
 import com.harvestasm.apm.base.pikcer.ItemModelInterface;
 import com.harvestasm.apm.sample.R;
@@ -69,7 +70,7 @@ public class OptionViewModel extends BaseListViewModel<OptionCategoryModel> impl
     }
 
     private OptionCategoryModel buildCpuOption() {
-        String category = "CPU负载";
+        String category = DataConstants.CATEGORY_CPU;
         Map<String, Integer> candidates = new HashMap<>();
         candidates.put("空闲状态", R.id.cpu_idle);
         candidates.put("中等规格状态", R.id.cpu_medium);
@@ -78,7 +79,7 @@ public class OptionViewModel extends BaseListViewModel<OptionCategoryModel> impl
     }
 
     private OptionCategoryModel buildFluencyOption() {
-        String category = "流畅度(帧率)";
+        String category = DataConstants.CATEGORY_FRAME;
         Map<String, Integer> candidates = new HashMap<>();
         candidates.put("Theme页滑动", R.id.frame_theme_slide);
         candidates.put("emoji页滑动", R.id.frame_emoji_slide);
@@ -90,7 +91,7 @@ public class OptionViewModel extends BaseListViewModel<OptionCategoryModel> impl
     }
 
     private OptionCategoryModel buildElectricOption() {
-        String category = "电流功耗";
+        String category = DataConstants.CATEGORY_CURRENT;
         Map<String, Integer> candidates = new HashMap<>();
         candidates.put("5分钟平均电流", R.id.electric_current_average);
         candidates.put("息屏电流", R.id.electric_current_offscreen);
@@ -98,7 +99,7 @@ public class OptionViewModel extends BaseListViewModel<OptionCategoryModel> impl
     }
 
     private OptionCategoryModel buildTimeOption() {
-        String category = "响应速度";
+        String category = DataConstants.CATEGORY_SPEED;
         Map<String, Integer> candidates = new HashMap<>();
         candidates.put("按键响应时间", R.id.action_add_key_time);
         candidates.put("键盘收起", R.id.action_add_keyboard_hide);

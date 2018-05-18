@@ -12,6 +12,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.harvestasm.apm.base.DataConstants;
 import com.harvestasm.apm.repository.model.ApmActivityItem;
 import com.harvestasm.chart.custom.MyValueFormatter;
 import com.harvestasm.chart.listviewitems.BarChartItem;
@@ -40,7 +41,7 @@ public class ChartItemHelper {
     @WorkerThread
     public static final BarChartItem generateDataBar(List<BarEntry> entries, String key,
                                                      String title, Typeface typeface) {
-        if (key.startsWith("cpu/")) {
+        if (key.startsWith(DataConstants.CATEGORY_CPU)) {
 //            BarDataSet set1 = new BarDataSet(entries, key);
 //            set1.setDrawIcons(false);
 //            set1.setColors(getColors());
@@ -55,13 +56,21 @@ public class ChartItemHelper {
             BarData data = generateStackedBarData(entries, key);
             return new BarChartItem(data, title, ChartItem.ID.STASTIC_PREVIEW, typeface);
         } else {
-            BarDataSet d = new BarDataSet(entries, key);
+            BarDataSet d = new BarDataSet(entries, trimDisplayText(key));
             d.setColors(ColorTemplate.VORDIPLOM_COLORS);
             d.setHighLightAlpha(255);
             BarData cd = new BarData(d);
             cd.setBarWidth(0.9f);
             return new BarChartItem(cd, title, ChartItem.ID.STASTIC_PREVIEW, typeface);
         }
+    }
+
+    public static String trimDisplayText(String text) {
+        int index = text.indexOf("/Display ");
+        if (index > 0) {
+            return text.substring(index + 9);
+        }
+        return text;
     }
 
     public static int[] getColors() {

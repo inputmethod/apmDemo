@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.harvestasm.apm.base.DataConstants;
 
 import java.util.List;
 import java.util.Map;
@@ -33,11 +34,11 @@ import typany.apm.agent.android.metric.MetricUnit;
  */
 abstract public class AddCharDataFragment extends BaseAddFragment implements OnChartValueSelectedListener {
     protected MetricUnit getValueUnit() {
-        if (TextUtils.equals(category, "CPU负载")) {
+        if (TextUtils.equals(category, DataConstants.CATEGORY_CPU)) {
             return MetricUnit.PERCENT;
-        } else if (TextUtils.equals(category, "流畅度(帧率)")) {
+        } else if (TextUtils.equals(category, DataConstants.CATEGORY_FRAME)) {
             return MetricUnit.FPS;
-        } else if (TextUtils.equals(category, "电流功耗")) {
+        } else if (TextUtils.equals(category, DataConstants.CATEGORY_CURRENT)) {
             return MetricUnit.MA;
         } else {
             return MetricUnit.MS;
