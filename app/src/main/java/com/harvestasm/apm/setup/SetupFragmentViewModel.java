@@ -14,30 +14,6 @@ import typany.apm.agent.android.harvest.DeviceInformation;
 public class SetupFragmentViewModel extends BaseViewModel<DeviceInformation> {
     private final static String TAG = SetupFragmentViewModel.class.getSimpleName();
 
-//    public final MutableLiveData<DeviceInformation> items = new MutableLiveData<>();
-//    public final MutableLiveData<Boolean> refreshState = new MutableLiveData<>();
-//    public final MutableLiveData<Integer> networkState = new MutableLiveData<>();
-
-//    @MainThread
-//    private void resetForLoading() {
-//        refreshState.setValue(true);
-//        networkState.postValue(0);
-//    }
-//
-//    @MainThread
-//    private void onDataLoaded(DeviceInformation item) {
-//        items.setValue(item);
-//
-//        refreshState.setValue(false);
-//        networkState.postValue(0);
-//
-//    }
-//
-//    @MainThread
-//    public void showOptions() {
-//        AddDataStorage.get().nextStepState.setValue(1);
-//    }
-
     @MainThread
     public void load() {
         resetForLoading();

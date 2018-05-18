@@ -46,6 +46,7 @@ public class ApmRepositoryHelper {
     }
 
     public interface CallBack {
+        void setTag(boolean autoSource);
         void onConnectResponse(ApmConnectSearchResponse body);
         void onDataResponse(ApmDataSearchResponse body);
     }

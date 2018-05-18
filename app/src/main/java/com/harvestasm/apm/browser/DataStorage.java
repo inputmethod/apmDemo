@@ -66,20 +66,18 @@ public class DataStorage {
         return connectResponse;
     }
 
-    public void setConnectResponse(ApmConnectSearchResponse connectResponse) {
+    public void setDataConnectResponse(ApmConnectSearchResponse connectResponse, ApmDataSearchResponse dataResponse) {
         this.connectResponse = connectResponse;
         connectSourceIndex = new ApmConnectSourceIndex(connectResponse);
+
+        this.dataResponse = dataResponse;
+        dataSourceIndex = new ApmDataSourceIndex(dataResponse);
+
         updateData();
     }
 
     public ApmDataSearchResponse getDataResponse() {
         return dataResponse;
-    }
-
-    public void setDataResponse(ApmDataSearchResponse dataResponse) {
-        this.dataResponse = dataResponse;
-        dataSourceIndex = new ApmDataSourceIndex(dataResponse);
-        updateData();
     }
 
     private static final String CATEGORY_DEVICE = "Devices";
@@ -91,6 +89,7 @@ public class DataStorage {
     private static final String CATEGORY_TRANSACTION_URL = "URL";
 
     private void updateData() {
+        Log.i(TAG, "updateData, source type " + isUsedAutoChart());
         if (null == dataSourceIndex || null == connectSourceIndex) {
             Log.i(TAG, "updateData, skip and wait until all connect and data loaded.");
         } else {
@@ -143,6 +142,7 @@ public class DataStorage {
     }
 
     private void resetFilterCache() {
+        Log.i(TAG, "resetFilterCache, source type " + isUsedAutoChart());
         filterOptionMap.clear();
         filterOptionList.clear();
     }
@@ -260,6 +260,7 @@ public class DataStorage {
     }
 
     public boolean isSelect(String category, String name) {
+        Log.i(TAG, "isSelect, source type " + isUsedAutoChart());
         if (null != filterOptionMap.get(category)) {
             return filterOptionMap.get(category).contains(name);
         }
@@ -267,6 +268,7 @@ public class DataStorage {
     }
 
     public void toggleSelected(String category, String name) {
+        Log.i(TAG, "toggleSelected, source type " + isUsedAutoChart());
         if (null != filterOptionMap && filterOptionMap.containsKey(category)) {
             Set<String> set = filterOptionMap.get(category);
             if (set.contains(name)) {
@@ -279,6 +281,7 @@ public class DataStorage {
     }
 
     private @NonNull Set<String> getFilter(String category) {
+        Log.v(TAG, "getFilter, source type " + isUsedAutoChart() + " " + category);
         if (null == filterOptionMap) {
             return Collections.emptySet();
         }
@@ -320,7 +323,9 @@ public class DataStorage {
     public void doLoadTask(ApmRepositoryHelper.CallBack callBack, ApmRepositoryHelper.RefreshInterface refreshInterface, boolean force) {
         if (force || null == connectResponse && null == dataResponse) {
             resetFilterCache();
-            if (usedAutoChart) {
+            Log.i(TAG, "doLoadTask, source type " + isUsedAutoChart());
+            callBack.setTag(isUsedAutoChart());
+            if (isUsedAutoChart()) {
                 ApmRepositoryHelper.doLoadTask(repository.mobileConnectSearch(), repository.mobileDataSearch(), callBack);
             } else {
                 ApmRepositoryHelper.doLoadTask(repository.apmTestConnectSearch(), repository.apmTestDataSearch(), callBack);
@@ -337,7 +342,8 @@ public class DataStorage {
     }
 
     public void useManualMeasurements() {
-        if (usedAutoChart) {
+        Log.i(TAG, "useManualMeasurements, source type " + isUsedAutoChart());
+        if (isUsedAutoChart()) {
             clearToReload();
         }
 
@@ -345,7 +351,8 @@ public class DataStorage {
     }
 
     public void useAutoMeasurements() {
-        if (!usedAutoChart) {
+        Log.i(TAG, "useAutoMeasurements, source type " + isUsedAutoChart());
+        if (!isUsedAutoChart()) {
             clearToReload();
         }
         usedAutoChart = true;

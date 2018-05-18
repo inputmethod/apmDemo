@@ -87,6 +87,11 @@ public class ImePickerViewModel extends BaseListViewModel<ApplicationInformation
     private void loadRemoteList() {
         final ApmRepositoryHelper.CallBack callBack = new ApmRepositoryHelper.CallBack() {
             @Override
+            public void setTag(boolean autoSource) {
+                // do nothing.
+            }
+
+            @Override
             public void onConnectResponse(ApmConnectSearchResponse responseBody) {
                 connectResponse = responseBody;
                 checkResult();
@@ -99,7 +104,7 @@ public class ImePickerViewModel extends BaseListViewModel<ApplicationInformation
             }
         };
 
-        ApmRepositoryHelper.doLoadTask(repository.mobileConnectSearch(), repository.mobileDataSearch(), callBack);
+        ApmRepositoryHelper.doLoadTask(repository.apmTestConnectSearch(), repository.apmTestDataSearch(), callBack);
     }
 
     private void checkResult() {

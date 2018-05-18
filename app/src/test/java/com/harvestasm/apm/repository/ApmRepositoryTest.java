@@ -144,8 +144,7 @@ public class ApmRepositoryTest {
     public void testCombineDataConnection() throws Exception {
         ApmDataSearchResponse dataResponse = mobileDataSearch();
         ApmConnectSearchResponse connectResponse = mobileConnectSearch();
-        DataStorage.get().setDataResponse(dataResponse);
-        DataStorage.get().setConnectResponse(connectResponse);
+        DataStorage.get().setDataConnectResponse(connectResponse, dataResponse);
         Assert.assertNotNull(DataStorage.get().queryTransaction());
         Assert.assertNotNull(DataStorage.get().queryByOption());
         Map<String, List<ApmActivityItem.VitalUnit>> vitalMap = DataStorage.get().buildApplicationMemoryMap();

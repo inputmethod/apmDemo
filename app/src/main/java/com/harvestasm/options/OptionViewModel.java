@@ -31,19 +31,8 @@ public class OptionViewModel extends BaseListViewModel<OptionCategoryModel> impl
     protected void resetForLoading() {
         super.resetForLoading();
 
-//        refreshState.setValue(true);
-//        networkState.postValue(0);
-
         list.clear();
     }
-
-//    private void onDataLoaded(List<OptionCategoryModel> list) {
-//        items.setValue(list);
-//
-//        refreshState.setValue(false);
-//        networkState.postValue(0);
-//
-//    }
 
     public void load(final boolean force) {
         resetForLoading();

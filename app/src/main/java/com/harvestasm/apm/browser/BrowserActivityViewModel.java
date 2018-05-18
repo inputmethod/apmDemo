@@ -5,8 +5,11 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModel;
 import android.os.Bundle;
 import android.support.annotation.MainThread;
+import android.util.Log;
 
 public class BrowserActivityViewModel extends ViewModel {
+    private final String TAG = BrowserActivityViewModel.class.getSimpleName();
+
     private static final int CHART_AUTO = 0;
     private static final int CHART_MANUAL = 1;
     private static final int CHART_NETWORKING_DATA = 2;
@@ -23,6 +26,7 @@ public class BrowserActivityViewModel extends ViewModel {
 
     public void showChartList() {
         int index = DataStorage.get().isUsedAutoChart() ? CHART_AUTO : CHART_MANUAL;
+        Log.i(TAG, "showChartList, index " + index);
         DataStorage.get().currentState.setValue(index);
     }
 

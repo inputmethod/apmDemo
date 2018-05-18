@@ -42,16 +42,38 @@ abstract public class BaseChartViewModel extends BaseListViewModel<ChartItem> {
         resetForLoading();
 
         final ApmRepositoryHelper.CallBack callBack = new ApmRepositoryHelper.CallBack() {
-            @Override
-            public void onConnectResponse(ApmConnectSearchResponse responseBody) {
-                DataStorage.get().setConnectResponse(responseBody);
+            private ApmConnectSearchResponse connectResponse;
+            private ApmDataSearchResponse dataResponse;
+            private boolean usingAutoSource;
+            private void check() {
+                if (null == connectResponse && null == dataResponse) {
+                    Log.i(TAG, "load check and wait for both data and connect reponse.");
+                    return;
+                }
+                if (usingAutoSource != DataStorage.get().isUsedAutoChart()) {
+                    Log.i(TAG, "load check skip while data storage type was changed " + usingAutoSource);
+                    return;
+                }
+
+                DataStorage.get().setDataConnectResponse(connectResponse, dataResponse);
                 checkResult(typeface);
             }
 
             @Override
+            public void setTag(boolean autoSource) {
+                usingAutoSource = autoSource;
+            }
+
+            @Override
+            public void onConnectResponse(ApmConnectSearchResponse responseBody) {
+                this.connectResponse = responseBody;
+                check();
+            }
+
+            @Override
             public void onDataResponse(ApmDataSearchResponse responseBody) {
-                DataStorage.get().setDataResponse(responseBody);
-                checkResult(typeface);
+                dataResponse = responseBody;
+                check();
             }
         };
 
@@ -110,6 +132,10 @@ abstract public class BaseChartViewModel extends BaseListViewModel<ChartItem> {
     @NonNull
     private List<ChartItem> buildChartItemList(Map<String, List<ApmBaseUnit<ApmSourceData>>> dataByOption, Typeface typeface) {
         final Set<String> optionFilterList = getOptionFilter();
+        if (null == optionFilterList) {
+            return Collections.emptyList();
+        }
+
         assert(dataByOption.keySet().containsAll(optionFilterList));
 
         List<ChartItem> list = new ArrayList<>();
