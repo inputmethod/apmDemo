@@ -100,9 +100,9 @@ public class DataStorage {
             // 添加measurement的filters
             AddList(CATEGORY_DEVICE, getDeviceList());
             AddList(CATEGORY_APP, getAppList());
-            AddList(CATEGORY_TS, getTimeStampSet());
+//            AddList(CATEGORY_TS, getTimeStampSet());
             AddList(CATEGORY_OPTION, getOptionSet());
-            AddList(CATEGORY_DATA_APP, getDataAppList());
+//            AddList(CATEGORY_DATA_APP, getDataAppList());
 
             // 增加transaction的filters
             AddList(CATEGORY_TRANSACTION_URL, getTransactionUrlList());

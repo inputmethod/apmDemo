@@ -26,12 +26,12 @@ public class FilterItemModel implements ItemModelInterface {
 
     @Override
     public String getTitle() {
-        return category;
+        return name;
     }
 
     @Override
     public String getSubTitle() {
-        return name;
+        return category;
     }
 
     @Override

@@ -32,31 +32,11 @@ import typany.apm.agent.android.measurement.CustomMetricMeasurement;
 public class AddSubCpuFragment extends AddAbstractBarChartFragment {
     private final List<List<EditText>> editTextListGroup = new ArrayList<>();
 
-    private int type; // 0 - cpu idle, 1 - cpu medium, 2 - cpu long
-
     @Override
     protected void refreshWithChangedText() {
         checkMenuState();
         mChart.invalidate();
     }
-
-    // 按键响应时间
-    protected String getCategory() {
-        return "cpu";
-    }
-
-    protected String getName() {
-        if (0 == type) {
-            return "idle";
-        } else if (1 == type) {
-            return "medium";
-        } else if (2 == type) {
-            return "long";
-        } else {
-            return "unknown";
-        }
-    }
-
 
     @Override
     protected void checkMenuState() {
@@ -70,14 +50,6 @@ public class AddSubCpuFragment extends AddAbstractBarChartFragment {
         }
 
         enableNextMenu(true);
-    }
-
-    @Override
-    protected void parseArguments() {
-        Bundle bundle = getArguments();
-        if (null != bundle) {
-            type = bundle.getInt("type");
-        }
     }
 
     @Override

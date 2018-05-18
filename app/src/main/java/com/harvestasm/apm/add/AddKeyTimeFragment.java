@@ -38,15 +38,6 @@ public class AddKeyTimeFragment extends AddAbstractBarChartFragment {
         mChart.invalidate();
     }
 
-    // 按键响应时间
-    protected String getCategory() {
-        return "Time";
-    }
-    protected String getName() {
-        return "key_press";
-    }
-
-
     @Override
     protected void checkMenuState() {
         refreshChart();
@@ -66,11 +57,6 @@ public class AddKeyTimeFragment extends AddAbstractBarChartFragment {
         setEntityTitle(v, R.id.entry_key, item);
         editTextList.add(initEntityValue(v, R.id.entry_value, dataMap, item, watcher));
         return v;
-    }
-
-    @Override
-    protected void parseArguments() {
-        // do nothing.
     }
 
     @Override

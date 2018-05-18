@@ -84,8 +84,9 @@ public class OptionListFragment extends RefreshListFragment<OptionCategoryModel,
             @Override
             public void onChanged(@Nullable OptionItemModel optionItemModel) {
                 int viewId = optionItemModel.getId();
-                String title = optionItemModel.getTitle();
-                AddDataActivity.startByAction(getContext(), viewId, title);
+                String name = optionItemModel.getTitle();
+                String category = optionItemModel.getSubTitle();
+                AddDataActivity.startByAction(getContext(), viewId, name, category);
             }
         });
 

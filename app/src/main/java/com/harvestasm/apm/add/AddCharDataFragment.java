@@ -2,6 +2,7 @@ package com.harvestasm.apm.add;
 
 import android.annotation.SuppressLint;
 import android.graphics.RectF;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Editable;
@@ -32,11 +33,22 @@ import typany.apm.agent.android.metric.MetricUnit;
  */
 abstract public class AddCharDataFragment extends BaseAddFragment implements OnChartValueSelectedListener {
     protected MetricUnit getValueUnit() {
-        return MetricUnit.MS;
+        if (TextUtils.equals(category, "CPU负载")) {
+            return MetricUnit.PERCENT;
+        } else if (TextUtils.equals(category, "流畅度(帧率)")) {
+            return MetricUnit.FPS;
+        } else if (TextUtils.equals(category, "电流功耗")) {
+            return MetricUnit.MA;
+        } else {
+            return MetricUnit.MS;
+        }
     }
     protected MetricUnit getCountUnit() {
         return MetricUnit.OPERATIONS;
     }
+
+    private String name;
+    private String category;
 
     protected final TextWatcher watcher = new TextWatcher() {
         @Override
@@ -83,7 +95,13 @@ abstract public class AddCharDataFragment extends BaseAddFragment implements OnC
     protected abstract void checkMenuState();
     protected abstract View initViewsForApp(LayoutInflater inflater, ApplicationInformation item,
                                             Map<ApplicationInformation, CustomMetricMeasurement> dataMap);
-    protected abstract void parseArguments();
+
+    protected final void parseArguments() {
+        Bundle bundle = getArguments();
+        name = bundle.getString("name");
+        category = bundle.getString("category");
+    }
+
     protected abstract void initChart();
 
     protected abstract void refreshWithChangedText();
@@ -108,8 +126,13 @@ abstract public class AddCharDataFragment extends BaseAddFragment implements OnC
         AddDataStorage.get().addCache(option, item, measurement);
     }
 
-    protected abstract String getCategory();
-    protected abstract String getName();
+    protected final String getCategory() {
+        return category;
+    }
+
+    protected final String getName() {
+        return name;
+    }
 
     protected RectF mOnValueSelectedRectF = new RectF();
 

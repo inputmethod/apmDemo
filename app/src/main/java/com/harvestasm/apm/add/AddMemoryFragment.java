@@ -41,14 +41,6 @@ public class AddMemoryFragment extends AddCharDataFragment {
 
     private final List<List<EditText>> editTextListGroup = new ArrayList<>();
 
-    protected String getCategory() {
-        return "Memory";
-    }
-
-    protected String getName() {
-        return "Used";
-    }
-
     @Override
     protected int getFragmentLayoutResId() {
         return R.layout.fragment_add_memory;
@@ -165,11 +157,6 @@ public class AddMemoryFragment extends AddCharDataFragment {
         rowEditTexts.add(initEntityValue(rowView, R.id.entry_four, dataMap, item, watcher));
         rowEditTexts.add(initEntityValue(rowView, R.id.entry_five, dataMap, item, watcher));
         rowEditTexts.add(initEntityValue(rowView, R.id.entry_six, dataMap, item, watcher));
-    }
-
-    @Override
-    protected void parseArguments() {
-        // todo: nothing???
     }
 
     private List<Entry> generateEntryList(int count, float mult, int seed) {
