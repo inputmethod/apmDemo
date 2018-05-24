@@ -34,6 +34,12 @@ public class PickerBaseAdapter<T extends ItemModelInterface> extends RecyclerVie
 
     private final ActionModelInterface<T> viewMultiChartModel;
 
+    private boolean iconHidden;
+
+    protected void hideIcon() {
+        iconHidden = true;
+    }
+
     public PickerBaseAdapter(List<T> itemList, ActionModelInterface pickerModel) {
         this.itemList.addAll(itemList);
         this.viewMultiChartModel = pickerModel;
@@ -51,7 +57,7 @@ public class PickerBaseAdapter<T extends ItemModelInterface> extends RecyclerVie
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_my_live, parent, false);
-        ViewHolder holder = new ViewHolder(view);
+        ViewHolder holder = new ViewHolder(view, iconHidden);
         return holder;
     }
 
@@ -94,20 +100,27 @@ public class PickerBaseAdapter<T extends ItemModelInterface> extends RecyclerVie
         @BindView(R.id.tv_sub_title)
         TextView subTitleTv;
 
-        public ViewHolder(View itemView) {
+        private final boolean iconHidden;
+
+        public ViewHolder(View itemView, boolean iconHidden) {
             super(itemView);
             ButterKnife.bind(this,itemView);
-
+            this.iconHidden = iconHidden;
+            if (iconHidden) {
+                avatarIv.setVisibility(View.GONE);
+            }
         }
 
         public void bind(T item, View.OnClickListener clickListener, int mEditMode, boolean select) {
             titleTv.setText(item.getTitle());
             subTitleTv.setText(item.getSubTitle());
 
-            if (null == item.getIcon()) {
-                avatarIv.setImageResource(R.mipmap.ic_launcher);
-            } else {
-                avatarIv.setImageDrawable(item.getIcon());
+            if (!iconHidden) {
+                if (null == item.getIcon()) {
+                    avatarIv.setImageResource(R.mipmap.ic_launcher);
+                } else {
+                    avatarIv.setImageDrawable(item.getIcon());
+                }
             }
 
             if (mEditMode == MYLIVE_MODE_CHECK) {

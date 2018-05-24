@@ -51,11 +51,11 @@ public class FilterViewModel extends BaseListViewModel<FilterCategoryModel> impl
 
     @Override
     public void toggleSelected(ItemModelInterface itemModel) {
-        DataStorage.get().toggleSelected(itemModel.getTitle(), itemModel.getSubTitle());
+        DataStorage.get().toggleSelected(itemModel.getSubTitle(), itemModel.getTitle());
     }
 
     @Override
     public boolean isSelect(ItemModelInterface itemModel) {
-        return DataStorage.get().isSelect(itemModel.getTitle(), itemModel.getSubTitle());
+        return DataStorage.get().isSelect(itemModel.getSubTitle(), itemModel.getTitle());
     }
 }
